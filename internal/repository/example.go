@@ -7,6 +7,18 @@ import (
 	"gorm.io/gorm"
 )
 
+type IExampleRepository interface {
+	ExampleGet(db *gorm.DB, cond req.ExampleGet) (*models.Example, error)
+	ExampleGetList(db *gorm.DB, cond req.ExampleGetList) (*models.PageResult[*models.Example], error)
+	ExamplePost(db *gorm.DB, data *models.Example) (err error)
+	ExamplePut(db *gorm.DB, data *models.Example) (err error)
+	ExampleDelete(db *gorm.DB, data *models.Example) (err error)
+}
+
+func NewExampleRepository(in digIn) IExampleRepository {
+	return ExampleRepository{in: in}
+}
+
 type ExampleRepository struct {
 	in digIn
 }
