@@ -78,3 +78,33 @@ instant message project
 - 後台與前台API共用, 中間件檢測API權限(如A的好友列表只能由A確認)
 
 
+## project structure
+
+```
+├─api
+├─cmd
+├─deployments
+├─docs
+│  └─sql
+│      └─init
+├─internal
+│  ├─consts
+│  ├─handler
+│  ├─models
+│  ├─repo
+│  └─service
+├─pkg
+│  ├─config
+│  ├─helper
+│  ├─https
+│  └─log
+└─scripts
+```
+
+# template快速創建
+
+- 安裝套件 ``
+
+```
+
+```

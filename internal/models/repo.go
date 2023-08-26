@@ -1,10 +1,13 @@
 // 紀錄IM相關資料tables
 package models
 
-import "time"
+import (
+	"im/internal/consts"
+	"time"
+)
 
 type User struct {
-	ID           uint      `gorm:"primaryKey"`
+	ID           string    `gorm:"primaryKey"`
 	Username     string    `gorm:"unique;not null"`
 	Email        string    `gorm:"unique;not null"`
 	PasswordHash string    `gorm:"not null"`
@@ -21,17 +24,14 @@ type UserProfile struct {
 	Website     string
 	CreatedAt   time.Time `gorm:"not null"`
 	UpdatedAt   time.Time `gorm:"not null"`
-	User        User      `gorm:"foreignKey:UserID"`
 }
 
 type Friend struct {
-	UserID1          uint      `gorm:"primaryKey"`
-	UserID2          uint      `gorm:"primaryKey"`
-	FriendshipStatus string    `gorm:"not null"`
-	CreatedAt        time.Time `gorm:"not null"`
-	UpdatedAt        time.Time `gorm:"not null"`
-	User1            User      `gorm:"foreignKey:UserID1"`
-	User2            User      `gorm:"foreignKey:UserID2"`
+	UserID1          uint                    `gorm:"primaryKey"`
+	UserID2          uint                    `gorm:"primaryKey"`
+	FriendshipStatus consts.FriendshipStatus `gorm:"not null"`
+	CreatedAt        time.Time               `gorm:"not null"`
+	UpdatedAt        time.Time               `gorm:"not null"`
 }
 
 type FriendRequest struct {
@@ -60,8 +60,6 @@ type GroupMember struct {
 	UserID   uint      `gorm:"primaryKey"`
 	Role     string    `gorm:"not null"`
 	JoinedAt time.Time `gorm:"not null"`
-	Group    Group     `gorm:"foreignKey:GroupID"`
-	User     User      `gorm:"foreignKey:UserID"`
 }
 
 type GroupInvitation struct {
@@ -72,9 +70,6 @@ type GroupInvitation struct {
 	InvitationStatus string    `gorm:"not null"`
 	CreatedAt        time.Time `gorm:"not null"`
 	UpdatedAt        time.Time `gorm:"not null"`
-	Group            Group     `gorm:"foreignKey:GroupID"`
-	Inviter          User      `gorm:"foreignKey:InviterID"`
-	Invitee          User      `gorm:"foreignKey:InviteeID"`
 }
 
 type GroupRequest struct {
@@ -84,26 +79,13 @@ type GroupRequest struct {
 	RequestStatus string    `gorm:"not null"`
 	CreatedAt     time.Time `gorm:"not null"`
 	UpdatedAt     time.Time `gorm:"not null"`
-	Group         Group     `gorm:"foreignKey:GroupID"`
-	Requester     User      `gorm:"foreignKey:RequesterID"`
 }
 
-type PrivateMessage struct {
-	ID         uint      `gorm:"primaryKey"`
-	SenderID   uint      `gorm:"not null"`
-	ReceiverID uint      `gorm:"not null"`
-	Content    string    `gorm:"not null"`
-	Timestamp  time.Time `gorm:"not null"`
-	Sender     User      `gorm:"foreignKey:SenderID"`
-	Receiver   User      `gorm:"foreignKey:ReceiverID"`
-}
-
-type GroupMessage struct {
-	ID        uint      `gorm:"primaryKey"`
-	GroupID   uint      `gorm:"not null"`
-	SenderID  uint      `gorm:"not null"`
-	Content   string    `gorm:"not null"`
-	Timestamp time.Time `gorm:"not null"`
-	Group     Group     `gorm:"foreignKey:GroupID"`
-	Sender    User      `gorm:"foreignKey:SenderID"`
+type Message struct {
+	ID         uint                 `gorm:"primaryKey"`
+	SenderID   uint                 `gorm:"not null"`
+	ReceiverID uint                 `gorm:"not null"`
+	Content    string               `gorm:"not null"`
+	Timestamp  time.Time            `gorm:"not null"`
+	Status     consts.MessageStatus `gorm:"not null"` // 狀態: 正常, 收回, 刪除, 隱藏
 }

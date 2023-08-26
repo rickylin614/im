@@ -1,0 +1,11 @@
+target_path:
+  handler: "./service/internal/controller/handler/"
+  service: "./service/internal/core/module/"
+  repository: "./service/internal/repository/"
+  model: 
+    - path: "./service/internal/model/bo/"
+      temp_file: "model_bo.tpl"
+    - path: "./service/internal/model/po/"
+      temp_file: "model_po.tpl"
+    - path: "./service/internal/model/dto/"
+      temp_file: "model_dto.tpl"

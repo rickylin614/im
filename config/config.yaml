@@ -1,0 +1,36 @@
+config:
+  log_config:
+    name: "im"
+    env: "local"
+    level: "debug"
+  mysql_config:
+    master: "localhost:3006"
+    slave: "localhost:3006"
+    username: "root"
+    password: "123456"
+    database: "demo"
+    max_idle: 3
+    max_open: 10
+    conn_max_life_min: 15
+    log_mode: true
+  gin_config:
+    port: ":8080"
+    debug_mode: true
+    swagger_mode: true
+  redis_config:
+    max_idle: 10
+    max_active: 1000
+    idle_timeout: 30
+    connect_timeout: 0
+    read_timeout: 10
+    write_timeout: 3
+  mongo_config:
+    host: "localhost:27017"
+    user: "root"
+    passwd: "123456"
+    db: "demo"
+    max_idle_time: 5
+    max_open_conn: 50
+    
+
+    

@@ -1,0 +1,23 @@
+files:
+  - path: "service/internal/controller/handler/provider.go"
+    regex: "type Handler struct \\{.*?\\}"
+    template: "\\n\\t{{ .FileName }}Handler  *{{ .FileNameTitleLower }}Handler"
+  - path: "service/internal/controller/handler/provider.go"
+    regex: "func NewHandler\\(in digIn\\) .*?Handler \\{.*?\\\t}"
+    template: "\\n\\t\\t{{ .FileName }}Handler:  &{{ .FileNameTitleLower }}Handler{in: in},"
+  - path: "service/internal/core/module/provider.go"
+    regex: "type Module struct \\{.*?\\}"
+    template: "\\n\\t{{ .FileName }}Module  I{{ .FileName }}Module"
+  - path: "service/internal/core/module/provider.go"
+    regex: "func NewModule\\(in digIn\\) .*?Module \\{.*?\\\t}"
+    template: "\\n\\t\\t{{ .FileName }}Module:  New{{ .FileName }}Module(in),"
+  - path: "service/internal/repository/provider.go"
+    regex: "type Repository struct \\{.*?\\}"
+    template: "\\n\\t{{ .FileName }}Repo  I{{ .FileName }}Repository"
+  - path: "service/internal/repository/provider.go"
+    regex: "func NewRepository\\(in digIn\\) .*?Repository \\{.*?\\\t}"
+    template: "\\n\\t\\t{{ .FileName }}Repo:  New{{ .FileName }}Repo(in),"
+
+
+
+
