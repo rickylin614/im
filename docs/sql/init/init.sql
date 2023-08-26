@@ -23,12 +23,13 @@ CREATE TABLE user_profiles (
 
 -- 3. Friends table
 CREATE TABLE friends (
-    user_id1 INT UNSIGNED NOT NULL,
-    user_id2 INT UNSIGNED NOT NULL,
-    friendship_status ENUM('active', 'blocked') NOT NULL,
+    primary_user_id INT UNSIGNED NOT NULL,   -- 主要用戶ID
+    friend_user_id INT UNSIGNED NOT NULL,    -- 好友ID
+    friendship_status ENUM('active', 'blocked') NOT NULL COMMENT '友情狀態: active=正常, blocked=封鎖',
+    mute_status BOOLEAN DEFAULT FALSE COMMENT '靜音狀態: TRUE=已靜音, FALSE=未靜音',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id1, user_id2)
+    PRIMARY KEY (primary_user_id, friend_user_id)
 );
 
 -- 4. Friend_requests table
@@ -45,8 +46,8 @@ CREATE TABLE friend_requests (
 -- 5. Groups table
 CREATE TABLE groups (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    description TEXT DEFAULT NULL,
+    group_name VARCHAR(255) NOT NULL UNIQUE,
+    "description" TEXT DEFAULT NULL,
     group_owner_id INT UNSIGNED NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -82,4 +83,15 @@ CREATE TABLE group_requests (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY (group_id, requester_id)
+);
+
+CREATE TABLE messages (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT UNSIGNED NOT NULL,
+    content TEXT NOT NULL,
+    friend_id INT UNSIGNED DEFAULT NULL,           -- 用於保存好友之間的對話
+    group_id INT UNSIGNED DEFAULT NULL,            -- 用於保存群組的對話
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CHECK (friend_id IS NOT NULL OR group_id IS NOT NULL) -- 確保每條消息要麼是好友對話，要麼是群組對話
 );

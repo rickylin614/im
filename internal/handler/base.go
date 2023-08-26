@@ -13,19 +13,18 @@ type baseHandler struct {
 
 // Ping
 // @Summary Health check
-// @Description check server exist
-// @Tags member
-// @ID get-members
-// @Accept  json
-// @Produce  json
-// @Param body body dto.QueryMemberCond true "request param"
-// @Success 200 {object} dto.StandardResponse[[]dto.Member]
-// @Security ApiKeyAuth
-// @Router /member/list [get]
+// @Tags public
+// @Success 200 string
+// @Router /ping [get]
 func (b baseHandler) Ping(ctx *gin.Context) {
 	ctx.String(http.StatusOK, "pong")
 }
 
+// Metrics
+// @Summary Metrics
+// @Tags public
+// @Success 200 string
+// @Router /metrics [get]
 func (b baseHandler) Metrics() gin.HandlerFunc {
 	promHandler := promhttp.Handler()
 	return func(c *gin.Context) {

@@ -1,14 +1,13 @@
 
-# central-platform
+# ricky-im
 
 ## 需要初始化的物件皆需要宣告DI
 
 ## code規範
 
 1. http請求GET / POST / PUT / DELETE皆使用JSON
-1. handler層可呼叫usecase, module層
-2. usecase層可呼叫module層, repository層
-3. module層可呼叫repository層
+2. handler層可呼叫service層
+3. service層可呼叫repository層
 4. 需要初始化物件時, 皆需使用dig創建
 
 ## nunu

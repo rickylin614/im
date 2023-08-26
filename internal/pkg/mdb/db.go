@@ -1,4 +1,4 @@
-package db
+package mdb
 
 import (
 	"context"

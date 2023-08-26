@@ -1,12 +1,8 @@
-package po
+package models
 
 type {{ .FileName }} struct {
 }
 
 func (*{{ .FileName }}) TableName() string {
 	return "{{ .FileNameSnakeCase }}"
-}
-
-type Query{{ .FileName }}Cond struct {
-	Page
 }

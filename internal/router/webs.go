@@ -23,23 +23,12 @@ func (r WebRouter) SetRouter(router *gin.Engine) {
 
 	priGroup := router.Group("/auth/")
 	r.setAuthRouter(priGroup)
-
-	// router.Use(
-	// r.in.Middleware.RecoveryMiddleware.Recovery,
-	// r.in.Middleware.TraceMiddleware.WithTraceLogger,
-	// )
-	// r.setBaseRoute(router)
-	// router.Use(r.in.Middleware.ResponseMiddleware.ResponseFormat)
-
-	// set router
-	// baseGroup := router.Group("central-platform")
-	// r.setPublicRouter(baseGroup)
-	// r.setAuthRouter(baseGroup)
 }
 
 // 不需要登入的API
 func (r WebRouter) setPublicRouter(router *gin.RouterGroup) {
-
+	router.GET("/ping", r.in.Handler.BaseHandler.Ping)
+	router.GET("/metrics", r.in.Handler.BaseHandler.Metrics())
 }
 
 // setAuthRouter 需要登入的API

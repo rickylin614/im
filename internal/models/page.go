@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 
 	"gorm.io/gorm"
@@ -54,9 +53,6 @@ func (p *PageResult[T]) SetTotal(count int64) {
 func (p *PageResult[T]) GetTableName() string {
 	tType := reflect.TypeOf(p.Data).Elem()
 	t := reflect.New(tType).Elem()
-
-	str := T.TableName("")
-	fmt.Print(str)
 
 	tm := t.MethodByName("TableName")
 	if !tm.IsValid() {

@@ -106,5 +106,5 @@ instant message project
 - 安裝套件 ``
 
 ```
-
+go install github.com/rickylin614/nunu@v1.0.3-rc.4
 ```
