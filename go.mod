@@ -6,6 +6,7 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/go-co-op/gocron v1.31.0
 	github.com/go-redsync/redsync/v4 v4.8.1
+	github.com/jinzhu/copier v0.4.0
 	github.com/prometheus/client_golang v1.16.0
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/spf13/viper v1.16.0

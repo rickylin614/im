@@ -8,11 +8,15 @@ import (
 )
 
 func NewRepository(in digIn) *Repository {
-	return &Repository{in: in}
+	return &Repository{in: in,
+		ExampleRepo: NewExampleRepository(in),
+	}
 }
 
 type Repository struct {
 	in digIn
+
+	ExampleRepo IExampleRepository
 }
 
 // digIn repository require indendency

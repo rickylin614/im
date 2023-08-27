@@ -13,4 +13,6 @@ type ExamplePost struct{}
 
 type ExamplePut struct{}
 
-type ExampleDelete struct{}
+type ExampleDelete struct {
+	Id string `json:"id,omitempty"`
+}

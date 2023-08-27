@@ -2,12 +2,10 @@ package mdb
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -15,12 +13,9 @@ import (
 	"moul.io/zapgorm2"
 )
 
-const DB_CTX_KEY = "DB_GORM_CTX"
-
 type Client interface {
-	NewDB(ctx *gin.Context) *gorm.DB
-	GetDB(ctx *gin.Context) *gorm.DB
-	SetDB(ctx *gin.Context, db *gorm.DB) error
+	Session(ctx context.Context) *gorm.DB
+	Begin(ctx context.Context) *gorm.DB
 	GetMock() sqlmock.Sqlmock
 }
 
@@ -31,40 +26,14 @@ type GormDB struct {
 }
 
 // GetDB 返回 *gorm.DB
-func (g *GormDB) GetDB(ctx *gin.Context) *gorm.DB {
-	newDb := g.db.WithContext(context.Background())
-	if ctx == nil {
-		return newDb
-	}
-
-	if val, ok := ctx.Get(DB_CTX_KEY); !ok {
-		ctx.Set(DB_CTX_KEY, newDb)
-		return newDb
-	} else {
-		if v, typeOK := val.(*gorm.DB); typeOK {
-			return v
-		} else {
-			ctx.Set(DB_CTX_KEY, newDb)
-			return newDb
-		}
-	}
-}
-
-func (g *GormDB) NewDB(ctx *gin.Context) *gorm.DB {
-	newDb := g.db.WithContext(context.Background())
-	if ctx == nil {
-		return newDb
-	}
-	ctx.Set(DB_CTX_KEY, newDb)
+func (g *GormDB) Session(ctx context.Context) *gorm.DB {
+	newDb := g.db.WithContext(ctx)
 	return newDb
 }
 
-func (g *GormDB) SetDB(ctx *gin.Context, db *gorm.DB) error {
-	if ctx == nil || db == nil {
-		return errors.New("SetDb not fuond context")
-	}
-	ctx.Set(DB_CTX_KEY, db)
-	return nil
+func (g *GormDB) Begin(ctx context.Context) *gorm.DB {
+	tx := g.db.WithContext(ctx).Clauses(dbresolver.Write).Begin()
+	return tx
 }
 
 // GetDB 返回 *gorm.DB
@@ -79,8 +48,8 @@ func newDB(in digIn) Client {
 		in.Config.MySQLConfig.Master,
 		in.Config.MySQLConfig.Database,
 	}
-	masterDB := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=UTC", dbSetting)
-	slaveDB := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=UTC", dbSetting)
+	masterDB := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=UTC", dbSetting[0], dbSetting[1], dbSetting[2], dbSetting[3])
+	slaveDB := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=UTC", dbSetting[0], dbSetting[1], dbSetting[2], dbSetting[3])
 
 	logger := zapgorm2.New(in.Log.GetLogger())
 	logger.SetAsDefault()
