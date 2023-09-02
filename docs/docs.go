@@ -99,7 +99,7 @@ const docTemplate = `{
                 "tags": [
                     "example"
                 ],
-                "summary": "Update",
+                "summary": "Delete",
                 "parameters": [
                     {
                         "description": "param",
@@ -380,8 +380,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8800",
-	BasePath:         "/central-platform",
+	Host:             "127.0.0.1:9000",
+	BasePath:         "/im",
 	Schemes:          []string{},
 	Title:            "Im",
 	Description:      "This is a project im.",

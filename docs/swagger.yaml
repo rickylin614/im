@@ -1,4 +1,4 @@
-basePath: /central-platform
+basePath: /im
 definitions:
   models.Example:
     properties:
@@ -123,7 +123,7 @@ definitions:
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
-host: localhost:8800
+host: 127.0.0.1:9000
 info:
   contact:
     name: API Support
@@ -146,7 +146,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/resp.APIResponse-string'
-      summary: Update
+      summary: Delete
       tags:
       - example
     get:

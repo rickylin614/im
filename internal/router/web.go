@@ -29,6 +29,13 @@ func (r WebRouter) SetRouter(router *gin.Engine) {
 func (r WebRouter) setPublicRouter(router *gin.RouterGroup) {
 	router.GET("/ping", r.in.Handler.BaseHandler.Ping)
 	router.GET("/metrics", r.in.Handler.BaseHandler.Metrics())
+
+	// example
+	router.GET("/example/:id", r.in.Handler.ExampleHandler.Get)
+	router.GET("/example", r.in.Handler.ExampleHandler.GetList)
+	router.POST("/example", r.in.Handler.ExampleHandler.Create)
+	router.PUT("/example", r.in.Handler.ExampleHandler.Update)
+	router.DELETE("/example", r.in.Handler.ExampleHandler.Delete)
 }
 
 // setAuthRouter 需要登入的API

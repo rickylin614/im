@@ -9,8 +9,8 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8800",
-    "basePath": "/central-platform",
+    "host": "127.0.0.1:9000",
+    "basePath": "/im",
     "paths": {
         "/example": {
             "get": {
@@ -92,7 +92,7 @@
                 "tags": [
                     "example"
                 ],
-                "summary": "Update",
+                "summary": "Delete",
                 "parameters": [
                     {
                         "description": "param",

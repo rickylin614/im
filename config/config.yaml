@@ -4,8 +4,8 @@ config:
     env: "local"
     level: "debug"
   mysql_config:
-    master: "localhost:3006"
-    slave: "localhost:3006"
+    master: "localhost:3306"
+    slave: "localhost:3306"
     username: "root"
     password: "123456"
     database: "demo"
@@ -14,7 +14,7 @@ config:
     conn_max_life_min: 15
     log_mode: true
   gin_config:
-    port: ":8080"
+    port: ":9000"
     debug_mode: true
     swagger_mode: true
   redis_config:

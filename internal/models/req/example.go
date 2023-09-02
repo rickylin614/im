@@ -3,7 +3,7 @@ package req
 import "im/internal/models"
 
 type ExampleGet struct {
-	Id          uint   `json:"id"`
+	Id          uint   `json:"-" uri:"id" binding:"required"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
@@ -18,6 +18,7 @@ type ExampleCreate struct {
 }
 
 type ExampleUpdate struct {
+	Id          string `json:"id,omitempty"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }

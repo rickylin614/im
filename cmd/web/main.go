@@ -12,8 +12,8 @@ import (
 
 // @contact.name   API Support
 
-// @host      localhost:8800
-// @BasePath  /central-platform
+// @host      127.0.0.1:9000
+// @BasePath  /im
 
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header

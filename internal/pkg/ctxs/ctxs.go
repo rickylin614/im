@@ -2,6 +2,7 @@ package ctxs
 
 import (
 	"im/internal/models/resp"
+	"im/internal/pkg/errs"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -23,11 +24,14 @@ func SetError(ctx *gin.Context, err error) {
 	}
 	if v, ok := err.(IError); ok {
 		code = v.GetCode()
+	} else {
+		code = errs.CommonUnknownError.GetCode()
+		msg = errs.CommonUnknownError.GetMessage()
 	}
 	response := resp.APIResponse[any]{
 		Code:    code,
 		Message: msg,
-		Data:    nil,
+		Data:    err.Error(),
 	}
 	ctx.JSON(http.StatusOK, response)
 }

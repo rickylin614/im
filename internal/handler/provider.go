@@ -12,14 +12,16 @@ import (
 // return: handler 所有
 func NewHandler(in digIn) *Handler {
 	return &Handler{in: in,
-		BaseHandler: &baseHandler{in},
+		BaseHandler:    &baseHandler{in},
+		ExampleHandler: &exampleHandler{in},
 	}
 }
 
 type Handler struct {
 	in digIn
 
-	BaseHandler *baseHandler
+	BaseHandler    *baseHandler
+	ExampleHandler *exampleHandler
 }
 
 type digIn struct {

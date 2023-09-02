@@ -4,16 +4,13 @@ import (
 	request "im/internal/models/req"
 	response "im/internal/models/resp"
 	"im/internal/pkg/ctxs"
-	"im/internal/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 )
 
-type ExampleHandler struct {
+type exampleHandler struct {
 	in digIn
-
-	Service *service.Service
 }
 
 // @Summary Get
@@ -21,8 +18,12 @@ type ExampleHandler struct {
 // @Param body body request.ExampleGet true "param"
 // @Success 200 {object} response.APIResponse[response.ExampleGet]
 // @Router /example/:id [get]
-func (h ExampleHandler) Get(ctx *gin.Context) {
+func (h exampleHandler) Get(ctx *gin.Context) {
 	req := &request.ExampleGet{}
+	if err := ctx.ShouldBindUri(req); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		ctxs.SetError(ctx, err)
 		return
@@ -31,6 +32,9 @@ func (h ExampleHandler) Get(ctx *gin.Context) {
 	if err != nil {
 		ctxs.SetError(ctx, err)
 		return
+	}
+	if data == nil {
+		ctxs.SetResp(ctx, data)
 	}
 	result := &response.ExampleGet{}
 	if err := copier.Copy(result, data); err != nil {
@@ -45,7 +49,7 @@ func (h ExampleHandler) Get(ctx *gin.Context) {
 // @Param body body request.ExampleGetList true "param"
 // @Success 200 {object} response.APIResponse[response.ExampleGetList]
 // @Router /example [get]
-func (h ExampleHandler) GetList(ctx *gin.Context) {
+func (h exampleHandler) GetList(ctx *gin.Context) {
 	req := &request.ExampleGetList{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		ctxs.SetError(ctx, err)
@@ -69,7 +73,7 @@ func (h ExampleHandler) GetList(ctx *gin.Context) {
 // @Param body body request.ExampleCreate true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /example [post]
-func (h ExampleHandler) Create(ctx *gin.Context) {
+func (h exampleHandler) Create(ctx *gin.Context) {
 	req := &request.ExampleCreate{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		ctxs.SetError(ctx, err)
@@ -88,7 +92,7 @@ func (h ExampleHandler) Create(ctx *gin.Context) {
 // @Param body body request.ExampleUpdate true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /example [put]
-func (h ExampleHandler) Update(ctx *gin.Context) {
+func (h exampleHandler) Update(ctx *gin.Context) {
 	req := &request.ExampleUpdate{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		ctxs.SetError(ctx, err)
@@ -108,7 +112,7 @@ func (h ExampleHandler) Update(ctx *gin.Context) {
 // @Param body body request.ExampleDelete true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /example [delete]
-func (h ExampleHandler) Delete(ctx *gin.Context) {
+func (h exampleHandler) Delete(ctx *gin.Context) {
 	req := &request.ExampleDelete{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		ctxs.SetError(ctx, err)
