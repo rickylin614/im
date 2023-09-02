@@ -10,7 +10,7 @@ import (
 type IExampleRepository interface {
 	Get(db *gorm.DB, cond *req.ExampleGet) (*models.Example, error)
 	GetList(db *gorm.DB, cond *req.ExampleGetList) (*models.PageResult[*models.Example], error)
-	Create(db *gorm.DB, data *models.Example) (err error)
+	Create(db *gorm.DB, data *models.Example) (id any, err error)
 	Update(db *gorm.DB, data *models.Example) (err error)
 	Delete(db *gorm.DB, id string) (err error)
 }
@@ -42,11 +42,11 @@ func (h ExampleRepository) GetList(db *gorm.DB, cond *req.ExampleGetList) (*mode
 	return result, nil
 }
 
-func (h ExampleRepository) Create(db *gorm.DB, data *models.Example) (err error) {
+func (h ExampleRepository) Create(db *gorm.DB, data *models.Example) (id any, err error) {
 	if err := db.Create(data).Error; err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return data.Id, nil
 }
 
 func (h ExampleRepository) Update(db *gorm.DB, data *models.Example) (err error) {

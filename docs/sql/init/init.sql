@@ -44,10 +44,10 @@ CREATE TABLE friend_requests (
 );
 
 -- 5. Groups table
-CREATE TABLE groups (
+CREATE TABLE `groups` (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     group_name VARCHAR(255) NOT NULL UNIQUE,
-    "description" TEXT DEFAULT NULL,
+    `description` TEXT DEFAULT NULL,
     group_owner_id INT UNSIGNED NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -55,43 +55,54 @@ CREATE TABLE groups (
 
 -- 6. Group_members table
 CREATE TABLE group_members (
-    group_id INT UNSIGNED NOT NULL,
-    user_id INT UNSIGNED NOT NULL,
-    role ENUM('owner', 'admin', 'member') NOT NULL,
-    joined_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (group_id, user_id)
+    `group_id` INT UNSIGNED NOT NULL,
+    `user_id` INT UNSIGNED NOT NULL,
+    `role` ENUM('owner', 'admin', 'member') NOT NULL,
+    `joined_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`group_id`, `user_id`)
 );
 
 -- 7. Group_invitations table
 CREATE TABLE group_invitations (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    group_id INT UNSIGNED NOT NULL,
-    inviter_id INT UNSIGNED NOT NULL,
-    invitee_id INT UNSIGNED NOT NULL,
-    invitation_status ENUM('pending', 'accepted', 'rejected', 'canceled') NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE KEY (group_id, invitee_id)
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `group_id` INT UNSIGNED NOT NULL,
+    `inviter_id` INT UNSIGNED NOT NULL,
+    `invitee_id` INT UNSIGNED NOT NULL,
+    `invitation_status` ENUM('pending', 'accepted', 'rejected', 'canceled') NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY (`group_id`, `invitee_id`)
 );
 
 -- 8. Group_requests table
 CREATE TABLE group_requests (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    group_id INT UNSIGNED NOT NULL,
-    requester_id INT UNSIGNED NOT NULL,
-    request_status ENUM('pending', 'accepted', 'rejected', 'canceled') NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE KEY (group_id, requester_id)
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `group_id` INT UNSIGNED NOT NULL,
+    `requester_id` INT UNSIGNED NOT NULL,
+    `request_status` ENUM('pending', 'accepted', 'rejected', 'canceled') NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY (`group_id`, `requester_id`)
 );
 
-CREATE TABLE messages (
+-- 9. messages table
+CREATE TABLE `messages` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `sender_id` INT UNSIGNED NOT NULL,
+    `content` TEXT NOT NULL,
+    `friend_id` INT UNSIGNED DEFAULT NULL,           -- 用於保存好友之間的對話
+    `group_id` INT UNSIGNED DEFAULT NULL,            -- 用於保存群組的對話
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CHECK (`friend_id` IS NOT NULL OR `group_id` IS NOT NULL) -- 確保每條消息要麼是好友對話，要麼是群組對話
+);
+
+
+-- other demo ddl
+CREATE TABLE example (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    sender_id INT UNSIGNED NOT NULL,
-    content TEXT NOT NULL,
-    friend_id INT UNSIGNED DEFAULT NULL,           -- 用於保存好友之間的對話
-    group_id INT UNSIGNED DEFAULT NULL,            -- 用於保存群組的對話
+    name VARCHAR(255) NOT NULL,
+    description TEXT DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CHECK (friend_id IS NOT NULL OR group_id IS NOT NULL) -- 確保每條消息要麼是好友對話，要麼是群組對話
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

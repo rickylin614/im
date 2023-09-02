@@ -14,7 +14,7 @@ type baseHandler struct {
 // Ping
 // @Summary Health check
 // @Tags public
-// @Success 200 string
+// @Success 200 {string} string
 // @Router /ping [get]
 func (b baseHandler) Ping(ctx *gin.Context) {
 	ctx.String(http.StatusOK, "pong")
@@ -23,7 +23,7 @@ func (b baseHandler) Ping(ctx *gin.Context) {
 // Metrics
 // @Summary Metrics
 // @Tags public
-// @Success 200 string
+// @Success 200 {string} string
 // @Router /metrics [get]
 func (b baseHandler) Metrics() gin.HandlerFunc {
 	promHandler := promhttp.Handler()

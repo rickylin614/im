@@ -1,0 +1,242 @@
+basePath: /central-platform
+definitions:
+  models.Example:
+    properties:
+      createdAt:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: integer
+    type: object
+  models.Page:
+    properties:
+      order:
+        description: 排序
+        type: string
+      pageIndex:
+        description: 頁碼
+        type: integer
+      size:
+        description: 筆數
+        type: integer
+      total:
+        description: 總筆數
+        type: integer
+      totalPage:
+        description: 總頁數
+        type: integer
+    type: object
+  req.ExampleCreate:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  req.ExampleDelete:
+    properties:
+      id:
+        type: string
+    type: object
+  req.ExampleGet:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  req.ExampleGetList:
+    properties:
+      order:
+        description: 排序
+        type: string
+      pageIndex:
+        description: 頁碼
+        type: integer
+      size:
+        description: 筆數
+        type: integer
+      total:
+        description: 總筆數
+        type: integer
+      totalPage:
+        description: 總頁數
+        type: integer
+    type: object
+  req.ExampleUpdate:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  resp.APIResponse-resp_ExampleGet:
+    properties:
+      code:
+        type: string
+      data:
+        $ref: '#/definitions/resp.ExampleGet'
+      msg:
+        type: string
+    type: object
+  resp.APIResponse-resp_ExampleGetList:
+    properties:
+      code:
+        type: string
+      data:
+        $ref: '#/definitions/resp.ExampleGetList'
+      msg:
+        type: string
+    type: object
+  resp.APIResponse-string:
+    properties:
+      code:
+        type: string
+      data:
+        type: string
+      msg:
+        type: string
+    type: object
+  resp.ExampleGet:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  resp.ExampleGetList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Example'
+        type: array
+      page:
+        $ref: '#/definitions/models.Page'
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8800
+info:
+  contact:
+    name: API Support
+  description: This is a project im.
+  termsOfService: http://swagger.io/terms/
+  title: Im
+  version: "1.0"
+paths:
+  /example:
+    delete:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.ExampleDelete'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: Update
+      tags:
+      - example
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.ExampleGetList'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_ExampleGetList'
+      summary: GetList
+      tags:
+      - example
+    post:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.ExampleCreate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: Create
+      tags:
+      - example
+    put:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.ExampleUpdate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: Update
+      tags:
+      - example
+  /example/:id:
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.ExampleGet'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_ExampleGet'
+      summary: Get
+      tags:
+      - example
+  /metrics:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Metrics
+      tags:
+      - public
+  /ping:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Health check
+      tags:
+      - public
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

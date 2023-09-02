@@ -2,10 +2,20 @@
 default:
 	echo 'please choose command'
 
+.PHONY: swag
+docs:
+	go install github.com/swaggo/swag/cmd/swag@v1.16.1
+
 .PHONY: docs
 docs:
-	swag init  -g ./cmd/apis/main.go
+	swag init -g ./cmd/web/main.go
 
 .PHONY: rundocs
 rundocs:
-	docker run --rm -it --env GOPATH=/go -v $(shell pwd):/go/src -p 8082:8082 -w /go/src quay.io/goswagger/swagger serve ./docs/swagger.yaml -p 8082 --no-open
+	docker run --rm -it --env GOPATH=/go -v $(pwd):/go/src -p 8082:8082 -w /go/src quay.io/goswagger/swagger serve ./docs/swagger.yaml -p 8082 --no-open
+
+.PHONY: rundocs
+rundocs2:
+	docker run --rm -it --env GOPATH=/go -v C:/code/golang/im:/go/src -p 8082:8082 -w /go/src quay.io/goswagger/swagger serve ./docs/swagger.yaml -p 8082 --no-open
+
+	
