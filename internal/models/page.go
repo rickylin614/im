@@ -1,18 +1,15 @@
 package models
 
 import (
-	"errors"
-	"reflect"
-
 	"gorm.io/gorm"
 )
 
 type Page struct {
-	PageIndex int    `gorm:"-"` // 頁碼
-	Size      int    `gorm:"-"` // 筆數
-	TotalPage int    `gorm:"-"` // 總頁數
-	Total     int    `gorm:"-"` // 總筆數
-	Order     string `gorm:"-"` // 排序
+	PageIndex int    `gorm:"-"`                  // 頁碼
+	Size      int    `gorm:"-"`                  // 筆數
+	TotalPage int    `gorm:"-"`                  // 總頁數
+	Total     int64  `gorm:"-"`                  // 總筆數
+	Order     string `gorm:"-" example:"id asc"` // 排序
 }
 
 func (p *Page) GetPager() *Page {
@@ -26,62 +23,36 @@ type ITable interface {
 // PageResult 帶有Page的實體
 type PageResult[T ITable] struct {
 	*Page `gorm:"-"`
-	Data  []T `gorm:"-"`
+	Data  []T
 }
 
-func (p *PageResult[T]) GetIndex() int {
-	return p.PageIndex
-}
-
-func (p *PageResult[T]) GetLimit() int {
+func (p *PageResult[T]) getLimit() int {
 	return p.Size
 }
 
-func (p *PageResult[T]) GetOffset() int {
+func (p *PageResult[T]) getOffset() int {
 	return (p.PageIndex - 1) * p.Size
 }
 
-func (p *PageResult[T]) GetOrder() string {
+func (p *PageResult[T]) getOrder() string {
 	return p.Order
 }
 
-func (p *PageResult[T]) SetTotal(count int64) {
-	p.Total = int(count)
-	p.TotalPage = (int(count) + p.Size - 1) / p.Size
+func (p *PageResult[T]) setTotalPage() {
+	p.TotalPage = (int(p.Total) + p.Size - 1) / p.Size
 }
 
-func (p *PageResult[T]) GetTableName() string {
-	tType := reflect.TypeOf(p.Data).Elem()
-	t := reflect.New(tType).Elem()
-
-	tm := t.MethodByName("TableName")
-	if !tm.IsValid() {
-		panic(errors.New("type does not have a TableName method"))
-	}
-
-	result := tm.Call(nil)
-	if len(result) == 0 {
-		panic(errors.New("TableName method did not return a value"))
-	}
-
-	return result[0].Interface().(string)
-}
-
-func (p *PageResult[T]) BeforeFind(db *gorm.DB) (err error) {
-	if p.GetIndex() > 0 && p.GetLimit() > 0 {
-		var count int64
-		db = db.Table(p.GetTableName())
-		err := db.Count(&count).Error
-		if err != nil {
-			return err
+func (p *PageResult[T]) PagerCond() func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if p.PageIndex <= 0 {
+			p.PageIndex = 1
 		}
-		db = db.Offset(p.GetOffset()).Limit(p.GetLimit())
-		p.SetTotal(count)
+		if p.Size <= 0 {
+			p.Size = 1
+		}
+
+		return db.Order(p.getOrder()).Offset(p.getOffset()).Limit(p.getLimit())
 	}
-	if p.GetOrder() != "" {
-		db = db.Order(p.GetOrder())
-	}
-	return nil
 }
 
 //result := &po.PageResult[*po.Member]{

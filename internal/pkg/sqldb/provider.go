@@ -1,4 +1,4 @@
-package mdb
+package sqldb
 
 import (
 	"go.uber.org/dig"

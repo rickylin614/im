@@ -36,7 +36,11 @@ func (h ExampleRepository) GetList(db *gorm.DB, cond *req.ExampleGetList) (*mode
 		Page: cond.GetPager(),
 		Data: make([]*models.Example, 0),
 	}
-	if err := db.Model(result).Find(result.Data, cond).Error; err != nil {
+	db = db.Model(models.Example{}).Scopes(cond.Scope)
+	if err := db.Count(&result.Total).Error; err != nil {
+		return nil, err
+	}
+	if err := db.Scopes(result.PagerCond()).Find(&result.Data).Error; err != nil {
 		return nil, err
 	}
 	return result, nil
@@ -50,7 +54,7 @@ func (h ExampleRepository) Create(db *gorm.DB, data *models.Example) (id any, er
 }
 
 func (h ExampleRepository) Update(db *gorm.DB, data *models.Example) (err error) {
-	if err := db.Save(data).Error; err != nil {
+	if err := db.Updates(data).Error; err != nil {
 		return err
 	}
 	return nil

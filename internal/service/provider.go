@@ -4,7 +4,7 @@ import (
 	"go.uber.org/dig"
 
 	"im/internal/pkg/logger"
-	"im/internal/pkg/mdb"
+	"im/internal/pkg/sqldb"
 	"im/internal/repository"
 )
 
@@ -26,5 +26,5 @@ type digIn struct {
 
 	Repository *repository.Repository
 	Logger     *logger.Logger
-	DB         mdb.Client
+	DB         sqldb.Client
 }

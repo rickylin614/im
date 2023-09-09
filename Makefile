@@ -12,9 +12,9 @@ docs:
 
 .PHONY: rundocs
 rundocs:
-	docker run --rm -it --env GOPATH=/go -v $(pwd):/go/src -p 8082:8082 -w /go/src quay.io/goswagger/swagger serve ./docs/swagger.yaml -p 8082 --no-open
+	docker run --rm -it --env GOPATH=/go -v $(shell pwd):/go/src -p 8082:8082 -w /go/src quay.io/goswagger/swagger serve ./docs/swagger.yaml -p 8082 --no-open
 
-.PHONY: rundocs
+.PHONY: rundocs2
 rundocs2:
 	docker run --rm -it --env GOPATH=/go -v C:/code/golang/im:/go/src -p 8082:8082 -w /go/src quay.io/goswagger/swagger serve ./docs/swagger.yaml -p 8082 --no-open
 

@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"im/internal/pkg/mdb"
+	"im/internal/pkg/sqldb"
 
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/dig"
@@ -23,6 +23,6 @@ type Repository struct {
 type digIn struct {
 	dig.In
 
-	Db  mdb.Client
+	Db  sqldb.Client
 	Rdb redis.UniversalClient
 }

@@ -8,9 +8,9 @@ import (
 	"im/internal/handler"
 	"im/internal/pkg/config"
 	"im/internal/pkg/logger"
-	"im/internal/pkg/mdb"
 	"im/internal/pkg/mongo"
 	"im/internal/pkg/redis"
+	"im/internal/pkg/sqldb"
 	"im/internal/repository"
 	"im/internal/router"
 	"im/internal/server"
@@ -31,7 +31,7 @@ func New() *dig.Container {
 		if err := container.Provide(config.NewConfig); err != nil {
 			panic(err)
 		}
-		if err := container.Provide(mdb.NewDB); err != nil {
+		if err := container.Provide(sqldb.NewDB); err != nil {
 			panic(err)
 		}
 		if err := container.Provide(redis.NewRedis); err != nil {

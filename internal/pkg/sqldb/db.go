@@ -1,4 +1,4 @@
-package mdb
+package sqldb
 
 import (
 	"context"
@@ -74,7 +74,7 @@ func newDB(in digIn) Client {
 	}))
 
 	// 註冊頁碼PreQuery
-	AddPreQueryCallback(db)
+	// AddPreQueryCallback(db)
 
 	if in.Config.MySQLConfig.LogMode {
 		db = db.Debug()

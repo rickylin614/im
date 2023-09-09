@@ -186,7 +186,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "createdAt": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "description": {
                     "type": "string"
@@ -198,7 +198,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updatedAt": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },
@@ -207,7 +207,8 @@ const docTemplate = `{
             "properties": {
                 "order": {
                     "description": "排序",
-                    "type": "string"
+                    "type": "string",
+                    "example": "id asc"
                 },
                 "pageIndex": {
                     "description": "頁碼",
@@ -231,10 +232,14 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "description": {
-                    "type": "string"
+                    "description": "創建範例描述",
+                    "type": "string",
+                    "example": "一個武林高手"
                 },
                 "name": {
-                    "type": "string"
+                    "description": "創建範例名",
+                    "type": "string",
+                    "example": "小明"
                 }
             }
         },
@@ -242,7 +247,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id": {
-                    "type": "string"
+                    "description": "刪除範例ID",
+                    "type": "string",
+                    "example": "1"
                 }
             }
         },
@@ -250,22 +257,42 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
+                    "description": "範例描述",
+                    "type": "string",
+                    "example": "取得描述"
                 },
                 "name": {
-                    "type": "string"
+                    "description": "範例名",
+                    "type": "string",
+                    "example": "名字"
                 }
             }
         },
         "req.ExampleGetList": {
             "type": "object",
+            "required": [
+                "id"
+            ],
             "properties": {
+                "id": {
+                    "description": "範例ID列表",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "example": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6
+                    ]
+                },
                 "order": {
                     "description": "排序",
-                    "type": "string"
+                    "type": "string",
+                    "example": "id asc"
                 },
                 "pageIndex": {
                     "description": "頁碼",
@@ -289,10 +316,19 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "description": {
-                    "type": "string"
+                    "description": "修改範例描述",
+                    "type": "string",
+                    "example": "繼承小明武功但沒天分的孩子"
+                },
+                "id": {
+                    "description": "修改範例ID",
+                    "type": "string",
+                    "example": "1"
                 },
                 "name": {
-                    "type": "string"
+                    "description": "修改範例名",
+                    "type": "string",
+                    "example": "小明的孩子"
                 }
             }
         },

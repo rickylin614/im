@@ -13,6 +13,7 @@ type exampleHandler struct {
 	in digIn
 }
 
+// Get
 // @Summary Get
 // @Tags example
 // @Param body body request.ExampleGet true "param"
@@ -44,6 +45,7 @@ func (h exampleHandler) Get(ctx *gin.Context) {
 	ctxs.SetResp(ctx, result)
 }
 
+// GetList
 // @Summary GetList
 // @Tags example
 // @Param body body request.ExampleGetList true "param"
@@ -68,6 +70,7 @@ func (h exampleHandler) GetList(ctx *gin.Context) {
 	ctxs.SetResp(ctx, result)
 }
 
+// Create
 // @Summary Create
 // @Tags example
 // @Param body body request.ExampleCreate true "param"
@@ -87,6 +90,7 @@ func (h exampleHandler) Create(ctx *gin.Context) {
 	ctxs.SetResp(ctx, id)
 }
 
+// Update
 // @Summary Update
 // @Tags example
 // @Param body body request.ExampleUpdate true "param"

@@ -3,7 +3,7 @@ definitions:
   models.Example:
     properties:
       createdAt:
-        type: integer
+        type: string
       description:
         type: string
       id:
@@ -11,12 +11,13 @@ definitions:
       name:
         type: string
       updatedAt:
-        type: integer
+        type: string
     type: object
   models.Page:
     properties:
       order:
         description: 排序
+        example: id asc
         type: string
       pageIndex:
         description: 頁碼
@@ -34,28 +35,49 @@ definitions:
   req.ExampleCreate:
     properties:
       description:
+        description: 創建範例描述
+        example: 一個武林高手
         type: string
       name:
+        description: 創建範例名
+        example: 小明
         type: string
     type: object
   req.ExampleDelete:
     properties:
       id:
+        description: 刪除範例ID
+        example: "1"
         type: string
     type: object
   req.ExampleGet:
     properties:
       description:
+        description: 範例描述
+        example: 取得描述
         type: string
-      id:
-        type: integer
       name:
+        description: 範例名
+        example: 名字
         type: string
     type: object
   req.ExampleGetList:
     properties:
+      id:
+        description: 範例ID列表
+        example:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        items:
+          type: integer
+        type: array
       order:
         description: 排序
+        example: id asc
         type: string
       pageIndex:
         description: 頁碼
@@ -69,12 +91,22 @@ definitions:
       totalPage:
         description: 總頁數
         type: integer
+    required:
+    - id
     type: object
   req.ExampleUpdate:
     properties:
       description:
+        description: 修改範例描述
+        example: 繼承小明武功但沒天分的孩子
+        type: string
+      id:
+        description: 修改範例ID
+        example: "1"
         type: string
       name:
+        description: 修改範例名
+        example: 小明的孩子
         type: string
     type: object
   resp.APIResponse-resp_ExampleGet:
