@@ -4,6 +4,7 @@ import (
 	"context"
 	"im/internal/models"
 	"im/internal/models/req"
+	"im/internal/util/crypto"
 	"im/internal/util/uuid"
 
 	"github.com/jinzhu/copier"
@@ -37,7 +38,7 @@ func (s usersService) GetList(ctx context.Context, cond *req.UsersGetList) (*mod
 
 func (s usersService) Create(ctx context.Context, cond *req.UsersCreate) (id any, err error) {
 	db := s.in.DB.Session(ctx)
-	insertData := &models.Users{ID: uuid.New()}
+	insertData := &models.Users{ID: uuid.New(), PasswordHash: crypto.Hash(cond.Password)}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}

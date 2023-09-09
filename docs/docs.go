@@ -179,30 +179,133 @@ const docTemplate = `{
                     }
                 }
             }
-        }
-    },
-    "definitions": {
-        "models.PageResponse": {
-            "type": "object",
-            "properties": {
-                "index": {
-                    "description": "頁碼",
-                    "type": "integer"
-                },
-                "pages": {
-                    "description": "總頁數",
-                    "type": "integer"
-                },
-                "size": {
-                    "description": "筆數",
-                    "type": "integer"
-                },
-                "total": {
-                    "description": "總筆數",
-                    "type": "integer"
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "用戶清單",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.UsersGetList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-resp_UsersGetList"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "用戶訊息修改",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.UsersUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
                 }
             }
         },
+        "/users/:id": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "取得用戶訊息",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.UsersGet"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-resp_UsersGet"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "summary": "用戶登錄並返回授權令牌",
+                "responses": {}
+            }
+        },
+        "/users/logout": {
+            "post": {
+                "summary": "用戶登出",
+                "responses": {}
+            }
+        },
+        "/users/register": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "用戶註冊",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.UsersCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/online-status": {
+            "post": {
+                "summary": "更新指定用戶ID的在線狀態",
+                "responses": {}
+            }
+        }
+    },
+    "definitions": {
         "req.ExampleCreate": {
             "type": "object",
             "properties": {
@@ -307,6 +410,58 @@ const docTemplate = `{
                 }
             }
         },
+        "req.UsersCreate": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "phone_number",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string",
+                    "minLength": 6
+                }
+            }
+        },
+        "req.UsersGet": {
+            "type": "object"
+        },
+        "req.UsersGetList": {
+            "type": "object",
+            "properties": {
+                "index": {
+                    "description": "頁碼",
+                    "type": "integer"
+                },
+                "order": {
+                    "description": "排序",
+                    "type": "string",
+                    "example": "id asc"
+                },
+                "size": {
+                    "description": "筆數",
+                    "type": "integer"
+                }
+            }
+        },
+        "req.UsersUpdate": {
+            "type": "object"
+        },
         "resp.APIResponse-resp_ExampleGet": {
             "type": "object",
             "properties": {
@@ -335,6 +490,34 @@ const docTemplate = `{
                 }
             }
         },
+        "resp.APIResponse-resp_UsersGet": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/resp.UsersGet"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "resp.APIResponse-resp_UsersGetList": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/resp.UsersGetList"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "resp.APIResponse-string": {
             "type": "object",
             "properties": {
@@ -353,12 +536,15 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "description": {
+                    "description": "描述",
                     "type": "string"
                 },
                 "id": {
+                    "description": "數據ID",
                     "type": "string"
                 },
                 "name": {
+                    "description": "範例名",
                     "type": "string"
                 }
             }
@@ -373,7 +559,45 @@ const docTemplate = `{
                     }
                 },
                 "page": {
-                    "$ref": "#/definitions/models.PageResponse"
+                    "$ref": "#/definitions/resp.PageResponse"
+                }
+            }
+        },
+        "resp.PageResponse": {
+            "type": "object",
+            "properties": {
+                "index": {
+                    "description": "頁碼",
+                    "type": "integer"
+                },
+                "pages": {
+                    "description": "總頁數",
+                    "type": "integer"
+                },
+                "size": {
+                    "description": "筆數",
+                    "type": "integer"
+                },
+                "total": {
+                    "description": "總筆數",
+                    "type": "integer"
+                }
+            }
+        },
+        "resp.UsersGet": {
+            "type": "object"
+        },
+        "resp.UsersGetList": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/resp.UsersGet"
+                    }
+                },
+                "page": {
+                    "$ref": "#/definitions/resp.PageResponse"
                 }
             }
         }

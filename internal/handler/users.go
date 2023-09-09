@@ -13,8 +13,22 @@ type usersHandler struct {
 	in digIn
 }
 
+// Login
+// @Summary 用戶登錄並返回授權令牌
+// @Router /users/login [post]
+func (h usersHandler) Login(ctx *gin.Context) {
+	// TODO
+}
+
+// Logout
+// @Summary 用戶登出
+// @Router /users/logout [post]
+func (h usersHandler) Logout(ctx *gin.Context) {
+	// TODO
+}
+
 // Get
-// @Summary Get
+// @Summary 取得用戶訊息
 // @Tags users
 // @Param body body request.UsersGet true "param"
 // @Success 200 {object} response.APIResponse[response.UsersGet]
@@ -46,7 +60,7 @@ func (h usersHandler) Get(ctx *gin.Context) {
 }
 
 // GetList
-// @Summary GetList
+// @Summary 用戶清單
 // @Tags users
 // @Param body body request.UsersGetList true "param"
 // @Success 200 {object} response.APIResponse[response.UsersGetList]
@@ -71,13 +85,14 @@ func (h usersHandler) GetList(ctx *gin.Context) {
 }
 
 // Create
-// @Summary Create
+// @Summary 用戶註冊
 // @Tags users
 // @Param body body request.UsersCreate true "param"
 // @Success 200 {object} response.APIResponse[string]
-// @Router /users [post]
+// @Router /users/register [post]
 func (h usersHandler) Create(ctx *gin.Context) {
 	req := &request.UsersCreate{}
+
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		ctxs.SetError(ctx, err)
 		return
@@ -91,7 +106,7 @@ func (h usersHandler) Create(ctx *gin.Context) {
 }
 
 // Update
-// @Summary Update
+// @Summary 用戶訊息修改
 // @Tags users
 // @Param body body request.UsersUpdate true "param"
 // @Success 200 {object} response.APIResponse[string]
@@ -111,22 +126,16 @@ func (h usersHandler) Update(ctx *gin.Context) {
 	ctxs.SetSuccessResp(ctx)
 }
 
-// Delete
-// @Summary Delete
-// @Tags users
-// @Param body body request.UsersDelete true "param"
-// @Success 200 {object} response.APIResponse[string]
-// @Router /users [delete]
-func (h usersHandler) Delete(ctx *gin.Context) {
-	req := &request.UsersDelete{}
-	if err := ctx.ShouldBindJSON(req); err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	err := h.in.Service.UsersSrv.Delete(ctx, req)
-	if err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	ctxs.SetSuccessResp(ctx)
+// GetOnlineStatus
+// @Summary 獲取指定用戶ID的在線狀態
+// @Router /users/{id}/online-status [post]
+func (h usersHandler) GetOnlineStatus(ctx *gin.Context) {
+	// TODO
+}
+
+// UpdateOnlineStatus
+// @Summary 更新指定用戶ID的在線狀態
+// @Router /users/{id}/online-status [post]
+func (h usersHandler) UpdateOnlineStatus(ctx *gin.Context) {
+	// TODO
 }

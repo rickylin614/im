@@ -1,20 +1,5 @@
 basePath: /im
 definitions:
-  models.PageResponse:
-    properties:
-      index:
-        description: 頁碼
-        type: integer
-      pages:
-        description: 總頁數
-        type: integer
-      size:
-        description: 筆數
-        type: integer
-      total:
-        description: 總筆數
-        type: integer
-    type: object
   req.ExampleCreate:
     properties:
       description:
@@ -92,6 +77,43 @@ definitions:
     required:
     - id
     type: object
+  req.UsersCreate:
+    properties:
+      email:
+        type: string
+      nickname:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      phone_number:
+        type: string
+      username:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    - phone_number
+    - username
+    type: object
+  req.UsersGet:
+    type: object
+  req.UsersGetList:
+    properties:
+      index:
+        description: 頁碼
+        type: integer
+      order:
+        description: 排序
+        example: id asc
+        type: string
+      size:
+        description: 筆數
+        type: integer
+    type: object
+  req.UsersUpdate:
+    type: object
   resp.APIResponse-resp_ExampleGet:
     properties:
       code:
@@ -110,6 +132,24 @@ definitions:
       msg:
         type: string
     type: object
+  resp.APIResponse-resp_UsersGet:
+    properties:
+      code:
+        type: string
+      data:
+        $ref: '#/definitions/resp.UsersGet'
+      msg:
+        type: string
+    type: object
+  resp.APIResponse-resp_UsersGetList:
+    properties:
+      code:
+        type: string
+      data:
+        $ref: '#/definitions/resp.UsersGetList'
+      msg:
+        type: string
+    type: object
   resp.APIResponse-string:
     properties:
       code:
@@ -122,10 +162,13 @@ definitions:
   resp.ExampleGet:
     properties:
       description:
+        description: 描述
         type: string
       id:
+        description: 數據ID
         type: string
       name:
+        description: 範例名
         type: string
     type: object
   resp.ExampleGetList:
@@ -135,7 +178,33 @@ definitions:
           $ref: '#/definitions/resp.ExampleGet'
         type: array
       page:
-        $ref: '#/definitions/models.PageResponse'
+        $ref: '#/definitions/resp.PageResponse'
+    type: object
+  resp.PageResponse:
+    properties:
+      index:
+        description: 頁碼
+        type: integer
+      pages:
+        description: 總頁數
+        type: integer
+      size:
+        description: 筆數
+        type: integer
+      total:
+        description: 總筆數
+        type: integer
+    type: object
+  resp.UsersGet:
+    type: object
+  resp.UsersGetList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/resp.UsersGet'
+        type: array
+      page:
+        $ref: '#/definitions/resp.PageResponse'
     type: object
 externalDocs:
   description: OpenAPI
@@ -251,6 +320,85 @@ paths:
       summary: Health check
       tags:
       - public
+  /users:
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.UsersGetList'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_UsersGetList'
+      summary: 用戶清單
+      tags:
+      - users
+    put:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.UsersUpdate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: 用戶訊息修改
+      tags:
+      - users
+  /users/:id:
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.UsersGet'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_UsersGet'
+      summary: 取得用戶訊息
+      tags:
+      - users
+  /users/{id}/online-status:
+    post:
+      responses: {}
+      summary: 更新指定用戶ID的在線狀態
+  /users/login:
+    post:
+      responses: {}
+      summary: 用戶登錄並返回授權令牌
+  /users/logout:
+    post:
+      responses: {}
+      summary: 用戶登出
+  /users/register:
+    post:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.UsersCreate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: 用戶註冊
+      tags:
+      - users
 securityDefinitions:
   ApiKeyAuth:
     in: header

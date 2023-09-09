@@ -1,13 +1,18 @@
 
 -- 1. Users table
-CREATE TABLE users (
-    id VARCHAR(36) NOT NULL PRIMARY KEY,
-    username VARCHAR(255) NOT NULL UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+CREATE TABLE
+    `users` (
+        `id` varchar(64) NOT NULL,
+        `username` varchar(255) NOT NULL,
+        `email` varchar(255) NOT NULL,
+        `password_hash` varchar(255) NOT NULL,
+        `phone_number` varchar(255) DEFAULT NULL COMMENT '手機號碼',
+        `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `username` (`username`),
+        UNIQUE KEY `email` (`email`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci
 
 -- 2. User_profiles table
 CREATE TABLE user_profiles (
