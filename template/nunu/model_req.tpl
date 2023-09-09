@@ -1,11 +1,15 @@
 package req
 
-import "im/internal/models"
+import (
+	"{{ .ProjectName }}/internal/models"
+
+	"gorm.io/gorm"
+)
 
 type {{ .FileName }}Get struct{}
 
 type {{ .FileName }}GetList struct {
-	Page models.Page `json:"page,omitempty"`
+	models.Page `gorm:"-"`
 }
 
 func (list {{ .FileName }}GetList) Scope(db *gorm.DB) *gorm.DB {
@@ -13,8 +17,10 @@ func (list {{ .FileName }}GetList) Scope(db *gorm.DB) *gorm.DB {
 	return db
 }
 
-type {{ .FileName }}Post struct{}
+type {{ .FileName }}Create struct{}
 
-type {{ .FileName }}Put struct{}
+type {{ .FileName }}Update struct{}
 
-type {{ .FileName }}Delete struct{}
+type {{ .FileName }}Delete  struct {
+	ID string `json:"id"`
+}

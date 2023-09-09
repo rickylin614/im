@@ -11,6 +11,7 @@ import (
 func NewService(in digIn) *Service {
 	return &Service{in: in,
 		ExampleSrv: NewExampleService(in),
+		UsersSrv:   NewUsersService(in),
 	}
 }
 
@@ -18,6 +19,7 @@ type Service struct {
 	in digIn
 
 	ExampleSrv IExampleService
+	UsersSrv   IUsersService
 }
 
 // digIn repository require independence

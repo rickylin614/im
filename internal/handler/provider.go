@@ -14,6 +14,7 @@ func NewHandler(in digIn) *Handler {
 	return &Handler{in: in,
 		BaseHandler:    &baseHandler{in},
 		ExampleHandler: &exampleHandler{in},
+		UsersHandler:   &usersHandler{in: in},
 	}
 }
 
@@ -22,6 +23,7 @@ type Handler struct {
 
 	BaseHandler    *baseHandler
 	ExampleHandler *exampleHandler
+	UsersHandler   *usersHandler
 }
 
 type digIn struct {

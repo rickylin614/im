@@ -1,7 +1,5 @@
 package resp
 
-import "im/internal/models"
-
 type {{ .FileName }}Get struct{}
 
 type {{ .FileName }}GetList struct {

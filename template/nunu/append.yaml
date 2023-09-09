@@ -7,16 +7,16 @@ files:
     template: "\\n\\t\\t{{ .FileName }}Handler:  &{{ .FileNameTitleLower }}Handler{in: in},"
   - path: "internal/service/provider.go"
     regex: "type Service struct \\{.*?\\}"
-    template: "\\n\\t{{ .FileName }}Service  I{{ .FileName }}Service"
+    template: "\\n\\t{{ .FileName }}Srv  I{{ .FileName }}Service"
   - path: "internal/service/provider.go"
     regex: "func NewService\\(in digIn\\) .*?Service \\{.*?\\\t}"
-    template: "\\n\\t\\t{{ .FileName }}Service:  New{{ .FileName }}Service(in),"
+    template: "\\n\\t\\t{{ .FileName }}Srv:  New{{ .FileName }}Service(in),"
   - path: "internal/repository/provider.go"
     regex: "type Repository struct \\{.*?\\}"
     template: "\\n\\t{{ .FileName }}Repo  I{{ .FileName }}Repository"
   - path: "internal/repository/provider.go"
     regex: "func NewRepository\\(in digIn\\) .*?Repository \\{.*?\\\t}"
-    template: "\\n\\t\\t{{ .FileName }}Repo:  New{{ .FileName }}Repo(in),"
+    template: "\\n\\t\\t{{ .FileName }}Repo:  New{{ .FileName }}Repository(in),"
 
 
 

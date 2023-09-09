@@ -55,5 +55,5 @@ func (s {{ .FileNameTitleLower }}Service) Update(ctx context.Context, cond *req.
 
 func (s {{ .FileNameTitleLower }}Service) Delete(ctx context.Context, cond *req.{{ .FileName }}Delete) (err error) {
 	db := s.in.DB.Session(ctx)
-	return s.in.Repository.{{ .FileName }}Repo.Delete(db, cond.Id)
+	return s.in.Repository.{{ .FileName }}Repo.Delete(db, cond.ID)
 }
