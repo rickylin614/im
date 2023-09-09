@@ -1,192 +1,132 @@
 package handler
 
 import (
+	request "{{ .ProjectName }}/internal/models/req"
+	response "{{ .ProjectName }}/internal/models/resp"
+	"{{ .ProjectName }}/internal/util/ctxs"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
-
-	"{{ .ProjectName }}/service/internal/errs"
-	"{{ .ProjectName }}/service/internal/model/bo"
-	"{{ .ProjectName }}/service/internal/model/dto"
-	"{{ .ProjectName }}/service/internal/util/ctxs"
 )
 
 type {{ .FileNameTitleLower }}Handler struct {
 	in digIn
 }
 
-// @Summary Get{{ .FileName }}
-// @Description This endpoint receives and sends back an {{ .FileName }} struct
+// Get
+// @Summary Get
 // @Tags {{ .FileNameTitleLower }}
-// @ID get-{{ .FileNameTitleLower }}
-// @Accept  json
-// @Produce  json
-// @Param body body dto.Query{{ .FileName }}Cond true "request param"
-// @Success 200 {object} dto.StandardResponse[dto.{{ .FileName }}]
-// @Security ApiKeyAuth
+// @Param body body request.{{ .FileName }}Get true "param"
+// @Success 200 {object} response.APIResponse[response.{{ .FileName }}Get]
+// @Router /{{ .FileNameTitleLower }}/:id [get]
+func (h {{ .FileNameTitleLower }}Handler) Get(ctx *gin.Context) {
+	req := &request.{{ .FileName }}Get{}
+	if err := ctx.ShouldBindUri(req); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	if err := ctx.ShouldBindJSON(req); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	data, err := h.in.Service.{{ .FileName }}Srv.Get(ctx, req)
+	if err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	if data == nil {
+		ctxs.SetResp(ctx, data)
+	}
+	result := &response.{{ .FileName }}Get{}
+	if err := copier.Copy(result, data); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	ctxs.SetResp(ctx, result)
+}
+
+// GetList
+// @Summary GetList
+// @Tags {{ .FileNameTitleLower }}
+// @Param body body request.{{ .FileName }}GetList true "param"
+// @Success 200 {object} response.APIResponse[response.{{ .FileName }}GetList]
 // @Router /{{ .FileNameTitleLower }} [get]
-func (h *{{ .FileNameTitleLower }}Handler) Get{{ .FileName }}ByID(ctx *gin.Context) {
-	req := &dto.Query{{ .FileName }}Cond{}
+func (h {{ .FileNameTitleLower }}Handler) GetList(ctx *gin.Context) {
+	req := &request.{{ .FileName }}GetList{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
-		ctxs.SetError(ctx, errs.RequestParamParseFailed, err)
+		ctxs.SetError(ctx, err)
 		return
 	}
-
-	cond := &bo.Query{{ .FileName }}Cond{}
-	if err := copier.Copy(cond, req); err != nil {
-		ctxs.SetError(ctx, errs.CommonParseError, err)
-		return
-	}
-
-	{{ .FileNameTitleLower }}, err := h.in.Module.{{ .FileName }}Module.Get{{ .FileName }}ByID(ctx, cond)
+	data, err := h.in.Service.{{ .FileName }}Srv.GetList(ctx, req)
 	if err != nil {
-		ctxs.SetError(ctx, errs.CommonUnknownError, err)
+		ctxs.SetError(ctx, err)
 		return
 	}
-
-	result := &dto.{{ .FileName }}{}
-	if err := copier.Copy(result, {{ .FileNameTitleLower }}); err != nil {
-		ctxs.SetError(ctx, errs.CommonParseError, err)
+	result := &response.{{ .FileName }}GetList{}
+	if err := copier.Copy(result, data); err != nil {
+		ctxs.SetError(ctx, err)
 		return
 	}
-
 	ctxs.SetResp(ctx, result)
 }
 
-// @Summary Get{{ .FileName }}List
-// @Description This endpoint receives and sends back an {{ .FileName }} struct
+// Create
+// @Summary Create
 // @Tags {{ .FileNameTitleLower }}
-// @ID get-{{ .FileNameTitleLower }}-list
-// @Accept  json
-// @Produce  json
-// @Param body body dto.Query{{ .FileName }}Cond true "request param"
-// @Success 200 {object} dto.StandardResponse[[]dto.{{ .FileName }}]
-// @Security ApiKeyAuth
-// @Router /{{ .FileNameTitleLower }}/list [get]
-func (h *{{ .FileNameTitleLower }}Handler) Get{{ .FileName }}(ctx *gin.Context) {
-	req := &dto.Query{{ .FileName }}Cond{}
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctxs.SetError(ctx, errs.RequestParamParseFailed, nil)
-		return
-	}
-
-	cond := &bo.Query{{ .FileName }}Cond{}
-	if err := copier.Copy(cond, req); err != nil {
-		ctxs.SetError(ctx, errs.CommonParseError, nil)
-	}
-
-	{{ .FileNameTitleLower }}, boPager, err := h.in.Module.{{ .FileName }}Module.Get{{ .FileName }}(ctx, cond)
-	if err != nil {
-		ctxs.SetError(ctx, errs.CommonUnknownError, err)
-		return
-	}
-
-	{{ .FileNameTitleLower }}s := make([]*dto.{{ .FileName }}, 0)
-	if err := copier.Copy(&{{ .FileNameTitleLower }}s, {{ .FileNameTitleLower }}); err != nil {
-		ctxs.SetError(ctx, errs.CommonParseError, err)
-		return
-	}
-	page := &dto.PageResult{}
-	if err := copier.Copy(page, boPager); err != nil {
-		ctxs.SetError(ctx, errs.CommonParseError, err)
-		return
-	}
-	result := dto.{{ .FileName }}Response{
-		{{ .FileName }}: {{ .FileNameTitleLower }}s, 
-		Page: page,
-	}
-
-	ctxs.SetResp(ctx, result)
-}
-
-// @Summary Create{{ .FileName }}
-// @Description This endpoint receives and sends back an {{ .FileName }} struct
-// @Tags {{ .FileNameTitleLower }}
-// @ID create-{{ .FileNameTitleLower }}
-// @Accept  json
-// @Produce  json
-// @Param body body dto.Create{{ .FileName }}Cond true "request param"
-// @Success 200 {object} dto.StandardResponse[string]	"0"
-// @Security ApiKeyAuth
+// @Param body body request.{{ .FileName }}Create true "param"
+// @Success 200 {object} response.APIResponse[string]
 // @Router /{{ .FileNameTitleLower }} [post]
-func (h *{{ .FileNameTitleLower }}Handler) Create{{ .FileName }}(ctx *gin.Context) {
-	req := &dto.Create{{ .FileName }}Cond{}
+func (h {{ .FileNameTitleLower }}Handler) Create(ctx *gin.Context) {
+	req := &request.{{ .FileName }}Create{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
-		ctxs.SetError(ctx, errs.RequestParamParseFailed, nil)
+		ctxs.SetError(ctx, err)
 		return
 	}
-
-	cond := &bo.Create{{ .FileName }}Cond{}
-	if err := copier.Copy(cond, req); err != nil {
-		ctxs.SetError(ctx, errs.CommonParseError, nil)
-	}
-
-	_, err := h.in.Module.{{ .FileName }}Module.Create{{ .FileName }}(ctx, cond)
+	id, err := h.in.Service.{{ .FileName }}Srv.Create(ctx, req)
 	if err != nil {
-		ctxs.SetError(ctx, errs.CommonUnknownError, err)
+		ctxs.SetError(ctx, err)
 		return
 	}
-
-	ctxs.SetResp(ctx, nil)
+	ctxs.SetResp(ctx, id)
 }
 
-// @Summary Update{{ .FileName }}
-// @Description This endpoint receives and sends back an {{ .FileName }} struct
+// Update
+// @Summary Update
 // @Tags {{ .FileNameTitleLower }}
-// @ID update-{{ .FileNameTitleLower }}
-// @Accept  json
-// @Produce  json
-// @Param body body dto.Update{{ .FileName }}Cond true "request param"
-// @Success 200 {string} dto.StandardResponse[string] "0"
-// @Security ApiKeyAuth
+// @Param body body request.{{ .FileName }}Update true "param"
+// @Success 200 {object} response.APIResponse[string]
 // @Router /{{ .FileNameTitleLower }} [put]
-func (h *{{ .FileNameTitleLower }}Handler) Update{{ .FileName }}(ctx *gin.Context) {
-	req := &dto.Update{{ .FileName }}Cond{}
+func (h {{ .FileNameTitleLower }}Handler) Update(ctx *gin.Context) {
+	req := &request.{{ .FileName }}Update{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
-		ctxs.SetError(ctx, errs.RequestParamParseFailed, nil)
+		ctxs.SetError(ctx, err)
 		return
 	}
 
-	cond := &bo.Update{{ .FileName }}Cond{}
-	if err := copier.Copy(cond, req); err != nil {
-		ctxs.SetError(ctx, errs.CommonParseError, nil)
-	}
-
-	_, err := h.in.Module.{{ .FileName }}Module.Update{{ .FileName }}(ctx, cond)
+	err := h.in.Service.{{ .FileName }}Srv.Update(ctx, req)
 	if err != nil {
-		ctxs.SetError(ctx, errs.CommonUnknownError, err)
+		ctxs.SetError(ctx, err)
 		return
 	}
-
-	ctxs.SetResp(ctx, nil)
+	ctxs.SetSuccessResp(ctx)
 }
 
-// @Summary Delete{{ .FileName }}
-// @Description This endpoint receives and sends back an {{ .FileName }} struct
+// Delete
+// @Summary Delete
 // @Tags {{ .FileNameTitleLower }}
-// @ID delete-{{ .FileNameTitleLower }}
-// @Accept  json
-// @Produce  json
-// @Param body body dto.Delete{{ .FileName }}Cond true "request param"
-// @Success 200 {object} dto.StandardResponse[string] "0"
-// @Security ApiKeyAuth
+// @Param body body request.{{ .FileName }}Delete true "param"
+// @Success 200 {object} response.APIResponse[string]
 // @Router /{{ .FileNameTitleLower }} [delete]
-func (h *{{ .FileNameTitleLower }}Handler) Delete{{ .FileName }}(ctx *gin.Context) {
-	req := &dto.Delete{{ .FileName }}Cond{}
+func (h {{ .FileNameTitleLower }}Handler) Delete(ctx *gin.Context) {
+	req := &request.{{ .FileName }}Delete{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
-		ctxs.SetError(ctx, errs.RequestParamParseFailed, nil)
+		ctxs.SetError(ctx, err)
 		return
 	}
-
-	cond := &bo.Delete{{ .FileName }}Cond{}
-	if err := copier.Copy(cond, req); err != nil {
-		ctxs.SetError(ctx, errs.CommonParseError, nil)
-	}
-
-	err := h.in.Module.{{ .FileName }}Module.Delete{{ .FileName }}(ctx, cond)
+	err := h.in.Service.{{ .FileName }}Srv.Delete(ctx, req)
 	if err != nil {
-		ctxs.SetError(ctx, errs.CommonUnknownError, err)
+		ctxs.SetError(ctx, err)
 		return
 	}
-
-	ctxs.SetResp(ctx, nil)
+	ctxs.SetSuccessResp(ctx)
 }

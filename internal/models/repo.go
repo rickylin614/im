@@ -6,13 +6,13 @@ import (
 	"time"
 )
 
-type User struct {
-	ID           string    `gorm:"primaryKey"`
-	Username     string    `gorm:"unique;not null"`
-	Email        string    `gorm:"unique;not null"`
-	PasswordHash string    `gorm:"not null"`
-	CreatedAt    time.Time `gorm:"not null"`
-	UpdatedAt    time.Time `gorm:"not null"`
+type Users struct {
+	Id           string `gorm:"column:id"`
+	Username     string `gorm:"column:username"`
+	Email        string `gorm:"column:email"`
+	PasswordHash string `gorm:"column:password_hash"`
+	CreatedAt    int64  `gorm:"column:created_at"`
+	UpdatedAt    int64  `gorm:"column:updated_at"`
 }
 
 type UserProfile struct {
@@ -41,8 +41,8 @@ type FriendRequest struct {
 	RequestStatus string    `gorm:"not null"`
 	CreatedAt     time.Time `gorm:"not null"`
 	UpdatedAt     time.Time `gorm:"not null"`
-	Sender        User      `gorm:"foreignKey:SenderID"`
-	Receiver      User      `gorm:"foreignKey:ReceiverID"`
+	// Sender        User      `gorm:"foreignKey:SenderID"`
+	// Receiver      User      `gorm:"foreignKey:ReceiverID"`
 }
 
 type Group struct {
@@ -52,7 +52,7 @@ type Group struct {
 	GroupOwnerID uint      `gorm:"not null"`
 	CreatedAt    time.Time `gorm:"not null"`
 	UpdatedAt    time.Time `gorm:"not null"`
-	GroupOwner   User      `gorm:"foreignKey:GroupOwnerID"`
+	// GroupOwner   User      `gorm:"foreignKey:GroupOwnerID"`
 }
 
 type GroupMember struct {

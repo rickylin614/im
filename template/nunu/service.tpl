@@ -1,115 +1,59 @@
-package module
+package service
 
 import (
 	"context"
-
-	"{{ .ProjectName }}/service/internal/model/bo"
-	"{{ .ProjectName }}/service/internal/model/po"
+	"{{ .ProjectName }}/internal/models"
+	"{{ .ProjectName }}/internal/models/req"
+	"{{ .ProjectName }}/internal/util/uuid"
 
 	"github.com/jinzhu/copier"
 )
 
-type I{{ .FileName }}Module interface {
-	Get{{ .FileName }}ByID(ctx context.Context, cond *bo.Query{{ .FileName }}Cond) (*bo.{{ .FileName }}, error)
-	Get{{ .FileName }}(ctx context.Context, cond *bo.Query{{ .FileName }}Cond) ([]*bo.{{ .FileName }}, *bo.Page, error)
-	Create{{ .FileName }}(ctx context.Context, cond *bo.Create{{ .FileName }}Cond) (*bo.{{ .FileName }}, error)
-	Update{{ .FileName }}(ctx context.Context, cond *bo.Update{{ .FileName }}Cond) (*bo.{{ .FileName }}, error)
-	Delete{{ .FileName }}(ctx context.Context, cond *bo.Delete{{ .FileName }}Cond) error
+type I{{ .FileName }}Service interface {
+	Get(ctx context.Context, cond *req.{{ .FileName }}Get) (*models.{{ .FileName }}, error)
+	GetList(ctx context.Context, cond *req.{{ .FileName }}GetList) (*models.PageResult[*models.{{ .FileName }}], error)
+	Create(ctx context.Context, cond *req.{{ .FileName }}Create) (id any, err error)
+	Update(ctx context.Context, cond *req.{{ .FileName }}Update) (err error)
+	Delete(ctx context.Context, cond *req.{{ .FileName }}Delete) (err error)
 }
 
-func New{{ .FileName }}Module(in digIn) I{{ .FileName }}Module {
-	return &{{ .FileNameTitleLower }}Module{in: in}
+func New{{ .FileName }}Service(in digIn) I{{ .FileName }}Service {
+	return {{ .FileNameTitleLower }}Service{in: in}
 }
 
-type {{ .FileNameTitleLower }}Module struct {
+type {{ .FileNameTitleLower }}Service struct {
 	in digIn
 }
 
-func (m *{{ .FileNameTitleLower }}Module) Get{{ .FileName }}ByID(ctx context.Context, cond *bo.Query{{ .FileName }}Cond) (*bo.{{ .FileName }}, error) {
-	poCond := &po.Query{{ .FileName }}Cond{}
-	if err := copier.Copy(poCond, cond); err != nil {
-		return nil, err
-	}
-
-	poResult, err := m.in.Repository.{{ .FileName }}Repo.Get{{ .FileName }}ByID(ctx, poCond)
-	if err != nil {
-		return nil, err
-	}
-	result := &bo.{{ .FileName }}{}
-
-	if err := copier.Copy(result, poResult); err != nil {
-		return nil, err
-	}
-
-	return result, nil
+func (s {{ .FileNameTitleLower }}Service) Get(ctx context.Context, cond *req.{{ .FileName }}Get) (*models.{{ .FileName }}, error) {
+	db := s.in.DB.Session(ctx)
+	return s.in.Repository.{{ .FileName }}Repo.Get(db, cond)
 }
 
-func (m *{{ .FileNameTitleLower }}Module) Get{{ .FileName }}(ctx context.Context, cond *bo.Query{{ .FileName }}Cond) ([]*bo.{{ .FileName }}, *bo.Page, error) {
-	poCond := &po.Query{{ .FileName }}Cond{}
-	if err := copier.Copy(poCond, cond); err != nil {
-		return nil, nil, err
-	}
-
-	poResult, poPager, err := m.in.Repository.{{ .FileName }}Repo.Get{{ .FileName }}(ctx, poCond)
-	if err != nil {
-		return nil, nil, err
-	}
-	result := make([]*bo.{{ .FileName }}, len(poResult))
-	if err := copier.Copy(&result, poResult); err != nil {
-		return nil, nil, err
-	}
-	page := &bo.Page{}
-	if err := copier.Copy(page, poPager); err != nil {
-		return nil, nil, err
-	}
-
-	return result, page, nil
+func (s {{ .FileNameTitleLower }}Service) GetList(ctx context.Context, cond *req.{{ .FileName }}GetList) (*models.PageResult[*models.{{ .FileName }}], error) {
+	db := s.in.DB.Session(ctx)
+	return s.in.Repository.{{ .FileName }}Repo.GetList(db, cond)
 }
 
-func (m *{{ .FileNameTitleLower }}Module) Create{{ .FileName }}(ctx context.Context, cond *bo.Create{{ .FileName }}Cond) (*bo.{{ .FileName }}, error) {
-	{{ .FileNameTitleLower }} := &po.{{ .FileName }}{}
-	if err := copier.Copy({{ .FileNameTitleLower }}, cond); err != nil {
+func (s {{ .FileNameTitleLower }}Service) Create(ctx context.Context, cond *req.{{ .FileName }}Create) (id any, err error) {
+	db := s.in.DB.Session(ctx)
+	insertData := &models.{{ .FileName }}{ID: uuid.New()}
+	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}
-
-	err := m.in.Repository.{{ .FileName }}Repo.Create{{ .FileName }}(ctx, {{ .FileNameTitleLower }})
-	if err != nil {
-		return nil, err
-	}
-
-	result := &bo.{{ .FileName }}{}
-	if err := copier.Copy(result, {{ .FileNameTitleLower }}); err != nil {
-		return nil, err
-	}
-	return result, nil
+	return s.in.Repository.{{ .FileName }}Repo.Create(db, insertData)
 }
 
-func (m *{{ .FileNameTitleLower }}Module) Update{{ .FileName }}(ctx context.Context, cond *bo.Update{{ .FileName }}Cond) (*bo.{{ .FileName }}, error) {
-	{{ .FileNameTitleLower }} := &po.{{ .FileName }}{}
-	if err := copier.Copy({{ .FileNameTitleLower }}, cond); err != nil {
-		return nil, err
-	}
-
-	err := m.in.Repository.{{ .FileName }}Repo.Update{{ .FileName }}(ctx, {{ .FileNameTitleLower }})
-	if err != nil {
-		return nil, err
-	}
-
-	result := &bo.{{ .FileName }}{}
-	if err := copier.Copy(result, {{ .FileNameTitleLower }}); err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
-func (m *{{ .FileNameTitleLower }}Module) Delete{{ .FileName }}(ctx context.Context, cond *bo.Delete{{ .FileName }}Cond) error {
-	{{ .FileNameTitleLower }} := &po.{{ .FileName }}{}
-	if err := copier.Copy({{ .FileNameTitleLower }}, cond); err != nil {
+func (s {{ .FileNameTitleLower }}Service) Update(ctx context.Context, cond *req.{{ .FileName }}Update) (err error) {
+	db := s.in.DB.Session(ctx)
+	updateData := &models.{{ .FileName }}{}
+	if err := copier.Copy(updateData, cond); err != nil {
 		return err
 	}
-	err := m.in.Repository.{{ .FileName }}Repo.Delete{{ .FileName }}(ctx, {{ .FileNameTitleLower }})
-	if err != nil {
-		return err
-	}
-	return nil
+	return s.in.Repository.{{ .FileName }}Repo.Update(db, updateData)
+}
+
+func (s {{ .FileNameTitleLower }}Service) Delete(ctx context.Context, cond *req.{{ .FileName }}Delete) (err error) {
+	db := s.in.DB.Session(ctx)
+	return s.in.Repository.{{ .FileName }}Repo.Delete(db, cond.Id)
 }

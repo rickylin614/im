@@ -182,36 +182,15 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.Example": {
+        "models.PageResponse": {
             "type": "object",
             "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
+                "index": {
+                    "description": "頁碼",
                     "type": "integer"
                 },
-                "name": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.Page": {
-            "type": "object",
-            "properties": {
-                "order": {
-                    "description": "排序",
-                    "type": "string",
-                    "example": "id asc"
-                },
-                "pageIndex": {
-                    "description": "頁碼",
+                "pages": {
+                    "description": "總頁數",
                     "type": "integer"
                 },
                 "size": {
@@ -220,10 +199,6 @@ const docTemplate = `{
                 },
                 "total": {
                     "description": "總筆數",
-                    "type": "integer"
-                },
-                "totalPage": {
-                    "description": "總頁數",
                     "type": "integer"
                 }
             }
@@ -278,42 +253,42 @@ const docTemplate = `{
                     "description": "範例ID列表",
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     },
                     "example": [
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "6"
                     ]
+                },
+                "index": {
+                    "description": "頁碼",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "範例名",
+                    "type": "string",
+                    "example": "名字"
                 },
                 "order": {
                     "description": "排序",
                     "type": "string",
                     "example": "id asc"
                 },
-                "pageIndex": {
-                    "description": "頁碼",
-                    "type": "integer"
-                },
                 "size": {
                     "description": "筆數",
-                    "type": "integer"
-                },
-                "total": {
-                    "description": "總筆數",
-                    "type": "integer"
-                },
-                "totalPage": {
-                    "description": "總頁數",
                     "type": "integer"
                 }
             }
         },
         "req.ExampleUpdate": {
             "type": "object",
+            "required": [
+                "id"
+            ],
             "properties": {
                 "description": {
                     "description": "修改範例描述",
@@ -380,6 +355,9 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 }
@@ -391,11 +369,11 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Example"
+                        "$ref": "#/definitions/resp.ExampleGet"
                     }
                 },
                 "page": {
-                    "$ref": "#/definitions/models.Page"
+                    "$ref": "#/definitions/models.PageResponse"
                 }
             }
         }

@@ -3,7 +3,7 @@ package handler
 import (
 	request "im/internal/models/req"
 	response "im/internal/models/resp"
-	"im/internal/pkg/ctxs"
+	"im/internal/util/ctxs"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
@@ -111,6 +111,7 @@ func (h exampleHandler) Update(ctx *gin.Context) {
 	ctxs.SetSuccessResp(ctx)
 }
 
+// Delete
 // @Summary Delete
 // @Tags example
 // @Param body body request.ExampleDelete true "param"

@@ -1,35 +1,18 @@
 basePath: /im
 definitions:
-  models.Example:
+  models.PageResponse:
     properties:
-      createdAt:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      updatedAt:
-        type: string
-    type: object
-  models.Page:
-    properties:
-      order:
-        description: 排序
-        example: id asc
-        type: string
-      pageIndex:
+      index:
         description: 頁碼
+        type: integer
+      pages:
+        description: 總頁數
         type: integer
       size:
         description: 筆數
         type: integer
       total:
         description: 總筆數
-        type: integer
-      totalPage:
-        description: 總頁數
         type: integer
     type: object
   req.ExampleCreate:
@@ -66,30 +49,28 @@ definitions:
       id:
         description: 範例ID列表
         example:
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 6
+        - "1"
+        - "2"
+        - "3"
+        - "4"
+        - "5"
+        - "6"
         items:
-          type: integer
+          type: string
         type: array
+      index:
+        description: 頁碼
+        type: integer
+      name:
+        description: 範例名
+        example: 名字
+        type: string
       order:
         description: 排序
         example: id asc
         type: string
-      pageIndex:
-        description: 頁碼
-        type: integer
       size:
         description: 筆數
-        type: integer
-      total:
-        description: 總筆數
-        type: integer
-      totalPage:
-        description: 總頁數
         type: integer
     required:
     - id
@@ -108,6 +89,8 @@ definitions:
         description: 修改範例名
         example: 小明的孩子
         type: string
+    required:
+    - id
     type: object
   resp.APIResponse-resp_ExampleGet:
     properties:
@@ -140,6 +123,8 @@ definitions:
     properties:
       description:
         type: string
+      id:
+        type: string
       name:
         type: string
     type: object
@@ -147,10 +132,10 @@ definitions:
     properties:
       data:
         items:
-          $ref: '#/definitions/models.Example'
+          $ref: '#/definitions/resp.ExampleGet'
         type: array
       page:
-        $ref: '#/definitions/models.Page'
+        $ref: '#/definitions/models.PageResponse'
     type: object
 externalDocs:
   description: OpenAPI

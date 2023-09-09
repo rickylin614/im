@@ -2,7 +2,7 @@ package ctxs
 
 import (
 	"im/internal/models/resp"
-	"im/internal/pkg/errs"
+	"im/internal/util/errs"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

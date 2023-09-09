@@ -1,63 +1,67 @@
 package repository
 
 import (
-	"context"
+	"{{ .ProjectName }}/internal/models"
+	"{{ .ProjectName }}/internal/models/req"
 
-	"{{ .ProjectName }}/service/internal/model/po"
-	"{{ .ProjectName }}/service/internal/util/ctxs"
+	"gorm.io/gorm"
 )
 
 type I{{ .FileName }}Repository interface {
-	Get{{ .FileName }}ByID(ctx context.Context, cond *po.Query{{ .FileName }}Cond) (*po.{{ .FileName }}, error)
-	Get{{ .FileName }}(ctx context.Context, cond *po.Query{{ .FileName }}Cond) ([]*po.{{ .FileName }}, *po.Page, error)
-	Create{{ .FileName }}(ctx context.Context, cond *po.{{ .FileName }}) error
-	Update{{ .FileName }}(ctx context.Context, cond *po.{{ .FileName }}) error
-	Delete{{ .FileName }}(ctx context.Context, cond *po.{{ .FileName }}) error
+	Get(db *gorm.DB, cond *req.{{ .FileName }}Get) (*models.{{ .FileName }}, error)
+	GetList(db *gorm.DB, cond *req.{{ .FileName }}GetList) (*models.PageResult[*models.{{ .FileName }}], error)
+	Create(db *gorm.DB, data *models.{{ .FileName }}) (id any, err error)
+	Update(db *gorm.DB, data *models.{{ .FileName }}) (err error)
+	Delete(db *gorm.DB, id string) (err error)
+}
+
+func New{{ .FileName }}Repository(in digIn) I{{ .FileName }}Repository {
+	return {{ .FileNameTitleLower }}Repository{in: in}
 }
 
 type {{ .FileNameTitleLower }}Repository struct {
 	in digIn
 }
 
-func New{{ .FileName }}Repo(in digIn) I{{ .FileName }}Repository {
-	return &{{ .FileNameTitleLower }}Repository{
-		in: in,
-	}
-}
-
-func (m *{{ .FileNameTitleLower }}Repository) Get{{ .FileName }}ByID(ctx context.Context, cond *po.Query{{ .FileName }}Cond) (*po.{{ .FileName }}, error) {
-	{{ .FileNameTitleLower }} := &po.{{ .FileName }}{}
-	if err := m.in.GetDB(ctx).Where(cond).Find({{ .FileNameTitleLower }}, cond).Error; err != nil {
+func (h {{ .FileNameTitleLower }}Repository) Get(db *gorm.DB, cond *req.{{ .FileName }}Get) (*models.{{ .FileName }}, error) {
+	result := &models.{{ .FileName }}{}
+	if err := db.Find(result, cond).Error; err != nil {
 		return nil, err
 	}
-	return {{ .FileNameTitleLower }}, nil
+	return result, nil
 }
 
-func (m *{{ .FileNameTitleLower }}Repository) Get{{ .FileName }}(ctx context.Context, cond *po.Query{{ .FileName }}Cond) ([]*po.{{ .FileName }}, *po.Page, error) {
-	{{ .FileNameTitleLower }} := make([]*po.{{ .FileName }}, 0)
-	c := ctxs.SetValue(ctx, "pager", cond.GetPager())
-	if err := m.in.GetDB(c).Model(po.{{ .FileName }}{}).Find(&{{ .FileNameTitleLower }}, cond).Error; err != nil {
-		return nil, nil, err
+func (h {{ .FileNameTitleLower }}Repository) GetList(db *gorm.DB, cond *req.{{ .FileName }}GetList) (*models.PageResult[*models.{{ .FileName }}], error) {
+	result := &models.PageResult[*models.{{ .FileName }}]{
+		Page: cond.GetPager(),
+		Data: make([]*models.{{ .FileName }}, 0),
 	}
-	return {{ .FileNameTitleLower }}, cond.GetPager(), nil
+	db = db.Model(models.{{ .FileName }}{}).Scopes(cond.Scope)
+	if err := db.Count(&result.Total).Error; err != nil {
+		return nil, err
+	}
+	if err := db.Scopes(result.PagerCond()).Find(&result.Data).Error; err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
-func (m *{{ .FileNameTitleLower }}Repository) Create{{ .FileName }}(ctx context.Context, {{ .FileNameTitleLower }} *po.{{ .FileName }}) error {
-	if err := m.in.GetDB(ctx).Create({{ .FileNameTitleLower }}).Error; err != nil {
+func (h {{ .FileNameTitleLower }}Repository) Create(db *gorm.DB, data *models.{{ .FileName }}) (id any, err error) {
+	if err := db.Create(data).Error; err != nil {
+		return nil, err
+	}
+	return data.ID, nil
+}
+
+func (h {{ .FileNameTitleLower }}Repository) Update(db *gorm.DB, data *models.{{ .FileName }}) (err error) {
+	if err := db.Updates(data).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (m *{{ .FileNameTitleLower }}Repository) Update{{ .FileName }}(ctx context.Context, {{ .FileNameTitleLower }} *po.{{ .FileName }}) error {
-	if err := m.in.GetDB(ctx).Updates({{ .FileNameTitleLower }}).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m *{{ .FileNameTitleLower }}Repository) Delete{{ .FileName }}(ctx context.Context, {{ .FileNameTitleLower }} *po.{{ .FileName }}) error {
-	if err := m.in.GetDB(ctx).Delete(&po.{{ .FileName }}{}, {{ .FileNameTitleLower }}).Error; err != nil {
+func (h {{ .FileNameTitleLower }}Repository) Delete(db *gorm.DB, id string) (err error) {
+	if err := db.Model(models.{{ .FileName }}{}).Delete("where id = ?", id).Error; err != nil {
 		return err
 	}
 	return nil

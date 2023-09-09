@@ -5,11 +5,11 @@ import (
 )
 
 type Page struct {
-	PageIndex int    `gorm:"-"`                  // 頁碼
-	Size      int    `gorm:"-"`                  // 筆數
-	TotalPage int    `gorm:"-"`                  // 總頁數
-	Total     int64  `gorm:"-"`                  // 總筆數
-	Order     string `gorm:"-" example:"id asc"` // 排序
+	Index     int    `gorm:"-" json:"index"`                  // 頁碼
+	Size      int    `gorm:"-" json:"size"`                   // 筆數
+	TotalPage int    `gorm:"-" json:"-"`                      // 總頁數
+	Total     int64  `gorm:"-" json:"-"`                      // 總筆數
+	Order     string `gorm:"-" example:"id asc" json:"order"` // 排序
 }
 
 func (p *Page) GetPager() *Page {
@@ -22,8 +22,8 @@ type ITable interface {
 
 // PageResult 帶有Page的實體
 type PageResult[T ITable] struct {
-	*Page `gorm:"-"`
-	Data  []T
+	*Page `json:"page" gorm:"-"`
+	Data  []T `json:"data"  gorm:"-"`
 }
 
 func (p *PageResult[T]) getLimit() int {
@@ -31,7 +31,7 @@ func (p *PageResult[T]) getLimit() int {
 }
 
 func (p *PageResult[T]) getOffset() int {
-	return (p.PageIndex - 1) * p.Size
+	return (p.Index - 1) * p.Size
 }
 
 func (p *PageResult[T]) getOrder() string {
@@ -44,21 +44,14 @@ func (p *PageResult[T]) setTotalPage() {
 
 func (p *PageResult[T]) PagerCond() func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if p.PageIndex <= 0 {
-			p.PageIndex = 1
+		if p.Index <= 0 {
+			p.Index = 1
 		}
 		if p.Size <= 0 {
 			p.Size = 1
 		}
+		p.setTotalPage()
 
 		return db.Order(p.getOrder()).Offset(p.getOffset()).Limit(p.getLimit())
 	}
 }
-
-//result := &po.PageResult[*po.Member]{
-//	Page: cond.GetPager(),
-//	Data: make([]*po.Member, 0),
-//}
-//if err := m.in.GetDB(ctx).Model(result).Find(&result.Data, cond).Error; err != nil {
-//	return nil, nil, errs.UnknownError().Log(ctx, err)
-//}

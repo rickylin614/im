@@ -1,17 +1,12 @@
 package resp
 
-import "im/internal/models"
-
 type ExampleGet struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	Id          string `json:"id"`          // 數據ID
+	Name        string `json:"name"`        // 範例名
+	Description string `json:"description"` // 描述
 }
 
 type ExampleGetList struct {
-	Page models.Page      `json:"page,omitempty"`
-	Data []models.Example `json:"data"`
-}
-
-type ExamplePost struct {
-	Id uint `json:"id"`
+	Page PageResponse `json:"page,omitempty"`
+	Data []ExampleGet `json:"data"`
 }

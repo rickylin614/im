@@ -8,8 +8,8 @@ import (
 )
 
 // 查詢好友列表
-func GetFrindListRepo(db *gorm.DB, userId int) []models.User {
-	friends := make([]models.User, 0)
+func GetFrindListRepo(db *gorm.DB, userId int) []models.Users {
+	friends := make([]models.Users, 0)
 	subQuery1 := db.Table("friends").Select("UserID2").
 		Where("UserID1 = ? AND FriendshipStatus = ?", userId, consts.FriendshipStatusAccepted)
 	db.Table("users").Where("id IN (?)", subQuery1).Find(&friends)
