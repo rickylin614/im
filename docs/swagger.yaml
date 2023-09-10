@@ -77,6 +77,21 @@ definitions:
     required:
     - id
     type: object
+  req.LoginRecordCreate:
+    type: object
+  req.LoginRecordGetList:
+    properties:
+      index:
+        description: 頁碼
+        type: integer
+      order:
+        description: 排序
+        example: id asc
+        type: string
+      size:
+        description: 筆數
+        type: integer
+    type: object
   req.UsersCreate:
     properties:
       email:
@@ -98,6 +113,24 @@ definitions:
     - username
     type: object
   req.UsersGet:
+    properties:
+      email:
+        type: string
+      nickname:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      phone_number:
+        type: string
+      username:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    - phone_number
+    - username
     type: object
   req.UsersGetList:
     properties:
@@ -111,6 +144,20 @@ definitions:
       size:
         description: 筆數
         type: integer
+    type: object
+  req.UsersLogin:
+    properties:
+      password:
+        description: 密碼
+        minLength: 6
+        type: string
+      username:
+        description: 使用者名稱
+        minLength: 6
+        type: string
+    required:
+    - password
+    - username
     type: object
   req.UsersUpdate:
     type: object
@@ -132,6 +179,15 @@ definitions:
       msg:
         type: string
     type: object
+  resp.APIResponse-resp_LoginRecordGetList:
+    properties:
+      code:
+        type: string
+      data:
+        $ref: '#/definitions/resp.LoginRecordGetList'
+      msg:
+        type: string
+    type: object
   resp.APIResponse-resp_UsersGet:
     properties:
       code:
@@ -147,6 +203,15 @@ definitions:
         type: string
       data:
         $ref: '#/definitions/resp.UsersGetList'
+      msg:
+        type: string
+    type: object
+  resp.APIResponse-resp_UsersLogin:
+    properties:
+      code:
+        type: string
+      data:
+        $ref: '#/definitions/resp.UsersLogin'
       msg:
         type: string
     type: object
@@ -180,6 +245,17 @@ definitions:
       page:
         $ref: '#/definitions/resp.PageResponse'
     type: object
+  resp.LoginRecordGet:
+    type: object
+  resp.LoginRecordGetList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/resp.LoginRecordGet'
+        type: array
+      page:
+        $ref: '#/definitions/resp.PageResponse'
+    type: object
   resp.PageResponse:
     properties:
       index:
@@ -196,6 +272,22 @@ definitions:
         type: integer
     type: object
   resp.UsersGet:
+    properties:
+      email:
+        description: 電子郵件地址
+        type: string
+      nickname:
+        description: 用戶暱稱
+        type: string
+      password:
+        description: 密碼
+        type: string
+      phone_number:
+        description: 手機號碼
+        type: string
+      username:
+        description: 用戶名稱
+        type: string
     type: object
   resp.UsersGetList:
     properties:
@@ -205,6 +297,12 @@ definitions:
         type: array
       page:
         $ref: '#/definitions/resp.PageResponse'
+    type: object
+  resp.UsersLogin:
+    properties:
+      token:
+        description: 登入Token
+        type: string
     type: object
 externalDocs:
   description: OpenAPI
@@ -300,6 +398,39 @@ paths:
       summary: Get
       tags:
       - example
+  /loginRecord:
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.LoginRecordGetList'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_LoginRecordGetList'
+      summary: GetList
+      tags:
+      - loginRecord
+    post:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.LoginRecordCreate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: Create
+      tags:
+      - loginRecord
   /metrics:
     get:
       responses:
@@ -371,17 +502,43 @@ paths:
       tags:
       - users
   /users/{id}/online-status:
+    get:
+      responses: {}
+      summary: 獲取指定用戶ID的在線狀態
+      tags:
+      - users
     post:
       responses: {}
       summary: 更新指定用戶ID的在線狀態
+      tags:
+      - users
   /users/login:
     post:
-      responses: {}
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.UsersLogin'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_UsersLogin'
       summary: 用戶登錄並返回授權令牌
+      tags:
+      - users
   /users/logout:
     post:
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
       summary: 用戶登出
+      tags:
+      - users
   /users/register:
     post:
       parameters:

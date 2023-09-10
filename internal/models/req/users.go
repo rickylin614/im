@@ -7,8 +7,8 @@ import (
 )
 
 type UsersLogin struct {
-	Username string `json:"username" binding:"required,alphanum,min=6"`
-	Password string `json:"password" binding:"required,alphanum,min=6"`
+	Username string `json:"username" binding:"required,alphanum,min=6"` // 使用者名稱
+	Password string `json:"password" binding:"required,alphanum,min=6"` // 密碼
 }
 
 type UsersGet struct {

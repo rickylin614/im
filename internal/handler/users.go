@@ -4,6 +4,7 @@ import (
 	request "im/internal/models/req"
 	response "im/internal/models/resp"
 	"im/internal/util/ctxs"
+	"im/internal/util/errs"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
@@ -15,8 +16,9 @@ type usersHandler struct {
 
 // Login
 // @Summary 用戶登錄並返回授權令牌
+// @Tags users
 // @Param body body request.UsersLogin true "param"
-// @Success 200 {object} response.APIResponse[string]
+// @Success 200 {object} response.APIResponse[response.UsersLogin]
 // @Router /users/login [post]
 func (h usersHandler) Login(ctx *gin.Context) {
 	req := &request.UsersLogin{}
@@ -34,9 +36,16 @@ func (h usersHandler) Login(ctx *gin.Context) {
 
 // Logout
 // @Summary 用戶登出
+// @Tags users
+// @Success 200 {object} response.APIResponse[string]
 // @Router /users/logout [post]
 func (h usersHandler) Logout(ctx *gin.Context) {
-	// TODO
+	token := ctx.GetHeader("token")
+	if len(token) == 0 {
+		ctxs.SetError(ctx, errs.RequestTokenError)
+	}
+	h.in.Service.UsersSrv.Logout(ctx, token)
+	ctxs.SetSuccessResp(ctx)
 }
 
 // Get
@@ -140,13 +149,15 @@ func (h usersHandler) Update(ctx *gin.Context) {
 
 // GetOnlineStatus
 // @Summary 獲取指定用戶ID的在線狀態
-// @Router /users/{id}/online-status [post]
+// @Tags users
+// @Router /users/{id}/online-status [get]
 func (h usersHandler) GetOnlineStatus(ctx *gin.Context) {
 	// TODO
 }
 
 // UpdateOnlineStatus
 // @Summary 更新指定用戶ID的在線狀態
+// @Tags users
 // @Router /users/{id}/online-status [post]
 func (h usersHandler) UpdateOnlineStatus(ctx *gin.Context) {
 	// TODO

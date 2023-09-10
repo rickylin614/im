@@ -21,7 +21,7 @@ type IUsersService interface {
 	Update(ctx context.Context, cond *req.UsersUpdate) (err error)
 	Delete(ctx context.Context, cond *req.UsersDelete) (err error)
 	Login(ctx *gin.Context, cond *req.UsersLogin) (token string, err error)
-	LoginOut(ctx *gin.Context, token string) (err error)
+	Logout(ctx *gin.Context, token string) (err error)
 	GetByToken(ctx *gin.Context, token string) (user *models.Users, err error)
 }
 
@@ -112,7 +112,7 @@ func composeLoginRecord(ctx *gin.Context, user *models.Users, loginStatus consts
 	}
 }
 
-func (s usersService) LoginOut(ctx *gin.Context, token string) (err error) {
+func (s usersService) Logout(ctx *gin.Context, token string) (err error) {
 	return s.in.Repository.UsersRepo.DelToken(ctx, token)
 }
 

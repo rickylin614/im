@@ -148,6 +148,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/loginRecord": {
+            "get": {
+                "tags": [
+                    "loginRecord"
+                ],
+                "summary": "GetList",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.LoginRecordGetList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-resp_LoginRecordGetList"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "loginRecord"
+                ],
+                "summary": "Create",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.LoginRecordCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/metrics": {
             "get": {
                 "tags": [
@@ -261,14 +313,45 @@ const docTemplate = `{
         },
         "/users/login": {
             "post": {
+                "tags": [
+                    "users"
+                ],
                 "summary": "用戶登錄並返回授權令牌",
-                "responses": {}
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.UsersLogin"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-resp_UsersLogin"
+                        }
+                    }
+                }
             }
         },
         "/users/logout": {
             "post": {
+                "tags": [
+                    "users"
+                ],
                 "summary": "用戶登出",
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
             }
         },
         "/users/register": {
@@ -299,7 +382,17 @@ const docTemplate = `{
             }
         },
         "/users/{id}/online-status": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "獲取指定用戶ID的在線狀態",
+                "responses": {}
+            },
             "post": {
+                "tags": [
+                    "users"
+                ],
                 "summary": "更新指定用戶ID的在線狀態",
                 "responses": {}
             }
@@ -410,6 +503,27 @@ const docTemplate = `{
                 }
             }
         },
+        "req.LoginRecordCreate": {
+            "type": "object"
+        },
+        "req.LoginRecordGetList": {
+            "type": "object",
+            "properties": {
+                "index": {
+                    "description": "頁碼",
+                    "type": "integer"
+                },
+                "order": {
+                    "description": "排序",
+                    "type": "string",
+                    "example": "id asc"
+                },
+                "size": {
+                    "description": "筆數",
+                    "type": "integer"
+                }
+            }
+        },
         "req.UsersCreate": {
             "type": "object",
             "required": [
@@ -439,7 +553,32 @@ const docTemplate = `{
             }
         },
         "req.UsersGet": {
-            "type": "object"
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "phone_number",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string",
+                    "minLength": 6
+                }
+            }
         },
         "req.UsersGetList": {
             "type": "object",
@@ -456,6 +595,25 @@ const docTemplate = `{
                 "size": {
                     "description": "筆數",
                     "type": "integer"
+                }
+            }
+        },
+        "req.UsersLogin": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "description": "密碼",
+                    "type": "string",
+                    "minLength": 6
+                },
+                "username": {
+                    "description": "使用者名稱",
+                    "type": "string",
+                    "minLength": 6
                 }
             }
         },
@@ -490,6 +648,20 @@ const docTemplate = `{
                 }
             }
         },
+        "resp.APIResponse-resp_LoginRecordGetList": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/resp.LoginRecordGetList"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "resp.APIResponse-resp_UsersGet": {
             "type": "object",
             "properties": {
@@ -512,6 +684,20 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/resp.UsersGetList"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "resp.APIResponse-resp_UsersLogin": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/resp.UsersLogin"
                 },
                 "msg": {
                     "type": "string"
@@ -563,6 +749,23 @@ const docTemplate = `{
                 }
             }
         },
+        "resp.LoginRecordGet": {
+            "type": "object"
+        },
+        "resp.LoginRecordGetList": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/resp.LoginRecordGet"
+                    }
+                },
+                "page": {
+                    "$ref": "#/definitions/resp.PageResponse"
+                }
+            }
+        },
         "resp.PageResponse": {
             "type": "object",
             "properties": {
@@ -585,7 +788,29 @@ const docTemplate = `{
             }
         },
         "resp.UsersGet": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "email": {
+                    "description": "電子郵件地址",
+                    "type": "string"
+                },
+                "nickname": {
+                    "description": "用戶暱稱",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "密碼",
+                    "type": "string"
+                },
+                "phone_number": {
+                    "description": "手機號碼",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "用戶名稱",
+                    "type": "string"
+                }
+            }
         },
         "resp.UsersGetList": {
             "type": "object",
@@ -598,6 +823,15 @@ const docTemplate = `{
                 },
                 "page": {
                     "$ref": "#/definitions/resp.PageResponse"
+                }
+            }
+        },
+        "resp.UsersLogin": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "description": "登入Token",
+                    "type": "string"
                 }
             }
         }
