@@ -4,8 +4,7 @@ import "fmt"
 
 const defaultErr = "00-000"
 
-// group msg
-
+// error from server
 var (
 	commGroup                = Codes.Group("01")
 	CommonUnknownError       = commGroup.Add("001", "未知错误")
@@ -16,6 +15,7 @@ var (
 	CommonParseError         = commGroup.Add("006", "解析失败")
 )
 
+// error from client
 var (
 	requestGroup                  = Codes.Group("02")
 	RequestParamInvalid           = requestGroup.Add("001", "请求参数错误")
@@ -24,7 +24,14 @@ var (
 	RequestParseError             = requestGroup.Add("004", "解析失败")
 	RequestParseTimeZoneError     = requestGroup.Add("005", "时区解析错误")
 	RequestFrequentOperationError = requestGroup.Add("006", "频繁操作，请稍后再尝试")
-	RequestTokenError             = requestGroup.Add("007", "token驗證失敗")
+)
+
+// 驗證錯誤
+var (
+	validGroup        = Codes.Group("03")
+	RequestTokenError = validGroup.Add("001", "登入失效，請重新登入")
+	LoginCommonError  = validGroup.Add("002", "使用者名稱或密碼無效")
+	LoginLockedError  = validGroup.Add("002", "使用者已被封鎖，請聯繫管理員")
 )
 
 // ShowAllErrors 內部測試使用

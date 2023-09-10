@@ -29,7 +29,7 @@ type GroupError struct {
 	m     sync.Map
 }
 
-func (g *GroupError) Add(code, msg string) ErrorCode {
+func (g *GroupError) Add(code, msg string) *ErrorCode {
 	e := ErrorCode{
 		code:    g.Name + "-" + code,
 		message: msg,
@@ -38,7 +38,7 @@ func (g *GroupError) Add(code, msg string) ErrorCode {
 	if _, ok := g.m.LoadOrStore(code, e); ok {
 		panic(errors.New("group sub error code duplicate definition, code:" + code))
 	}
-	return e
+	return &e
 }
 
 func IntToStringThreeChar(i int) string {

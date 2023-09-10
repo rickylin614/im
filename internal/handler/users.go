@@ -15,9 +15,21 @@ type usersHandler struct {
 
 // Login
 // @Summary 用戶登錄並返回授權令牌
+// @Param body body request.UsersLogin true "param"
+// @Success 200 {object} response.APIResponse[string]
 // @Router /users/login [post]
 func (h usersHandler) Login(ctx *gin.Context) {
-	// TODO
+	req := &request.UsersLogin{}
+	if err := ctx.ShouldBindJSON(req); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	token, err := h.in.Service.UsersSrv.Login(ctx, req)
+	if err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	ctxs.SetResp(ctx, token)
 }
 
 // Logout
