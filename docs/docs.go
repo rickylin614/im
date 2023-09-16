@@ -233,31 +233,6 @@ const docTemplate = `{
             }
         },
         "/users": {
-            "get": {
-                "tags": [
-                    "users"
-                ],
-                "summary": "用戶清單",
-                "parameters": [
-                    {
-                        "description": "param",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.UsersGetList"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-resp_UsersGetList"
-                        }
-                    }
-                }
-            },
             "put": {
                 "tags": [
                     "users"
@@ -381,6 +356,33 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/search": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "用戶清單",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.UsersGetList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-resp_UsersGetList"
                         }
                     }
                 }
@@ -559,12 +561,6 @@ const docTemplate = `{
         },
         "req.UsersGet": {
             "type": "object",
-            "required": [
-                "email",
-                "password",
-                "phone_number",
-                "username"
-            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -573,15 +569,13 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
-                    "type": "string",
-                    "minLength": 6
+                    "type": "string"
                 },
                 "phone_number": {
                     "type": "string"
                 },
                 "username": {
-                    "type": "string",
-                    "minLength": 6
+                    "type": "string"
                 }
             }
         },
@@ -623,7 +617,31 @@ const docTemplate = `{
             }
         },
         "req.UsersUpdate": {
-            "type": "object"
+            "type": "object",
+            "required": [
+                "email",
+                "id",
+                "phone_number",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string",
+                    "minLength": 6
+                }
+            }
         },
         "resp.APIResponse-resp_ExampleGet": {
             "type": "object",
@@ -842,6 +860,10 @@ const docTemplate = `{
             "properties": {
                 "email": {
                     "description": "電子郵件地址",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "uid",
                     "type": "string"
                 },
                 "nickname": {

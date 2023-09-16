@@ -12,6 +12,7 @@ docs:
 
 .PHONY: rundocs
 rundocs:
+	swag init -g ./cmd/web/main.go
 	docker run --rm -it --env GOPATH=/go -v $(shell pwd):/go/src -p 8082:8082 -w /go/src quay.io/goswagger/swagger serve ./docs/swagger.yaml -p 8082 --no-open
 
 .PHONY: rundocs2

@@ -36,7 +36,13 @@ type UsersCreate struct {
 	PhoneNumber string `json:"phone_number" binding:"required,numeric,len=10"`
 }
 
-type UsersUpdate struct{}
+type UsersUpdate struct {
+	ID          string `json:"id" binding:"required,uuid"`
+	Username    string `json:"username" binding:"required,alphanum,min=6"`
+	Nickname    string `json:"nickname"`
+	Email       string `json:"email" binding:"required,email"`
+	PhoneNumber string `json:"phone_number" binding:"required,numeric,len=10"`
+}
 
 type UsersDelete struct {
 	ID string `json:"id"`

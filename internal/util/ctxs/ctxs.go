@@ -106,6 +106,32 @@ func ParseBindingErrMsg(err error) ([]string, bool) {
 			errorMessages = append(errorMessages, fmt.Sprintf("%s 只能包含数字字符", fieldErr.Field()))
 		case "len":
 			errorMessages = append(errorMessages, fmt.Sprintf("%s 必须为 %s 个字符", fieldErr.Field(), fieldErr.Param()))
+		case "eq":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 必须等于 %s", fieldErr.Field(), fieldErr.Param()))
+		case "eq_ignore_case":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 必须等于 %s（不区分大小写）", fieldErr.Field(), fieldErr.Param()))
+		case "gt":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 必须大于 %s", fieldErr.Field(), fieldErr.Param()))
+		case "gte":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 必须大于或等于 %s", fieldErr.Field(), fieldErr.Param()))
+		case "lt":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 必须小于 %s", fieldErr.Field(), fieldErr.Param()))
+		case "lte":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 必须小于或等于 %s", fieldErr.Field(), fieldErr.Param()))
+		case "ne":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 不能等于 %s", fieldErr.Field(), fieldErr.Param()))
+		case "ne_ignore_case":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 不能等于 %s（不区分大小写）", fieldErr.Field(), fieldErr.Param()))
+		case "filepath":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 不是有效的文件路径", fieldErr.Field()))
+		case "image":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 不是有效的图像", fieldErr.Field()))
+		case "timezone":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 不是有效的时区", fieldErr.Field()))
+		case "alphaunicode":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 只能包含 Unicode 字母", fieldErr.Field()))
+		case "uuid":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 不是有效的 UUID", fieldErr.Field()))
 		}
 	}
 

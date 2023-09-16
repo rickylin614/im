@@ -119,18 +119,11 @@ definitions:
       nickname:
         type: string
       password:
-        minLength: 6
         type: string
       phone_number:
         type: string
       username:
-        minLength: 6
         type: string
-    required:
-    - email
-    - password
-    - phone_number
-    - username
     type: object
   req.UsersGetList:
     properties:
@@ -160,6 +153,23 @@ definitions:
     - username
     type: object
   req.UsersUpdate:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      nickname:
+        type: string
+      phone_number:
+        type: string
+      username:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - id
+    - phone_number
+    - username
     type: object
   resp.APIResponse-resp_ExampleGet:
     properties:
@@ -302,6 +312,9 @@ definitions:
     properties:
       email:
         description: 電子郵件地址
+        type: string
+      id:
+        description: uid
         type: string
       nickname:
         description: 用戶暱稱
@@ -479,22 +492,6 @@ paths:
       tags:
       - public
   /users:
-    get:
-      parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.UsersGetList'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/resp.APIResponse-resp_UsersGetList'
-      summary: 用戶清單
-      tags:
-      - users
     put:
       parameters:
       - description: param
@@ -583,6 +580,23 @@ paths:
           schema:
             $ref: '#/definitions/resp.APIResponse-string'
       summary: 用戶註冊
+      tags:
+      - users
+  /users/search:
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.UsersGetList'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_UsersGetList'
+      summary: 用戶清單
       tags:
       - users
 schemes:
