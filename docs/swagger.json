@@ -1,4 +1,7 @@
 {
+    "schemes": [
+        "http"
+    ],
     "swagger": "2.0",
     "info": {
         "description": "This is a project im.",
@@ -9,7 +12,7 @@
         },
         "version": "1.0"
     },
-    "host": "127.0.0.1:9000",
+    "host": "localhost:9000",
     "basePath": "/im",
     "paths": {
         "/example": {
@@ -333,6 +336,11 @@
         },
         "/users/logout": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "tags": [
                     "users"
                 ],
@@ -617,12 +625,19 @@
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/resp.ExampleGet"
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.ExampleGet"
+                        }
+                    ]
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -631,12 +646,19 @@
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/resp.ExampleGetList"
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.ExampleGetList"
+                        }
+                    ]
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -645,12 +667,19 @@
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/resp.LoginRecordGetList"
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.LoginRecordGetList"
+                        }
+                    ]
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -659,12 +688,19 @@
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/resp.UsersGet"
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.UsersGet"
+                        }
+                    ]
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -673,12 +709,19 @@
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/resp.UsersGetList"
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.UsersGetList"
+                        }
+                    ]
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -687,12 +730,19 @@
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/resp.UsersLogin"
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.UsersLogin"
+                        }
+                    ]
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -701,12 +751,15 @@
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
+                    "description": "資料",
                     "type": "string"
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -832,7 +885,7 @@
     "securityDefinitions": {
         "ApiKeyAuth": {
             "type": "apiKey",
-            "name": "Authorization",
+            "name": "token",
             "in": "header"
         }
     },

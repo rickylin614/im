@@ -38,6 +38,7 @@ func (h usersHandler) Login(ctx *gin.Context) {
 // @Summary 用戶登出
 // @Tags users
 // @Success 200 {object} response.APIResponse[string]
+// @Security ApiKeyAuth
 // @Router /users/logout [post]
 func (h usersHandler) Logout(ctx *gin.Context) {
 	token := ctx.GetHeader("token")

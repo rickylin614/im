@@ -93,7 +93,10 @@ func (s usersService) Login(ctx *gin.Context, cond *req.UsersLogin) (token strin
 	// 產token並記錄
 	token = uuid.New()
 	loginRecord := composeLoginRecord(ctx, user, consts.LoginStateSuccess)
-	s.in.Repository.LoginRecordRepo.Create(db, loginRecord)
+	if _, err = s.in.Repository.LoginRecordRepo.Create(db, loginRecord); err != nil {
+		s.in.Logger.Error(ctx, fmt.Errorf("login record create err: %w", err))
+		return
+	}
 	if err = s.in.Repository.UsersRepo.SetToken(ctx, token, user); err != nil {
 		s.in.Logger.Error(ctx, fmt.Errorf("service set token err: %w", err))
 		return "", errs.CommonServiceUnavailable

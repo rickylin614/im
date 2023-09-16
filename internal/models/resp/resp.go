@@ -1,9 +1,9 @@
 package resp
 
 type APIResponse[T any] struct {
-	Code    string `json:"code"`
-	Message string `json:"msg"`
-	Data    T      `json:"data"`
+	Code    string `json:"code"` // 回傳代碼
+	Message string `json:"msg"`  // 訊息
+	Data    T      `json:"data"` // 資料
 }
 
 type PageResponse struct {

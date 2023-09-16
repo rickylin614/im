@@ -9,3 +9,7 @@ const (
 	LoginStateFailed                    // 登入失敗
 	LoginStateBlocked                   // 帳號被封鎖
 )
+
+const (
+	UserInfo = "userinfo"
+)

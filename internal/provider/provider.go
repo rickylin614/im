@@ -6,6 +6,7 @@ import (
 	"go.uber.org/dig"
 
 	"im/internal/handler"
+	"im/internal/middleware"
 	"im/internal/pkg/config"
 	"im/internal/pkg/logger"
 	"im/internal/pkg/mongo"
@@ -41,6 +42,9 @@ func New() *dig.Container {
 			panic(err)
 		}
 		if err := container.Provide(router.NewRouter); err != nil {
+			panic(err)
+		}
+		if err := container.Provide(middleware.NewMiddleware); err != nil {
 			panic(err)
 		}
 		if err := container.Provide(handler.NewHandler); err != nil {

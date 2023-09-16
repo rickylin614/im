@@ -31,7 +31,7 @@ var (
 	validGroup        = Codes.Group("03")
 	RequestTokenError = validGroup.Add("001", "登入失效，請重新登入")
 	LoginCommonError  = validGroup.Add("002", "使用者名稱或密碼無效")
-	LoginLockedError  = validGroup.Add("002", "使用者已被封鎖，請聯繫管理員")
+	LoginLockedError  = validGroup.Add("003", "使用者已被封鎖，請聯繫管理員")
 )
 
 // ShowAllErrors 內部測試使用

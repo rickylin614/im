@@ -104,19 +104,19 @@ CREATE TABLE `messages` (
     CHECK (`friend_id` IS NOT NULL OR `group_id` IS NOT NULL) -- 確保每條消息要麼是好友對話，要麼是群組對話
 );
 
-CREATE TABLE `login_record` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) DEFAULT '',
-  `user_id` varchar(64) NOT NULL,
-  `login_time` timestamp DEFAULT NOW(),
-  `user_agent` varchar(2000) DEFAULT '',
-  `ip` varchar(100) DEFAULT '',
-  `remote_ip` varchar(200) DEFAULT '',
-  `login_state` bigint,
-  PRIMARY KEY (id),
-  KEY idx_user_id (id)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-
+CREATE TABLE
+    `login_record` (
+        `id` bigint NOT NULL AUTO_INCREMENT,
+        `name` varchar(100) DEFAULT '',
+        `user_id` varchar(64) NOT NULL,
+        `user_agent` varchar(2000) DEFAULT '',
+        `ip` varchar(100) DEFAULT '',
+        `remote_ip` varchar(200) DEFAULT '',
+        `login_state` bigint DEFAULT NULL,
+        `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`),
+        KEY `idx_user_id` (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci
 
 -- other demo ddl
 CREATE TABLE example (

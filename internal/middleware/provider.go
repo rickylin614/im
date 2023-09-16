@@ -7,11 +7,12 @@ import (
 	"im/internal/service"
 )
 
-func NewHandler(in digIn) *Middleware {
-	return &Middleware{}
+func NewMiddleware(in digIn) *Middleware {
+	return &Middleware{Auth: authMiddleware{in: in}}
 }
 
 type Middleware struct {
+	Auth authMiddleware
 }
 
 type digIn struct {

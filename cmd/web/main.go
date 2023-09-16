@@ -12,12 +12,15 @@ import (
 
 // @contact.name   API Support
 
-// @host      127.0.0.1:9000
+// @host      localhost:9000
 // @BasePath  /im
 
+// 定義api登入條件
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
-// @name Authorization
+// @name token
+
+// @schemes http
 
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/

@@ -1,6 +1,8 @@
 package ctxs
 
 import (
+	"im/internal/consts"
+	"im/internal/models"
 	"im/internal/models/resp"
 	"im/internal/util/errs"
 	"net/http"
@@ -57,4 +59,14 @@ func SetSuccessResp(ctx *gin.Context) {
 		Data:    nil,
 	}
 	ctx.JSON(http.StatusOK, response)
+}
+
+func SetUserInfo(ctx *gin.Context, user *models.Users) {
+	ctx.Set(consts.UserInfo, user)
+}
+
+func GetUserInfo(ctx *gin.Context) (user *models.Users) {
+	data, _ := ctx.Get(consts.UserInfo)
+	user, _ = data.(*models.Users)
+	return
 }

@@ -92,7 +92,8 @@ func (r usersRepository) GetByToken(ctx context.Context, token string) (*models.
 
 func (r usersRepository) SetToken(ctx context.Context, token string, user *models.Users) error {
 	key := consts.LoginKey + token
-	return r.in.Rdb.Set(ctx, key, user, time.Hour*2).Err()
+	data, _ := json.Marshal(user)
+	return r.in.Rdb.Set(ctx, key, data, time.Hour*2).Err()
 }
 
 func (r usersRepository) DelToken(ctx context.Context, token string) error {

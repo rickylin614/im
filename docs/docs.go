@@ -340,6 +340,11 @@ const docTemplate = `{
         },
         "/users/logout": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "tags": [
                     "users"
                 ],
@@ -624,12 +629,19 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/resp.ExampleGet"
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.ExampleGet"
+                        }
+                    ]
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -638,12 +650,19 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/resp.ExampleGetList"
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.ExampleGetList"
+                        }
+                    ]
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -652,12 +671,19 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/resp.LoginRecordGetList"
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.LoginRecordGetList"
+                        }
+                    ]
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -666,12 +692,19 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/resp.UsersGet"
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.UsersGet"
+                        }
+                    ]
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -680,12 +713,19 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/resp.UsersGetList"
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.UsersGetList"
+                        }
+                    ]
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -694,12 +734,19 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/resp.UsersLogin"
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.UsersLogin"
+                        }
+                    ]
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -708,12 +755,15 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "回傳代碼",
                     "type": "string"
                 },
                 "data": {
+                    "description": "資料",
                     "type": "string"
                 },
                 "msg": {
+                    "description": "訊息",
                     "type": "string"
                 }
             }
@@ -839,7 +889,7 @@ const docTemplate = `{
     "securityDefinitions": {
         "ApiKeyAuth": {
             "type": "apiKey",
-            "name": "Authorization",
+            "name": "token",
             "in": "header"
         }
     },
@@ -852,9 +902,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "127.0.0.1:9000",
+	Host:             "localhost:9000",
 	BasePath:         "/im",
-	Schemes:          []string{},
+	Schemes:          []string{"http"},
 	Title:            "Im",
 	Description:      "This is a project im.",
 	InfoInstanceName: "swagger",

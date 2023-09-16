@@ -164,64 +164,91 @@ definitions:
   resp.APIResponse-resp_ExampleGet:
     properties:
       code:
+        description: 回傳代碼
         type: string
       data:
-        $ref: '#/definitions/resp.ExampleGet'
+        allOf:
+        - $ref: '#/definitions/resp.ExampleGet'
+        description: 資料
       msg:
+        description: 訊息
         type: string
     type: object
   resp.APIResponse-resp_ExampleGetList:
     properties:
       code:
+        description: 回傳代碼
         type: string
       data:
-        $ref: '#/definitions/resp.ExampleGetList'
+        allOf:
+        - $ref: '#/definitions/resp.ExampleGetList'
+        description: 資料
       msg:
+        description: 訊息
         type: string
     type: object
   resp.APIResponse-resp_LoginRecordGetList:
     properties:
       code:
+        description: 回傳代碼
         type: string
       data:
-        $ref: '#/definitions/resp.LoginRecordGetList'
+        allOf:
+        - $ref: '#/definitions/resp.LoginRecordGetList'
+        description: 資料
       msg:
+        description: 訊息
         type: string
     type: object
   resp.APIResponse-resp_UsersGet:
     properties:
       code:
+        description: 回傳代碼
         type: string
       data:
-        $ref: '#/definitions/resp.UsersGet'
+        allOf:
+        - $ref: '#/definitions/resp.UsersGet'
+        description: 資料
       msg:
+        description: 訊息
         type: string
     type: object
   resp.APIResponse-resp_UsersGetList:
     properties:
       code:
+        description: 回傳代碼
         type: string
       data:
-        $ref: '#/definitions/resp.UsersGetList'
+        allOf:
+        - $ref: '#/definitions/resp.UsersGetList'
+        description: 資料
       msg:
+        description: 訊息
         type: string
     type: object
   resp.APIResponse-resp_UsersLogin:
     properties:
       code:
+        description: 回傳代碼
         type: string
       data:
-        $ref: '#/definitions/resp.UsersLogin'
+        allOf:
+        - $ref: '#/definitions/resp.UsersLogin'
+        description: 資料
       msg:
+        description: 訊息
         type: string
     type: object
   resp.APIResponse-string:
     properties:
       code:
+        description: 回傳代碼
         type: string
       data:
+        description: 資料
         type: string
       msg:
+        description: 訊息
         type: string
     type: object
   resp.ExampleGet:
@@ -307,7 +334,7 @@ definitions:
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
-host: 127.0.0.1:9000
+host: localhost:9000
 info:
   contact:
     name: API Support
@@ -536,6 +563,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/resp.APIResponse-string'
+      security:
+      - ApiKeyAuth: []
       summary: 用戶登出
       tags:
       - users
@@ -556,9 +585,11 @@ paths:
       summary: 用戶註冊
       tags:
       - users
+schemes:
+- http
 securityDefinitions:
   ApiKeyAuth:
     in: header
-    name: Authorization
+    name: token
     type: apiKey
 swagger: "2.0"

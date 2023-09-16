@@ -23,7 +23,7 @@ type loginRecordRepository struct {
 	in digIn
 }
 
-func (h loginRecordRepository) Get(db *gorm.DB, cond *req.LoginRecordGet) (*models.LoginRecord, error) {
+func (r loginRecordRepository) Get(db *gorm.DB, cond *req.LoginRecordGet) (*models.LoginRecord, error) {
 	result := &models.LoginRecord{}
 	if err := db.Find(result, cond).Error; err != nil {
 		return nil, err
@@ -31,7 +31,7 @@ func (h loginRecordRepository) Get(db *gorm.DB, cond *req.LoginRecordGet) (*mode
 	return result, nil
 }
 
-func (h loginRecordRepository) GetList(db *gorm.DB, cond *req.LoginRecordGetList) (*models.PageResult[*models.LoginRecord], error) {
+func (r loginRecordRepository) GetList(db *gorm.DB, cond *req.LoginRecordGetList) (*models.PageResult[*models.LoginRecord], error) {
 	result := &models.PageResult[*models.LoginRecord]{
 		Page: cond.GetPager(),
 		Data: make([]*models.LoginRecord, 0),
@@ -46,21 +46,21 @@ func (h loginRecordRepository) GetList(db *gorm.DB, cond *req.LoginRecordGetList
 	return result, nil
 }
 
-func (h loginRecordRepository) Create(db *gorm.DB, data *models.LoginRecord) (id any, err error) {
+func (r loginRecordRepository) Create(db *gorm.DB, data *models.LoginRecord) (id any, err error) {
 	if err := db.Create(data).Error; err != nil {
 		return nil, err
 	}
 	return data.ID, nil
 }
 
-func (h loginRecordRepository) Update(db *gorm.DB, data *models.LoginRecord) (err error) {
+func (r loginRecordRepository) Update(db *gorm.DB, data *models.LoginRecord) (err error) {
 	if err := db.Updates(data).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (h loginRecordRepository) Delete(db *gorm.DB, id string) (err error) {
+func (r loginRecordRepository) Delete(db *gorm.DB, id string) (err error) {
 	if err := db.Model(models.LoginRecord{}).Delete("where id = ?", id).Error; err != nil {
 		return err
 	}

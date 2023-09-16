@@ -2,6 +2,7 @@ package router
 
 import (
 	"im/internal/handler"
+	"im/internal/middleware"
 	"im/internal/pkg/config"
 
 	"go.uber.org/dig"
@@ -24,4 +25,5 @@ type digIn struct {
 
 	Config  *config.Config
 	Handler *handler.Handler
+	Middle  *middleware.Middleware
 }
