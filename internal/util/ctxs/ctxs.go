@@ -1,6 +1,7 @@
 package ctxs
 
 import (
+	"fmt"
 	"im/internal/consts"
 	"im/internal/models"
 	"im/internal/models/resp"
@@ -8,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 type IMessage interface {
@@ -19,21 +21,11 @@ type IError interface {
 }
 
 func SetError(ctx *gin.Context, err error) {
-	msg := ""
-	code := ""
-	if v, ok := err.(IMessage); ok {
-		msg = v.GetMessage()
-	}
-	if v, ok := err.(IError); ok {
-		code = v.GetCode()
-	} else {
-		code = errs.CommonUnknownError.GetCode()
-		msg = errs.CommonUnknownError.GetMessage()
-	}
+	code, msg, data := ParseError(err)
 	response := resp.APIResponse[any]{
 		Code:    code,
 		Message: msg,
-		Data:    err.Error(),
+		Data:    data,
 	}
 	ctx.JSON(http.StatusOK, response)
 }
@@ -69,4 +61,53 @@ func GetUserInfo(ctx *gin.Context) (user *models.Users) {
 	data, _ := ctx.Get(consts.UserInfo)
 	user, _ = data.(*models.Users)
 	return
+}
+
+func ParseError(err error) (code string, msg string, data any) {
+	if data, ok := ParseBindingErrMsg(err); ok {
+		return errs.RequestParamInvalid.GetCode(), errs.RequestParamInvalid.GetMessage(), data
+	}
+
+	if v, ok := err.(IMessage); ok {
+		msg = v.GetMessage()
+	}
+	if v, ok := err.(IError); ok {
+		code = v.GetCode()
+	} else {
+		code = errs.CommonUnknownError.GetCode()
+		msg = errs.CommonUnknownError.GetMessage()
+	}
+
+	return code, msg, err.Error()
+}
+
+// ParseBindingErrMsg
+// 轉換binding錯誤
+func ParseBindingErrMsg(err error) ([]string, bool) {
+	ValidationErrors, ok := err.(validator.ValidationErrors)
+	if !ok {
+		return nil, false
+	}
+
+	var errorMessages []string
+	for _, fieldErr := range ValidationErrors {
+		switch fieldErr.Tag() {
+		case "required":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 是必填字段", fieldErr.Field()))
+		case "alphanum":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 只能包含字母和数字字符", fieldErr.Field()))
+		case "min":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 长度必须至少为 %s 个字符", fieldErr.Field(), fieldErr.Param()))
+		case "max":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 长度必须不可多余 %s 个字符", fieldErr.Field(), fieldErr.Param()))
+		case "email":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 不是有效的电子邮件地址", fieldErr.Field()))
+		case "numeric":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 只能包含数字字符", fieldErr.Field()))
+		case "len":
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 必须为 %s 个字符", fieldErr.Field(), fieldErr.Param()))
+		}
+	}
+
+	return errorMessages, true
 }

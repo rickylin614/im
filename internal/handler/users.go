@@ -86,7 +86,7 @@ func (h usersHandler) Get(ctx *gin.Context) {
 // @Tags users
 // @Param body body request.UsersGetList true "param"
 // @Success 200 {object} response.APIResponse[response.UsersGetList]
-// @Router /users [get]
+// @Router /users/search [get]
 func (h usersHandler) GetList(ctx *gin.Context) {
 	req := &request.UsersGetList{}
 	if err := ctx.ShouldBindJSON(req); err != nil {

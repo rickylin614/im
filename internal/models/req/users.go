@@ -12,11 +12,11 @@ type UsersLogin struct {
 }
 
 type UsersGet struct {
-	Username    string `json:"username" binding:"required,alphanum,min=6"`
+	Username    string `json:"username"`
 	Nickname    string `json:"nickname"`
-	Email       string `json:"email" binding:"required,email"`
-	Password    string `json:"password" binding:"required,alphanum,min=6"`
-	PhoneNumber string `json:"phone_number" binding:"required,numeric,len=10"`
+	Email       string `json:"email" `
+	Password    string `json:"password"`
+	PhoneNumber string `json:"phone_number"`
 }
 
 type UsersGetList struct {

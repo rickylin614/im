@@ -48,7 +48,7 @@ func (r WebRouter) setPublicRouter(router *gin.RouterGroup) {
 func (r WebRouter) setAuthRouter(router *gin.RouterGroup) {
 	// router.DELETE("/api/users/{id}", r.in.Handler.UsersHandler.Delete)                        // 刪除指定ID的用戶
 	router.POST("/users/logout", r.in.Handler.UsersHandler.Logout)                        // 用戶登出
-	router.GET("/users/{id}", r.in.Handler.UsersHandler.Get)                              // 獲取指定ID的用戶詳細信息
+	router.GET("/users/:id", r.in.Handler.UsersHandler.Get)                               // 獲取指定ID的用戶詳細信息
 	router.PUT("/users", r.in.Handler.UsersHandler.Update)                                // 更新指定ID的用戶信息
 	router.GET("/users/search", r.in.Handler.UsersHandler.GetList)                        // 根據查詢條件搜索用戶
 	router.GET("/users/{id}/online-status", r.in.Handler.UsersHandler.GetOnlineStatus)    // 獲取指定用戶ID的在線狀態
