@@ -46,7 +46,7 @@ func (r WebRouter) setPublicRouter(router *gin.RouterGroup) {
 
 // setAuthRouter 需要登入的API
 func (r WebRouter) setAuthRouter(router *gin.RouterGroup) {
-	// router.DELETE("/api/users/{id}", r.in.Handler.UsersHandler.Delete)                        // 刪除指定ID的用戶
+	// Users
 	router.POST("/users/logout", r.in.Handler.UsersHandler.Logout)                        // 用戶登出
 	router.GET("/users/:id", r.in.Handler.UsersHandler.Get)                               // 獲取指定ID的用戶詳細信息
 	router.PUT("/users", r.in.Handler.UsersHandler.Update)                                // 更新指定ID的用戶信息
@@ -54,4 +54,19 @@ func (r WebRouter) setAuthRouter(router *gin.RouterGroup) {
 	router.GET("/users/{id}/online-status", r.in.Handler.UsersHandler.GetOnlineStatus)    // 獲取指定用戶ID的在線狀態
 	router.PUT("/users/{id}/online-status", r.in.Handler.UsersHandler.UpdateOnlineStatus) // 更新指定用戶ID的在線狀態
 
+	// friend
+	router.GET("/friend", r.in.Handler.FriendHandler.GetFriends)                   // 獲取用戶的好友列表
+	router.POST("/friend", r.in.Handler.FriendHandler.SendFriendRequests)          // 向指定用戶發送好友請求
+	router.PUT("/friend", r.in.Handler.FriendHandler.UpdateFriendStatus)           // 更新與指定用戶的好友關係（接受/拒絕/阻止）
+	router.DELETE("/friend", r.in.Handler.FriendHandler.DeleteFriend)              // 刪除與指定用戶的好友關係
+	router.GET("/blocked-friend", r.in.Handler.FriendHandler.GetBlockedFriends)    // 獲取指定用戶ID的已封鎖好友列表
+	router.PUT("/blocked-friend", r.in.Handler.FriendHandler.BlockOrUnblockFriend) // 指定用戶ID封鎖或取消封鎖指定好友ID
+	router.GET("/mutual-friend", r.in.Handler.FriendHandler.GetMutualFriends)      // 獲取指定用戶ID與另一指定用戶ID的共同好友列表
+
+	// TODO nunu router @Router 部分改為-做為切割版本
+	// friend-requests
+	router.GET("/friend-requests", r.in.Handler.FriendRequestsHandler.GetList)   // 獲取指定用戶ID收到的好友請求列表
+	router.POST("/friend-requests", r.in.Handler.FriendRequestsHandler.Create)   // 向指定用戶ID發送好友請求
+	router.PUT("/friend-requests", r.in.Handler.FriendRequestsHandler.Update)    // 指定用戶ID接受或拒絕來自requester-id的好友請求
+	router.DELETE("/friend-requests", r.in.Handler.FriendRequestsHandler.Delete) // 指定用戶ID刪除來自requester-id的好友請求
 }

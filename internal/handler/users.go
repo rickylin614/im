@@ -159,7 +159,7 @@ func (h usersHandler) GetOnlineStatus(ctx *gin.Context) {
 // UpdateOnlineStatus
 // @Summary 更新指定用戶ID的在線狀態
 // @Tags users
-// @Router /users/{id}/online-status [post]
+// @Router /users/{id}/online-status [put]
 func (h usersHandler) UpdateOnlineStatus(ctx *gin.Context) {
 	// TODO
 }

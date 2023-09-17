@@ -28,7 +28,7 @@ package models
 // 	UpdatedAt        time.Time               `gorm:"not null"`
 // }
 
-// type FriendRequest struct {
+// type FriendRequests struct {
 // 	ID            uint      `gorm:"primaryKey"`
 // 	SenderID      uint      `gorm:"not null"`
 // 	ReceiverID    uint      `gorm:"not null"`

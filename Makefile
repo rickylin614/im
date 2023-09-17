@@ -3,7 +3,7 @@ default:
 	echo 'please choose command'
 
 .PHONY: swag
-docs:
+swag:
 	go install github.com/swaggo/swag/cmd/swag@v1.16.1
 
 .PHONY: docs
@@ -19,4 +19,9 @@ rundocs:
 rundocs2:
 	docker run --rm -it --env GOPATH=/go -v C:/code/golang/im:/go/src -p 8082:8082 -w /go/src quay.io/goswagger/swagger serve ./docs/swagger.yaml -p 8082 --no-open
 
-	
+model?=""
+.PHONY: nunu
+nunu:
+	nunu create all ${model}
+	nunu append ${model}
+

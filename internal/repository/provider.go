@@ -10,18 +10,22 @@ import (
 
 func NewRepository(in digIn) *Repository {
 	return &Repository{in: in,
-		ExampleRepo:     NewExampleRepository(in),
-		UsersRepo:       NewUsersRepository(in),
-		LoginRecordRepo: NewLoginRecordRepository(in),
+		ExampleRepo:        NewExampleRepository(in),
+		UsersRepo:          NewUsersRepository(in),
+		LoginRecordRepo:    NewLoginRecordRepository(in),
+		FriendRepo:         NewFriendRepository(in),
+		FriendRequestsRepo: NewFriendRequestsRepository(in),
 	}
 }
 
 type Repository struct {
 	in digIn
 
-	ExampleRepo     IExampleRepository
-	UsersRepo       IUsersRepository
-	LoginRecordRepo ILoginRecordRepository
+	ExampleRepo        IExampleRepository
+	UsersRepo          IUsersRepository
+	LoginRecordRepo    ILoginRecordRepository
+	FriendRepo         IFriendRepository
+	FriendRequestsRepo IFriendRequestsRepository
 }
 
 // digIn repository require indendency

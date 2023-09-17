@@ -10,18 +10,22 @@ import (
 
 func NewService(in digIn) *Service {
 	return &Service{in: in,
-		ExampleSrv:     NewExampleService(in),
-		UsersSrv:       NewUsersService(in),
-		LoginRecordSrv: NewLoginRecordService(in),
+		ExampleSrv:       NewExampleService(in),
+		UsersSrv:         NewUsersService(in),
+		LoginRecordSrv:   NewLoginRecordService(in),
+		FriendSrv:        NewFriendService(in),
+		FriendRequestsrv: NewFriendRequestservice(in),
 	}
 }
 
 type Service struct {
 	in digIn
 
-	ExampleSrv     IExampleService
-	UsersSrv       IUsersService
-	LoginRecordSrv ILoginRecordService
+	ExampleSrv       IExampleService
+	UsersSrv         IUsersService
+	LoginRecordSrv   ILoginRecordService
+	FriendSrv        IFriendService
+	FriendRequestsrv IFriendRequestservice
 }
 
 // digIn repository require independence

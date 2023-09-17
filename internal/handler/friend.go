@@ -1,0 +1,160 @@
+package handler
+
+import (
+	request "im/internal/models/req"
+	response "im/internal/models/resp"
+	"im/internal/util/ctxs"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
+)
+
+type friendHandler struct {
+	in digIn
+}
+
+// GetFriends
+// @Summary 獲取用戶的好友列表
+// @Tags friend
+// @Param body body request.FriendGetList true "param"
+// @Success 200 {object} response.APIResponse[response.FriendGetList]
+// @Router /friend [get]
+func (h friendHandler) GetFriends(ctx *gin.Context) {
+	req := &request.FriendGetList{}
+	if err := ctx.ShouldBindJSON(req); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	data, err := h.in.Service.FriendSrv.GetList(ctx, req)
+	if err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	result := &response.FriendGetList{}
+	if err := copier.Copy(result, data); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	ctxs.SetResp(ctx, result)
+}
+
+// SendFriendRequests
+// @Summary 向指定用戶發送好友請求
+// @Tags friend
+// @Param body body request.FriendCreate true "param"
+// @Success 200 {object} response.APIResponse[string]
+// @Router /friend [post]
+func (h friendHandler) SendFriendRequests(ctx *gin.Context) {
+	req := &request.FriendCreate{}
+	if err := ctx.ShouldBindJSON(req); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	id, err := h.in.Service.FriendSrv.Create(ctx, req)
+	if err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	ctxs.SetResp(ctx, id)
+}
+
+// UpdateFriendStatus
+// @Summary 更新與指定用戶的好友關係（接受/拒絕/阻止）
+// @Tags friend
+// @Param body body request.FriendUpdate true "param"
+// @Success 200 {object} response.APIResponse[string]
+// @Router /friend [put]
+func (h friendHandler) UpdateFriendStatus(ctx *gin.Context) {
+	req := &request.FriendUpdate{}
+	if err := ctx.ShouldBindJSON(req); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+
+	err := h.in.Service.FriendSrv.Update(ctx, req)
+	if err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	ctxs.SetSuccessResp(ctx)
+}
+
+// DeleteFriend
+// @Summary 刪除與指定用戶的好友關係
+// @Tags friend
+// @Param body body request.FriendDelete true "param"
+// @Success 200 {object} response.APIResponse[string]
+// @Router /friend [delete]
+func (h friendHandler) DeleteFriend(ctx *gin.Context) {
+	req := &request.FriendDelete{}
+	if err := ctx.ShouldBindJSON(req); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	err := h.in.Service.FriendSrv.Delete(ctx, req)
+	if err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	ctxs.SetSuccessResp(ctx)
+}
+
+// GetBlockedFriends
+// @Summary 獲取指定用戶ID的已封鎖好友列表
+// @Tags friend
+// @Param body body request.FriendDelete true "param"
+// @Success 200 {object} response.APIResponse[string]
+// @Router /blocked-friend [get]
+func (h friendHandler) GetBlockedFriends(ctx *gin.Context) {
+	req := &request.FriendDelete{}
+	if err := ctx.ShouldBindJSON(req); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	err := h.in.Service.FriendSrv.Delete(ctx, req)
+	if err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	ctxs.SetSuccessResp(ctx)
+}
+
+// BlockOrUnblockFriend
+// @Summary 指定用戶ID封鎖或取消封鎖指定好友ID
+// @Tags friend
+// @Param body body request.FriendDelete true "param"
+// @Success 200 {object} response.APIResponse[string]
+// @Router /blocked-friend [put]
+func (h friendHandler) BlockOrUnblockFriend(ctx *gin.Context) {
+	req := &request.FriendDelete{}
+	if err := ctx.ShouldBindJSON(req); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	err := h.in.Service.FriendSrv.Delete(ctx, req)
+	if err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	ctxs.SetSuccessResp(ctx)
+}
+
+// GetMutualFriends
+// @Summary 獲取指定用戶ID與另一指定用戶ID的共同好友列表
+// @Tags friend
+// @Param body body request.FriendDelete true "param"
+// @Success 200 {object} response.APIResponse[string]
+// @Router /mutual-friend [get]
+func (h friendHandler) GetMutualFriends(ctx *gin.Context) {
+	req := &request.FriendDelete{}
+	if err := ctx.ShouldBindJSON(req); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	err := h.in.Service.FriendSrv.Delete(ctx, req)
+	if err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	ctxs.SetSuccessResp(ctx)
+}

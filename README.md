@@ -17,17 +17,17 @@ instant message project
 
 ### Friends
 
-1. `GET` `/api/users/{id}/friends`: 獲取用戶的好友列表。
-1. `POST` `/api/users/{id}/friends/{friend-id}`: 向指定用戶發送好友請求。
-1. `PUT` `/api/users/{id}/friends/{friend-id}`: 更新與指定用戶的好友關係（接受/拒絕/阻止）。
-1. `DELETE` `/api/users/{id}/friends/{friend-id}`: 刪除與指定用戶的好友關係。
-1. `GET` `/api/users/{id}/friend-requests`：獲取指定用戶ID收到的好友請求列表。
-1. `POST` `/api/users/{id}/friend-requests/{requester-id}`：讓指定的requester-id向指定用戶ID發送好友請求。
-1. `PUT` `/api/users/{id}/friend-requests/{requester-id}`：指定用戶ID接受或拒絕來自requester-id的好友請求。
-1. `DELETE` `/api/users/{id}/friend-requests/{requester-id}`：指定用戶ID刪除來自requester-id的好友請求。
-1. `GET` `/api/users/{id}/blocked-friends`：獲取指定用戶ID的已封鎖好友列表。
-1. `PUT` `/api/users/{id}/blocked-friends/{friend-id}`：指定用戶ID封鎖或取消封鎖指定好友ID。
-1. `GET` `/api/users/{id}/mutual-friends/{other-user-id}`：獲取指定用戶ID與另一指定用戶ID的共同好友列表。
+1. `GET` `/api/users/friends`: 獲取用戶的好友列表。
+1. `POST` `/api/users/friends`: 向指定用戶發送好友請求。
+1. `PUT` `/api/users/friends`: 更新與指定用戶的好友關係（接受/拒絕/阻止）。
+1. `DELETE` `/api/users/friends`: 刪除與指定用戶的好友關係。
+1. `GET` `/api/users/friend-requests`：獲取指定用戶ID收到的好友請求列表。
+1. `POST` `/api/users/friend-requests`：讓指定的requester-id向指定用戶ID發送好友請求。
+1. `PUT` `/api/users/friend-requests`：指定用戶ID接受或拒絕來自requester-id的好友請求。
+1. `DELETE` `/api/users/friend-requests`：指定用戶ID刪除來自requester-id的好友請求。
+1. `GET` `/api/users/blocked-friends`：獲取指定用戶ID的已封鎖好友列表。
+1. `PUT` `/api/users/blocked-friends`：指定用戶ID封鎖或取消封鎖指定好友ID。
+1. `GET` `/api/users/mutual-friends`：獲取指定用戶ID與另一指定用戶ID的共同好友列表。
 
 ### Group
 1. `GET` `/api/users/{id}/groups`: 獲取用戶所屬的群組列表。
