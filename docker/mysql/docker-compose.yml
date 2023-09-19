@@ -1,0 +1,31 @@
+version: '3'
+services:
+  golang-mysql:
+    image: mysql:8
+    container_name: golang-mysql
+    command: 
+      - --federated
+      - --event_scheduler=on
+      - --authentication_policy=mysql_native_password
+      - --lower_case_table_names=1
+      - --skip-log-bin # Added option to disable binlog
+    volumes:
+      # - ${DATABASE_MYSQL_INIT_PATH}:/docker-entrypoint-initdb.d
+      - ${DATABASE_MYSQL_STORE_PATH}:/var/lib/mysql
+      # - ${DATABASE_MYSQL_INIT_SQL_PATH}:/init-sql # 如果有init sql 放這裡      
+    ports:
+      - "3306:3306"
+    tty: false # docker run -t
+    restart: always        
+    environment:
+      TZ: ${TIME_ZONE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+#     networks:
+#       demo:
+#         ipv4_address: ${IPV4_MYSQL}
+# networks:
+#   demo:
+#    driver: bridge
+  # proxy_main:
+    # external: true
+    # name: gl_net
