@@ -18,6 +18,8 @@ config:
     debug_mode: true
     swagger_mode: true
   redis_config:
+    address: "localhost:6379"
+    Password: ""
     max_idle: 10
     max_active: 1000
     idle_timeout: 30
