@@ -6,7 +6,7 @@ import (
 )
 
 type FriendRequests struct {
-	ID            string                 `gorm:"column:id"`
+	ID            string                 `gorm:"primarykey;column:id"`
 	SenderID      string                 `gorm:"column:sender_id"`
 	ReceiverID    string                 `gorm:"column:receiver_id"`
 	RequestStatus consts.FriendReqStatus `gorm:"column:request_status"`

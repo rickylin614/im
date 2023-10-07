@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Friend struct {
-	ID        string    `gorm:"id"`
+	ID        string    `gorm:"primarykey;id"`
 	PUserID   string    `gorm:"p_user_id"`
 	FUserID   string    `gorm:"f_user_id"`
 	Status    string    `gorm:"status"`

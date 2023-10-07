@@ -31,8 +31,10 @@ type FriendRequestsCreate struct {
 	UserName string `json:"user_name" binding:"required" example:"user"` // 對象用戶username
 }
 
-type FriendRequestsUpdate struct{}
+type FriendRequestsUpdate struct {
+	ID string `json:"id"` // 請求單ID
+}
 
 type FriendRequestsDelete struct {
-	ID string `json:"id"`
+	ID string `json:"id"` // 請求單ID
 }
