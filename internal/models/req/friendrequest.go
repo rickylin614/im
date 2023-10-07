@@ -28,7 +28,7 @@ func (list FriendRequestsGetList) Scope(db *gorm.DB) *gorm.DB {
 }
 
 type FriendRequestsCreate struct {
-	UserName string // 對象用戶username
+	UserName string `json:"user_name" binding:"required" example:"user"` // 對象用戶username
 }
 
 type FriendRequestsUpdate struct{}
