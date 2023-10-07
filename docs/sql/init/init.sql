@@ -29,8 +29,10 @@ CREATE TABLE `user_profiles` (
 -- 3. Friends table
 CREATE TABLE `friends` (
     `id` VARCHAR(36)  PRIMARY KEY,
-    `p_user_id` VARCHAR(36) NOT NULL,   -- 主要用戶ID
-    `f_user_id` VARCHAR(36) NOT NULL,    -- 好友ID
+    `p_user_id` VARCHAR(36) NOT NULL,        -- 主要用戶ID
+    `p_user_name` varchar(255) DEFAULT NULL, -- 用戶名
+    `f_user_id` VARCHAR(36) NOT NULL,        -- 好友ID
+    `f_user_name` varchar(255) DEFAULT NULL, -- 好友名
     `status` ENUM('active', 'blocked') NOT NULL COMMENT '友情狀態: active=正常, blocked=封鎖',
     `mute` BOOLEAN DEFAULT FALSE COMMENT '靜音狀態: TRUE=已靜音, FALSE=未靜音',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -38,11 +40,14 @@ CREATE TABLE `friends` (
     UNIQUE KEY (`p_user_id`, `f_user_id`)
 );
 
+DROP TABLE friend_requests;
 -- 4. Friend_requests table
 CREATE TABLE `friend_requests` (
     `id` VARCHAR(36)  PRIMARY KEY,
     `sender_id` VARCHAR(36) NOT NULL,
+    `sender_name` varchar(255) DEFAULT NULL,
     `receiver_id` VARCHAR(36) NOT NULL,
+    `receiver_name` varchar(255) DEFAULT NULL,
     `request_status` ENUM('pending', 'accepted', 'rejected', 'canceled') NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

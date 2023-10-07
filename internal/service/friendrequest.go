@@ -92,7 +92,9 @@ func (s FriendRequestservice) Create(ctx *gin.Context, cond *req.FriendRequestsC
 	insertData := &models.FriendRequests{
 		ID:            uuid.New(),
 		SenderID:      loginID,
+		SenderName:    ctxs.GetUserInfo(ctx).Username,
 		ReceiverID:    u.ID,
+		ReceiverName:  u.Username,
 		RequestStatus: consts.FriendReqStatusPending,
 	}
 	if err := copier.Copy(insertData, cond); err != nil {
