@@ -1,9 +1,10 @@
 package logger
 
 import (
+	"time"
+
 	"im/internal/consts"
 	"im/internal/pkg/config"
-	"time"
 
 	"go.uber.org/dig"
 	"go.uber.org/zap"
@@ -46,7 +47,7 @@ func newLogger(level zapcore.Level, serviceName string, env string) *Logger {
 	}
 	outputPaths := []string{"stdout"}
 	errorOutputPaths := []string{"stderr"}
-	if env == "dev" {
+	if env != "local" {
 		outputPaths = append(outputPaths, "./im_info.log")
 		errorOutputPaths = append(errorOutputPaths, "./im_error.log")
 	}

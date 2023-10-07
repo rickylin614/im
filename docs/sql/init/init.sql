@@ -14,8 +14,6 @@ CREATE TABLE
         UNIQUE KEY `email` (`email`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci
 
-select * from users;
-
 -- 2. User_profiles table
 CREATE TABLE `user_profiles` (
     `user_id` VARCHAR(36) PRIMARY KEY,
