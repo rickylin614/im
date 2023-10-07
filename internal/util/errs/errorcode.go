@@ -36,6 +36,13 @@ func (e *ErrorCode) Caller() string {
 	return e.caller
 }
 
+func (e *ErrorCode) GetStatusCode() int {
+	if e.statusCode == 0 {
+		return 400
+	}
+	return e.statusCode
+}
+
 func (e *ErrorCode) IsErr(target error) bool {
 	//t, ok := ParseErr(target)
 	//if !ok {

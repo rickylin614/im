@@ -1,10 +1,17 @@
 package consts
 
-type FriendshipStatus string
+type FriendReqStatus string
 
 const (
-	FriendshipStatusPending  FriendshipStatus = "pending"
-	FriendshipStatusAccepted                  = "accepted"
-	FriendshipStatusRejected                  = "rejected"
-	FriendshipStatusBlocked                   = "blocked"
+	FriendReqStatusPending  FriendReqStatus = "pending"
+	FriendReqStatusAccepted                 = "accepted"
+	FriendReqStatusRejected                 = "rejected"
+	FriendReqStatusBlocked                  = "blocked"
+)
+
+type FriendStatus string
+
+const (
+	FriendStatusActive  FriendStatus = "active"
+	FriendStatusBlocked              = "blocked"
 )

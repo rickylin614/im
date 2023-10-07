@@ -33,8 +33,9 @@ func (g *GroupError) Add(msg string, stautsCode int) *ErrorCode {
 	g.count++
 	code := IntToStringThreeChar(g.count)
 	e := ErrorCode{
-		code:    g.Name + "-" + code,
-		message: msg,
+		code:       g.Name + "-" + code,
+		message:    msg,
+		statusCode: stautsCode,
 	}
 	g.m = append(g.m, e)
 	return &e

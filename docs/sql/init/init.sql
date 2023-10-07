@@ -30,13 +30,14 @@ CREATE TABLE `user_profiles` (
 
 -- 3. Friends table
 CREATE TABLE `friends` (
-    `primary_user_id` VARCHAR(36) NOT NULL,   -- 主要用戶ID
-    `friend_user_id` VARCHAR(36) NOT NULL,    -- 好友ID
-    `friendship_status` ENUM('active', 'blocked') NOT NULL COMMENT '友情狀態: active=正常, blocked=封鎖',
-    `mute_status` BOOLEAN DEFAULT FALSE COMMENT '靜音狀態: TRUE=已靜音, FALSE=未靜音',
+    `id` VARCHAR(36)  PRIMARY KEY,
+    `p_user_id` VARCHAR(36) NOT NULL,   -- 主要用戶ID
+    `f_user_id` VARCHAR(36) NOT NULL,    -- 好友ID
+    `status` ENUM('active', 'blocked') NOT NULL COMMENT '友情狀態: active=正常, blocked=封鎖',
+    `mute` BOOLEAN DEFAULT FALSE COMMENT '靜音狀態: TRUE=已靜音, FALSE=未靜音',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (primary_user_id, friend_user_id)
+    UNIQUE KEY (`p_user_id`, `f_user_id`)
 );
 
 -- 4. Friend_requests table
@@ -61,7 +62,7 @@ CREATE TABLE `groups` (
 );
 
 -- 6. Group_members table
-CREATE TABLE group_members (
+CREATE TABLE `group_members` (
     `group_id` VARCHAR(36) NOT NULL,
     `user_id` VARCHAR(36) NOT NULL,
     `role` ENUM('owner', 'admin', 'member') NOT NULL,
@@ -82,7 +83,7 @@ CREATE TABLE `group_invitations` (
 );
 
 -- 8. Group_requests table
-CREATE TABLE group_requests (
+CREATE TABLE `group_requests` (
     `id` VARCHAR(36)  PRIMARY KEY,
     `group_id` VARCHAR(36) NOT NULL,
     `requester_id` VARCHAR(36) NOT NULL,

@@ -12,6 +12,7 @@ type UsersLogin struct {
 }
 
 type UsersGet struct {
+	ID          string `json:"-"`
 	Username    string `json:"username"`
 	Nickname    string `json:"nickname"`
 	Email       string `json:"email" `

@@ -11,7 +11,7 @@ import (
 func GetFrindListRepo(db *gorm.DB, userId int) []models.Users {
 	friends := make([]models.Users, 0)
 	subQuery1 := db.Table("friends").Select("UserID2").
-		Where("UserID1 = ? AND FriendshipStatus = ?", userId, consts.FriendshipStatusAccepted)
+		Where("UserID1 = ? AND FriendshipStatus = ?", userId, consts.FriendReqStatusAccepted)
 	db.Table("users").Where("id IN (?)", subQuery1).Find(&friends)
 
 	// 重新設計, 好友與好友之間關係改為兩筆資料,方便確認阻擋以及被阻擋

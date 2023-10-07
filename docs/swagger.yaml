@@ -98,6 +98,10 @@ definitions:
         type: integer
     type: object
   req.FriendRequestsCreate:
+    properties:
+      userId:
+        description: 對象用戶id
+        type: string
     type: object
   req.FriendRequestsDelete:
     properties:
@@ -116,6 +120,9 @@ definitions:
       size:
         description: 筆數
         type: integer
+      userId:
+        description: 用戶id
+        type: string
     type: object
   req.FriendRequestsUpdate:
     type: object
@@ -643,7 +650,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/resp.APIResponse-string'
-      summary: 指定用戶ID刪除來自requester-id的好友請求
+      summary: 刪除來自requester-id的好友請求
       tags:
       - FriendRequests
     get:
@@ -659,7 +666,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/resp.APIResponse-resp_FriendRequestsGetList'
-      summary: 獲取指定用戶ID收到的好友請求列表
+      summary: 好友請求列表
       tags:
       - FriendRequests
     post:
@@ -673,6 +680,22 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+        "400":
+          description: Invalid user ID(s)
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+        "401":
+          description: Unauthorized. Please log in to send friend requests.
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+        "409":
+          description: Friend request already exists between these users.
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+        "500":
+          description: Internal Server Error. Please try again later.
           schema:
             $ref: '#/definitions/resp.APIResponse-string'
       summary: 向指定用戶ID發送好友請求
@@ -691,7 +714,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/resp.APIResponse-string'
-      summary: 指定用戶ID接受或拒絕來自requester-id的好友請求
+      summary: 接受或拒絕來自id的好友請求
       tags:
       - FriendRequests
   /loginRecord:

@@ -1,6 +1,7 @@
 package ctxs
 
 import (
+	"errors"
 	"fmt"
 	"im/internal/consts"
 	"im/internal/models"
@@ -20,14 +21,18 @@ type IError interface {
 	GetCode() string
 }
 
+type IStatusCode interface {
+	GetStatusCode() int
+}
+
 func SetError(ctx *gin.Context, err error) {
-	code, msg, data := ParseError(err)
+	code, msg, data, statusCode := ParseError(err)
 	response := resp.APIResponse[any]{
 		Code:    code,
 		Message: msg,
 		Data:    data,
 	}
-	ctx.JSON(http.StatusOK, response)
+	ctx.JSON(statusCode, response)
 }
 
 // SetResp 設定一般回傳格式
@@ -58,14 +63,23 @@ func SetUserInfo(ctx *gin.Context, user *models.Users) {
 }
 
 func GetUserInfo(ctx *gin.Context) (user *models.Users) {
-	data, _ := ctx.Get(consts.UserInfo)
-	user, _ = data.(*models.Users)
+	data, ok := ctx.Get(consts.UserInfo)
+	if !ok {
+		panic(errors.New("Not Login Func Use UserInfo"))
+	}
+	user, ok = data.(*models.Users)
+	if !ok {
+		panic(errors.New("Not Login Func Use UserInfo"))
+	}
 	return
 }
 
-func ParseError(err error) (code string, msg string, data any) {
+func ParseError(err error) (code string, msg string, data any, statusCode int) {
+	statusCode = http.StatusBadRequest
+	code = errs.CommonUnknownError.GetCode()
+	msg = errs.CommonUnknownError.GetMessage()
 	if data, ok := ParseBindingErrMsg(err); ok {
-		return errs.RequestParamInvalid.GetCode(), errs.RequestParamInvalid.GetMessage(), data
+		return errs.RequestParamInvalid.GetCode(), errs.RequestParamInvalid.GetMessage(), data, statusCode
 	}
 
 	if v, ok := err.(IMessage); ok {
@@ -73,12 +87,12 @@ func ParseError(err error) (code string, msg string, data any) {
 	}
 	if v, ok := err.(IError); ok {
 		code = v.GetCode()
-	} else {
-		code = errs.CommonUnknownError.GetCode()
-		msg = errs.CommonUnknownError.GetMessage()
+	}
+	if v, ok := err.(IStatusCode); ok {
+		statusCode = v.GetStatusCode()
 	}
 
-	return code, msg, err.Error()
+	return code, msg, err.Error(), statusCode
 }
 
 // ParseBindingErrMsg

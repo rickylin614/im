@@ -307,7 +307,7 @@ const docTemplate = `{
                 "tags": [
                     "FriendRequests"
                 ],
-                "summary": "獲取指定用戶ID收到的好友請求列表",
+                "summary": "好友請求列表",
                 "parameters": [
                     {
                         "description": "param",
@@ -332,7 +332,7 @@ const docTemplate = `{
                 "tags": [
                     "FriendRequests"
                 ],
-                "summary": "指定用戶ID接受或拒絕來自requester-id的好友請求",
+                "summary": "接受或拒絕來自id的好友請求",
                 "parameters": [
                     {
                         "description": "param",
@@ -375,6 +375,30 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/resp.APIResponse-string"
                         }
+                    },
+                    "400": {
+                        "description": "Invalid user ID(s)",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Please log in to send friend requests.",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    },
+                    "409": {
+                        "description": "Friend request already exists between these users.",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Please try again later.",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
                     }
                 }
             },
@@ -382,7 +406,7 @@ const docTemplate = `{
                 "tags": [
                     "FriendRequests"
                 ],
-                "summary": "指定用戶ID刪除來自requester-id的好友請求",
+                "summary": "刪除來自requester-id的好友請求",
                 "parameters": [
                     {
                         "description": "param",
@@ -798,7 +822,13 @@ const docTemplate = `{
             }
         },
         "req.FriendRequestsCreate": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "userId": {
+                    "description": "對象用戶id",
+                    "type": "string"
+                }
+            }
         },
         "req.FriendRequestsDelete": {
             "type": "object",
@@ -823,6 +853,10 @@ const docTemplate = `{
                 "size": {
                     "description": "筆數",
                     "type": "integer"
+                },
+                "userId": {
+                    "description": "用戶id",
+                    "type": "string"
                 }
             }
         },
