@@ -15,5 +15,6 @@ type UsersGetList struct {
 }
 
 type UsersLogin struct {
-	Token string `json:"token"` // 登入Token
+	Token    string `json:"token"`    // 登入Token
+	Username string `json:"username"` // 用戶名稱
 }

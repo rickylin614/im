@@ -1,10 +1,9 @@
 package errs
 
 import (
-	"errors"
+	"im/internal/util/stringutil"
 	"strconv"
 	"strings"
-	"sync"
 )
 
 type ErrorManager struct {
@@ -26,21 +25,22 @@ func (d *ErrorManager) Group(group string) *GroupError {
 type GroupError struct {
 	Name  string
 	count int
-	m     sync.Map
+	m     []ErrorCode
 }
 
-func (g *GroupError) Add(code, msg string) *ErrorCode {
+// Add 新增錯誤
+func (g *GroupError) Add(msg string, stautsCode int) *ErrorCode {
+	g.count++
+	code := IntToStringThreeChar(g.count)
 	e := ErrorCode{
 		code:    g.Name + "-" + code,
 		message: msg,
 	}
-	g.count++
-	if _, ok := g.m.LoadOrStore(code, e); ok {
-		panic(errors.New("group sub error code duplicate definition, code:" + code))
-	}
+	g.m = append(g.m, e)
 	return &e
 }
 
+// IntToStringThreeChar like fmt.Sprintf(%03d,i) , quick response string
 func IntToStringThreeChar(i int) string {
 	str := strconv.Itoa(i)
 	diff := 3 - len(str)
@@ -58,10 +58,16 @@ func IntToStringThreeChar(i int) string {
 
 func (g *GroupError) ListCodes() []string {
 	result := make([]string, 0)
-	g.m.Range(func(key, value interface{}) bool {
-		k := key.(string)
-		result = append(result, k)
-		return true
-	})
+	for _, v := range g.m {
+		result = append(result, v.code)
+	}
+	return result
+}
+
+func (g *GroupError) ListCodeNMsg() []string {
+	result := make([]string, 0)
+	for _, v := range g.m {
+		result = append(result, stringutil.Join(v.code, ":", v.message))
+	}
 	return result
 }

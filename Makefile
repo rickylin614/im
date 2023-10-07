@@ -25,3 +25,7 @@ nunu:
 	nunu create all ${model}
 	nunu append ${model}
 
+.PHONY: run
+run:
+	go run .\cmd\web\main.go
+

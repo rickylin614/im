@@ -8,9 +8,10 @@ import (
 )
 
 type ErrorCode struct {
-	code    string
-	message string
-	caller  string
+	code       string
+	message    string
+	caller     string
+	statusCode int
 }
 
 func New(message string) *ErrorCode {

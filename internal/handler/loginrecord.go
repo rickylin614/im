@@ -14,7 +14,7 @@ type loginRecordHandler struct {
 }
 
 // GetList
-// @Summary GetList
+// @Summary 取得登入記錄
 // @Tags loginRecord
 // @Param body body request.LoginRecordGetList true "param"
 // @Success 200 {object} response.APIResponse[response.LoginRecordGetList]
@@ -36,24 +36,4 @@ func (h loginRecordHandler) GetList(ctx *gin.Context) {
 		return
 	}
 	ctxs.SetResp(ctx, result)
-}
-
-// Create
-// @Summary Create
-// @Tags loginRecord
-// @Param body body request.LoginRecordCreate true "param"
-// @Success 200 {object} response.APIResponse[string]
-// @Router /loginRecord [post]
-func (h loginRecordHandler) Create(ctx *gin.Context) {
-	req := &request.LoginRecordCreate{}
-	if err := ctx.ShouldBindJSON(req); err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	id, err := h.in.Service.LoginRecordSrv.Create(ctx, req)
-	if err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	ctxs.SetResp(ctx, id)
 }

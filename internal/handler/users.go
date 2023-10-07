@@ -31,7 +31,10 @@ func (h usersHandler) Login(ctx *gin.Context) {
 		ctxs.SetError(ctx, err)
 		return
 	}
-	ctxs.SetResp(ctx, token)
+	ctxs.SetResp(ctx, response.UsersLogin{
+		Token:    token,
+		Username: req.Username,
+	})
 }
 
 // Logout

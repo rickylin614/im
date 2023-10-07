@@ -15,6 +15,58 @@
     "host": "localhost:9000",
     "basePath": "/im",
     "paths": {
+        "/blocked-friend": {
+            "get": {
+                "tags": [
+                    "friend"
+                ],
+                "summary": "獲取指定用戶ID的已封鎖好友列表",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FriendDelete"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "friend"
+                ],
+                "summary": "指定用戶ID封鎖或取消封鎖指定好友ID",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FriendDelete"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/example": {
             "get": {
                 "tags": [
@@ -144,12 +196,216 @@
                 }
             }
         },
+        "/friend": {
+            "get": {
+                "tags": [
+                    "friend"
+                ],
+                "summary": "獲取用戶的好友列表",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FriendGetList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-resp_FriendGetList"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "friend"
+                ],
+                "summary": "更新與指定用戶的好友關係（接受/拒絕/阻止）",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FriendUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "friend"
+                ],
+                "summary": "向指定用戶發送好友請求",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FriendCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "friend"
+                ],
+                "summary": "刪除與指定用戶的好友關係",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FriendDelete"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/friend-requests": {
+            "get": {
+                "tags": [
+                    "FriendRequests"
+                ],
+                "summary": "獲取指定用戶ID收到的好友請求列表",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FriendRequestsGetList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-resp_FriendRequestsGetList"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "FriendRequests"
+                ],
+                "summary": "指定用戶ID接受或拒絕來自requester-id的好友請求",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FriendRequestsUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "FriendRequests"
+                ],
+                "summary": "向指定用戶ID發送好友請求",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FriendRequestsCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "FriendRequests"
+                ],
+                "summary": "指定用戶ID刪除來自requester-id的好友請求",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FriendRequestsDelete"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/loginRecord": {
             "get": {
                 "tags": [
                     "loginRecord"
                 ],
-                "summary": "GetList",
+                "summary": "取得登入記錄",
                 "parameters": [
                     {
                         "description": "param",
@@ -169,31 +425,6 @@
                         }
                     }
                 }
-            },
-            "post": {
-                "tags": [
-                    "loginRecord"
-                ],
-                "summary": "Create",
-                "parameters": [
-                    {
-                        "description": "param",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.LoginRecordCreate"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-string"
-                        }
-                    }
-                }
             }
         },
         "/metrics": {
@@ -207,6 +438,33 @@
                         "description": "OK",
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/mutual-friend": {
+            "get": {
+                "tags": [
+                    "friend"
+                ],
+                "summary": "獲取指定用戶ID與另一指定用戶ID的共同好友列表",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FriendDelete"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
                         }
                     }
                 }
@@ -392,7 +650,7 @@
                 "summary": "獲取指定用戶ID的在線狀態",
                 "responses": {}
             },
-            "post": {
+            "put": {
                 "tags": [
                     "users"
                 ],
@@ -506,7 +764,68 @@
                 }
             }
         },
-        "req.LoginRecordCreate": {
+        "req.FriendCreate": {
+            "type": "object"
+        },
+        "req.FriendDelete": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.FriendGetList": {
+            "type": "object",
+            "properties": {
+                "index": {
+                    "description": "頁碼",
+                    "type": "integer"
+                },
+                "order": {
+                    "description": "排序",
+                    "type": "string",
+                    "example": "id asc"
+                },
+                "size": {
+                    "description": "筆數",
+                    "type": "integer"
+                }
+            }
+        },
+        "req.FriendRequestsCreate": {
+            "type": "object"
+        },
+        "req.FriendRequestsDelete": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.FriendRequestsGetList": {
+            "type": "object",
+            "properties": {
+                "index": {
+                    "description": "頁碼",
+                    "type": "integer"
+                },
+                "order": {
+                    "description": "排序",
+                    "type": "string",
+                    "example": "id asc"
+                },
+                "size": {
+                    "description": "筆數",
+                    "type": "integer"
+                }
+            }
+        },
+        "req.FriendRequestsUpdate": {
+            "type": "object"
+        },
+        "req.FriendUpdate": {
             "type": "object"
         },
         "req.LoginRecordGetList": {
@@ -681,6 +1000,48 @@
                 }
             }
         },
+        "resp.APIResponse-resp_FriendGetList": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "回傳代碼",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.FriendGetList"
+                        }
+                    ]
+                },
+                "msg": {
+                    "description": "訊息",
+                    "type": "string"
+                }
+            }
+        },
+        "resp.APIResponse-resp_FriendRequestsGetList": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "回傳代碼",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.FriendRequestsGetList"
+                        }
+                    ]
+                },
+                "msg": {
+                    "description": "訊息",
+                    "type": "string"
+                }
+            }
+        },
         "resp.APIResponse-resp_LoginRecordGetList": {
             "type": "object",
             "properties": {
@@ -813,6 +1174,40 @@
                 }
             }
         },
+        "resp.FriendGet": {
+            "type": "object"
+        },
+        "resp.FriendGetList": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/resp.FriendGet"
+                    }
+                },
+                "page": {
+                    "$ref": "#/definitions/resp.PageResponse"
+                }
+            }
+        },
+        "resp.FriendRequestsGet": {
+            "type": "object"
+        },
+        "resp.FriendRequestsGetList": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/resp.FriendRequestsGet"
+                    }
+                },
+                "page": {
+                    "$ref": "#/definitions/resp.PageResponse"
+                }
+            }
+        },
         "resp.LoginRecordGet": {
             "type": "object"
         },
@@ -899,6 +1294,10 @@
             "properties": {
                 "token": {
                     "description": "登入Token",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "用戶名稱",
                     "type": "string"
                 }
             }

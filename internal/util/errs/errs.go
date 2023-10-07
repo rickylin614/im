@@ -1,52 +1,53 @@
 package errs
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
 const defaultErr = "00-000"
 
 // error from server
 var (
 	commGroup                = Codes.Group("01")
-	CommonUnknownError       = commGroup.Add("001", "未知错误")
-	CommonNoData             = commGroup.Add("002", "查无资料")
-	CommonRawSQLNotFound     = commGroup.Add("003", "找不到执行档")
-	CommonServiceUnavailable = commGroup.Add("004", "系统维护中")
-	CommonConfigureInvalid   = commGroup.Add("005", "设置参数错误")
-	CommonParseError         = commGroup.Add("006", "解析失败")
+	CommonUnknownError       = commGroup.Add("未知错误", http.StatusInternalServerError)
+	CommonServiceUnavailable = commGroup.Add("系统维护中", http.StatusServiceUnavailable)
+	CommonConfigureInvalid   = commGroup.Add("设置参数错误", http.StatusBadRequest)
+	CommonParseError         = commGroup.Add("解析失败", http.StatusBadRequest)
 )
 
 // error from client
 var (
 	requestGroup                  = Codes.Group("02")
-	RequestParamInvalid           = requestGroup.Add("001", "请求参数错误")
-	RequestParamParseFailed       = requestGroup.Add("002", "请求参数解析失败")
-	RequestPageError              = requestGroup.Add("003", "请求的页数错误")
-	RequestParseError             = requestGroup.Add("004", "解析失败")
-	RequestParseTimeZoneError     = requestGroup.Add("005", "时区解析错误")
-	RequestFrequentOperationError = requestGroup.Add("006", "频繁操作，请稍后再尝试")
+	RequestParamInvalid           = requestGroup.Add("请求参数错误", http.StatusBadRequest)
+	RequestParamParseFailed       = requestGroup.Add("请求参数解析失败", http.StatusBadRequest)
+	RequestPageError              = requestGroup.Add("请求的页数错误", http.StatusBadRequest)
+	RequestParseError             = requestGroup.Add("解析失败", http.StatusBadRequest)
+	RequestParseTimeZoneError     = requestGroup.Add("时区解析错误", http.StatusBadRequest)
+	RequestFrequentOperationError = requestGroup.Add("频繁操作，请稍后再尝试", http.StatusTooManyRequests)
+	RequestNoData                 = requestGroup.Add("查无资料", http.StatusNotFound)
+	RequestRawSQLNotFound         = requestGroup.Add("找不到执行档", http.StatusNotFound)
 )
 
 // 驗證錯誤
 var (
 	validGroup        = Codes.Group("03")
-	RequestTokenError = validGroup.Add("001", "登入失效，請重新登入")
-	LoginCommonError  = validGroup.Add("002", "使用者名稱或密碼無效")
-	LoginLockedError  = validGroup.Add("003", "使用者已被封鎖，請聯繫管理員")
+	RequestTokenError = validGroup.Add("登入失效，請重新登入", http.StatusUnauthorized)
+	LoginCommonError  = validGroup.Add("使用者名稱或密碼無效", http.StatusUnauthorized)
+	LoginLockedError  = validGroup.Add("使用者已被封鎖，請聯繫管理員", http.StatusForbidden)
 )
 
 // ShowAllErrors 內部測試使用
 func ShowAllErrors() {
-	fmt.Println(CommonUnknownError.Error())       // 打印 CommonUnknownError 变量的错误消息
-	fmt.Println(CommonNoData.Error())             // 打印 CommonNoData 变量的错误消息
-	fmt.Println(CommonRawSQLNotFound.Error())     // 打印 CommonRawSQLNotFound 变量的错误消息
-	fmt.Println(CommonServiceUnavailable.Error()) // 打印 CommonServiceUnavailable 变量的错误消息
-	fmt.Println(CommonConfigureInvalid.Error())   // 打印 CommonConfigureInvalid 变量的错误消息
-	fmt.Println(CommonParseError.Error())         // 打印 CommonParseError 变量的错误消息
+	group := []*GroupError{
+		commGroup,
+		requestGroup,
+		validGroup,
+	}
 
-	fmt.Println(RequestParamInvalid.Error())           // 打印 RequestParamInvalid 变量的错误消息
-	fmt.Println(RequestParamParseFailed.Error())       // 打印 RequestParamParseFailed 变量的错误消息
-	fmt.Println(RequestPageError.Error())              // 打印 RequestPageError 变量的错误消息
-	fmt.Println(RequestParseError.Error())             // 打印 RequestParseError 变量的错误消息
-	fmt.Println(RequestParseTimeZoneError.Error())     // 打印 RequestParseTimeZoneError 变量的错误消息
-	fmt.Println(RequestFrequentOperationError.Error()) // 打印 RequestFrequentOperationError 变量的错误消息
+	for _, v := range group {
+		for _, v2 := range v.ListCodeNMsg() {
+			fmt.Println(v2)
+		}
+	}
 }

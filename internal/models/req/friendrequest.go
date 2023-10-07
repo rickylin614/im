@@ -17,7 +17,8 @@ func (list FriendRequestsGetList) Scope(db *gorm.DB) *gorm.DB {
 	return db
 }
 
-type FriendRequestsCreate struct{}
+type FriendRequestsCreate struct {
+}
 
 type FriendRequestsUpdate struct{}
 
