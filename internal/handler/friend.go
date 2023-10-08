@@ -38,26 +38,6 @@ func (h friendHandler) GetFriends(ctx *gin.Context) {
 	ctxs.SetResp(ctx, result)
 }
 
-// SendFriendRequests
-// @Summary 向指定用戶發送好友請求
-// @Tags friend
-// @Param body body request.FriendCreate true "param"
-// @Success 200 {object} response.APIResponse[string]
-// @Router /friend [post]
-func (h friendHandler) SendFriendRequests(ctx *gin.Context) {
-	req := &request.FriendCreate{}
-	if err := ctx.ShouldBindJSON(req); err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	id, err := h.in.Service.FriendSrv.Create(ctx, req)
-	if err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	ctxs.SetResp(ctx, id)
-}
-
 // UpdateFriendStatus
 // @Summary 更新與指定用戶的好友關係（接受/拒絕/阻止）
 // @Tags friend

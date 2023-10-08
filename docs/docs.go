@@ -251,31 +251,6 @@ const docTemplate = `{
                     }
                 }
             },
-            "post": {
-                "tags": [
-                    "friend"
-                ],
-                "summary": "向指定用戶發送好友請求",
-                "parameters": [
-                    {
-                        "description": "param",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.FriendCreate"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-string"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "tags": [
                     "friend"
@@ -350,6 +325,24 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/resp.APIResponse-string"
                         }
+                    },
+                    "400": {
+                        "description": "无效的ID",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    },
+                    "500": {
+                        "description": "未知错误",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
                     }
                 }
             },
@@ -377,13 +370,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid user ID(s)",
+                        "description": "无效的用户",
                         "schema": {
                             "$ref": "#/definitions/resp.APIResponse-string"
                         }
                     },
                     "401": {
-                        "description": "Unauthorized. Please log in to send friend requests.",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/resp.APIResponse-string"
                         }
@@ -395,32 +388,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error. Please try again later.",
-                        "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-string"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "FriendRequests"
-                ],
-                "summary": "刪除來自requester-id的好友請求",
-                "parameters": [
-                    {
-                        "description": "param",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.FriendRequestsDelete"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
+                        "description": "未知错误",
                         "schema": {
                             "$ref": "#/definitions/resp.APIResponse-string"
                         }
@@ -688,6 +656,15 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "consts.FriendReqStatus": {
+            "type": "string",
+            "enum": [
+                "pending"
+            ],
+            "x-enum-varnames": [
+                "FriendReqStatusPending"
+            ]
+        },
         "req.ExampleCreate": {
             "type": "object",
             "properties": {
@@ -792,9 +769,6 @@ const docTemplate = `{
                 }
             }
         },
-        "req.FriendCreate": {
-            "type": "object"
-        },
         "req.FriendDelete": {
             "type": "object",
             "properties": {
@@ -823,18 +797,14 @@ const docTemplate = `{
         },
         "req.FriendRequestsCreate": {
             "type": "object",
+            "required": [
+                "user_name"
+            ],
             "properties": {
-                "userId": {
-                    "description": "對象用戶id",
-                    "type": "string"
-                }
-            }
-        },
-        "req.FriendRequestsDelete": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
+                "user_name": {
+                    "description": "對象用戶username",
+                    "type": "string",
+                    "example": "user"
                 }
             }
         },
@@ -845,6 +815,11 @@ const docTemplate = `{
                     "description": "頁碼",
                     "type": "integer"
                 },
+                "is_sender": {
+                    "description": "true: 請求列表 false: 被請求列表",
+                    "type": "boolean",
+                    "example": false
+                },
                 "order": {
                     "description": "排序",
                     "type": "string",
@@ -853,15 +828,27 @@ const docTemplate = `{
                 "size": {
                     "description": "筆數",
                     "type": "integer"
-                },
-                "userId": {
-                    "description": "用戶id",
-                    "type": "string"
                 }
             }
         },
         "req.FriendRequestsUpdate": {
-            "type": "object"
+            "type": "object",
+            "required": [
+                "request_status"
+            ],
+            "properties": {
+                "id": {
+                    "description": "請求單ID",
+                    "type": "string"
+                },
+                "request_status": {
+                    "type": "string",
+                    "enum": [
+                        "accepted",
+                        "rejected"
+                    ]
+                }
+            }
         },
         "req.FriendUpdate": {
             "type": "object"
@@ -1230,7 +1217,30 @@ const docTemplate = `{
             }
         },
         "resp.FriendRequestsGet": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "receiverID": {
+                    "type": "string"
+                },
+                "receiverName": {
+                    "type": "string"
+                },
+                "requestStatus": {
+                    "$ref": "#/definitions/consts.FriendReqStatus"
+                },
+                "senderID": {
+                    "type": "string"
+                },
+                "senderName": {
+                    "type": "string"
+                }
+            }
         },
         "resp.FriendRequestsGetList": {
             "type": "object",

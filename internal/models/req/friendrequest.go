@@ -26,12 +26,17 @@ func (f FriendRequestsGet) Scope(db *gorm.DB) *gorm.DB {
 }
 
 type FriendRequestsGetList struct {
-	UserId      string // 用戶id
+	UserId      string `json:"-"`                         // 用戶id
+	IsSender    bool   `json:"is_sender" example:"false"` // true: 請求列表 false: 被請求列表
 	models.Page `gorm:"-"`
 }
 
-func (list FriendRequestsGetList) Scope(db *gorm.DB) *gorm.DB {
-	// TODO write where condition
+func (cond FriendRequestsGetList) Scope(db *gorm.DB) *gorm.DB {
+	if cond.IsSender {
+		db = db.Where("sender_id = ?", cond.UserId)
+	} else {
+		db = db.Where("receiver_id = ?", cond.UserId)
+	}
 	return db
 }
 
@@ -40,8 +45,8 @@ type FriendRequestsCreate struct {
 }
 
 type FriendRequestsUpdate struct {
-	ID            string                 `json:"id"` // 請求單ID
-	RequestStatus consts.FriendReqStatus `json:"request_status" binding:"required,eq=FriendReqStatusAccepted|eq=FriendReqStatusRejected"`
+	ID            string `json:"id"` // 請求單ID
+	RequestStatus string `json:"request_status" binding:"required,oneof=accepted rejected" enums:"accepted,rejected"`
 }
 
 type FriendRequestsDelete struct {

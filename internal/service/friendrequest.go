@@ -153,7 +153,7 @@ func (s FriendRequestservice) Update(ctx *gin.Context, cond *req.FriendRequestsU
 
 	err = s.in.Repository.FriendRequestsRepo.Update(db, &models.FriendRequests{
 		ID:            cond.ID,
-		RequestStatus: cond.RequestStatus,
+		RequestStatus: consts.FriendReqStatus(cond.RequestStatus),
 	})
 	if err != nil {
 		return err

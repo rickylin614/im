@@ -20,7 +20,7 @@ type FriendRequestsHandler struct {
 // @Success 200 {object} response.APIResponse[response.FriendRequestsGetList]
 // @Router /friend-requests [get]
 func (h FriendRequestsHandler) GetList(ctx *gin.Context) {
-	req := &request.FriendRequestsGetList{}
+	req := &request.FriendRequestsGetList{UserId: ctxs.GetUserInfo(ctx).ID}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		ctxs.SetError(ctx, err)
 		return

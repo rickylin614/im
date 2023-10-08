@@ -146,6 +146,8 @@ func ParseBindingErrMsg(err error) ([]string, bool) {
 			errorMessages = append(errorMessages, fmt.Sprintf("%s 只能包含 Unicode 字母", fieldErr.Field()))
 		case "uuid":
 			errorMessages = append(errorMessages, fmt.Sprintf("%s 不是有效的 UUID", fieldErr.Field()))
+		default:
+			errorMessages = append(errorMessages, fmt.Sprintf("%s 无效参数", fieldErr.Field()))
 		}
 	}
 

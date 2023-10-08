@@ -1,5 +1,11 @@
 basePath: /im
 definitions:
+  consts.FriendReqStatus:
+    enum:
+    - pending
+    type: string
+    x-enum-varnames:
+    - FriendReqStatusPending
   req.ExampleCreate:
     properties:
       description:
@@ -77,8 +83,6 @@ definitions:
     required:
     - id
     type: object
-  req.FriendCreate:
-    type: object
   req.FriendDelete:
     properties:
       id:
@@ -99,20 +103,22 @@ definitions:
     type: object
   req.FriendRequestsCreate:
     properties:
-      userId:
-        description: 對象用戶id
+      user_name:
+        description: 對象用戶username
+        example: user
         type: string
-    type: object
-  req.FriendRequestsDelete:
-    properties:
-      id:
-        type: string
+    required:
+    - user_name
     type: object
   req.FriendRequestsGetList:
     properties:
       index:
         description: 頁碼
         type: integer
+      is_sender:
+        description: 'true: 請求列表 false: 被請求列表'
+        example: false
+        type: boolean
       order:
         description: 排序
         example: id asc
@@ -120,11 +126,19 @@ definitions:
       size:
         description: 筆數
         type: integer
-      userId:
-        description: 用戶id
-        type: string
     type: object
   req.FriendRequestsUpdate:
+    properties:
+      id:
+        description: 請求單ID
+        type: string
+      request_status:
+        enum:
+        - accepted
+        - rejected
+        type: string
+    required:
+    - request_status
     type: object
   req.FriendUpdate:
     type: object
@@ -369,6 +383,21 @@ definitions:
         $ref: '#/definitions/resp.PageResponse'
     type: object
   resp.FriendRequestsGet:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      receiverID:
+        type: string
+      receiverName:
+        type: string
+      requestStatus:
+        $ref: '#/definitions/consts.FriendReqStatus'
+      senderID:
+        type: string
+      senderName:
+        type: string
     type: object
   resp.FriendRequestsGetList:
     properties:
@@ -604,22 +633,6 @@ paths:
       summary: 獲取用戶的好友列表
       tags:
       - friend
-    post:
-      parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.FriendCreate'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/resp.APIResponse-string'
-      summary: 向指定用戶發送好友請求
-      tags:
-      - friend
     put:
       parameters:
       - description: param
@@ -637,22 +650,6 @@ paths:
       tags:
       - friend
   /friend-requests:
-    delete:
-      parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.FriendRequestsDelete'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/resp.APIResponse-string'
-      summary: 刪除來自requester-id的好友請求
-      tags:
-      - FriendRequests
     get:
       parameters:
       - description: param
@@ -683,11 +680,11 @@ paths:
           schema:
             $ref: '#/definitions/resp.APIResponse-string'
         "400":
-          description: Invalid user ID(s)
+          description: 无效的用户
           schema:
             $ref: '#/definitions/resp.APIResponse-string'
         "401":
-          description: Unauthorized. Please log in to send friend requests.
+          description: Unauthorized
           schema:
             $ref: '#/definitions/resp.APIResponse-string'
         "409":
@@ -695,7 +692,7 @@ paths:
           schema:
             $ref: '#/definitions/resp.APIResponse-string'
         "500":
-          description: Internal Server Error. Please try again later.
+          description: 未知错误
           schema:
             $ref: '#/definitions/resp.APIResponse-string'
       summary: 向指定用戶ID發送好友請求
@@ -712,6 +709,18 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+        "400":
+          description: 无效的ID
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+        "500":
+          description: 未知错误
           schema:
             $ref: '#/definitions/resp.APIResponse-string'
       summary: 接受或拒絕來自id的好友請求

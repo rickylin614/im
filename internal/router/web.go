@@ -56,7 +56,6 @@ func (r WebRouter) setAuthRouter(router *gin.RouterGroup) {
 
 	// friend
 	router.GET("/friend", r.in.Handler.FriendHandler.GetFriends)                   // 獲取用戶的好友列表
-	router.POST("/friend", r.in.Handler.FriendHandler.SendFriendRequests)          // 向指定用戶發送好友請求
 	router.PUT("/friend", r.in.Handler.FriendHandler.UpdateFriendStatus)           // 更新與指定用戶的好友關係（接受/拒絕/阻止）
 	router.DELETE("/friend", r.in.Handler.FriendHandler.DeleteFriend)              // 刪除與指定用戶的好友關係
 	router.GET("/blocked-friend", r.in.Handler.FriendHandler.GetBlockedFriends)    // 獲取指定用戶ID的已封鎖好友列表
