@@ -9,12 +9,20 @@ import (
 )
 
 type FriendRequestsGet struct {
-	ID            string                 `gorm:"id"`
-	SenderID      string                 `gorm:"sender_id"`
-	ReceiverID    string                 `gorm:"receiver_id"`
-	RequestStatus consts.FriendReqStatus `gorm:"request_status"`
-	CreatedAt     time.Time              `gorm:"created_at"`
-	UpdatedAt     time.Time              `gorm:"updated_at"`
+	ID                 string                   `gorm:"column:id"`
+	SenderID           string                   `gorm:"column:sender_id"`
+	ReceiverID         string                   `gorm:"column:receiver_id"`
+	RequestStatus      consts.FriendReqStatus   `gorm:"column:request_status"`
+	RequestStatusConds []consts.FriendReqStatus `gorm:"-"`
+	CreatedAt          time.Time                `gorm:"column:created_at"`
+	UpdatedAt          time.Time                `gorm:"column:updated_at"`
+}
+
+func (f FriendRequestsGet) Scope(db *gorm.DB) *gorm.DB {
+	if len(f.RequestStatusConds) > 0 {
+		db.Where("request_status IN ?", f.RequestStatusConds)
+	}
+	return db
 }
 
 type FriendRequestsGetList struct {
@@ -32,7 +40,8 @@ type FriendRequestsCreate struct {
 }
 
 type FriendRequestsUpdate struct {
-	ID string `json:"id"` // 請求單ID
+	ID            string                 `json:"id"` // 請求單ID
+	RequestStatus consts.FriendReqStatus `json:"request_status" binding:"required,eq=FriendReqStatusAccepted|eq=FriendReqStatusRejected"`
 }
 
 type FriendRequestsDelete struct {

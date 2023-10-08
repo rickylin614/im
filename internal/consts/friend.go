@@ -6,7 +6,6 @@ const (
 	FriendReqStatusPending  FriendReqStatus = "pending"
 	FriendReqStatusAccepted                 = "accepted"
 	FriendReqStatusRejected                 = "rejected"
-	FriendReqStatusBlocked                  = "blocked"
 )
 
 type FriendStatus string

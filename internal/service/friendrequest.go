@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
+	"gorm.io/gorm"
 )
 
 type IFriendRequestservice interface {
@@ -67,6 +68,10 @@ func (s FriendRequestservice) Create(ctx *gin.Context, cond *req.FriendRequestsC
 	fs, err := s.in.Repository.FriendRequestsRepo.Get(db, &req.FriendRequestsGet{
 		SenderID:   loginID,
 		ReceiverID: u.ID,
+		RequestStatusConds: []consts.FriendReqStatus{
+			consts.FriendReqStatusPending,
+			consts.FriendReqStatusRejected,
+		},
 	})
 	if err != nil {
 		return nil, err
@@ -77,15 +82,25 @@ func (s FriendRequestservice) Create(ctx *gin.Context, cond *req.FriendRequestsC
 
 	// 驗證對方是否發送過好友請求
 	fs2, err := s.in.Repository.FriendRequestsRepo.Get(db, &req.FriendRequestsGet{
-		SenderID:      u.ID,
-		ReceiverID:    loginID,
-		RequestStatus: consts.FriendReqStatusPending,
+		SenderID:   u.ID,
+		ReceiverID: loginID,
+		RequestStatusConds: []consts.FriendReqStatus{
+			consts.FriendReqStatusPending,
+		},
 	})
 	if err != nil {
 		return nil, err
 	}
 	if len(fs2.ID) != 0 {
-		// TODO 建立好友流程
+		// 雙方互相要求好友, 直接創建好友
+		db = db.Begin()
+		defer db.Rollback()
+		err = s.createFriend(ctx, db, fs2)
+		if err != nil {
+			return nil, err
+		}
+		db.Commit()
+		return fs2.ID, nil
 	}
 
 	// 建立好友請求
@@ -105,14 +120,69 @@ func (s FriendRequestservice) Create(ctx *gin.Context, cond *req.FriendRequestsC
 
 func (s FriendRequestservice) Update(ctx *gin.Context, cond *req.FriendRequestsUpdate) (err error) {
 	db := s.in.DB.Session(ctx)
-	updateData := &models.FriendRequests{}
-	if err := copier.Copy(updateData, cond); err != nil {
+
+	// 確認好友請求存在
+	fr, err := s.in.Repository.FriendRequestsRepo.Get(db, &req.FriendRequestsGet{
+		ID: cond.ID,
+		RequestStatusConds: []consts.FriendReqStatus{
+			consts.FriendReqStatusPending,
+		},
+	})
+	if err != nil {
 		return err
 	}
-	return s.in.Repository.FriendRequestsRepo.Update(db, updateData)
+	if len(fr.ID) == 0 {
+		return errs.RequestInvalidID
+	}
+
+	db = db.Begin()
+	defer db.Rollback()
+
+	// 確認請求種類
+	switch cond.RequestStatus {
+	case consts.FriendReqStatusAccepted: // 接受
+		err = s.createFriend(ctx, db, fr)
+		if err != nil {
+			return err
+		}
+	case consts.FriendReqStatusRejected: // 拒絕
+		break
+	default:
+		return errs.CommonUnknownError
+	}
+
+	err = s.in.Repository.FriendRequestsRepo.Update(db, &models.FriendRequests{
+		ID:            cond.ID,
+		RequestStatus: cond.RequestStatus,
+	})
+	if err != nil {
+		return err
+	}
+	db.Commit()
+	return nil
 }
 
 func (s FriendRequestservice) Delete(ctx *gin.Context, cond *req.FriendRequestsDelete) (err error) {
 	db := s.in.DB.Session(ctx)
 	return s.in.Repository.FriendRequestsRepo.Delete(db, cond.ID)
+}
+
+// createFriend 創建好友
+func (s FriendRequestservice) createFriend(ctx *gin.Context, db *gorm.DB, fr *models.FriendRequests) error {
+	// 建立好友
+	_, err := s.in.Repository.FriendRepo.Create(db, &models.Friend{
+		ID: uuid.New(), PUserID: fr.SenderID, FUserID: fr.ReceiverID,
+		Status: consts.FriendStatusActive, Mute: false,
+	})
+	if err != nil {
+		return err
+	}
+	_, err = s.in.Repository.FriendRepo.Create(db, &models.Friend{
+		ID: uuid.New(), PUserID: fr.ReceiverID, FUserID: fr.SenderID,
+		Status: consts.FriendStatusActive, Mute: false,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }

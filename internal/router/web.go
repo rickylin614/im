@@ -65,8 +65,7 @@ func (r WebRouter) setAuthRouter(router *gin.RouterGroup) {
 
 	// TODO nunu router @Router 部分改為-做為切割版本
 	// friend-requests
-	router.GET("/friend-requests", r.in.Handler.FriendRequestsHandler.GetList)   // 獲取指定用戶ID收到的好友請求列表
-	router.POST("/friend-requests", r.in.Handler.FriendRequestsHandler.Create)   // 向指定用戶ID發送好友請求
-	router.PUT("/friend-requests", r.in.Handler.FriendRequestsHandler.Update)    // 指定用戶ID接受或拒絕來自requester-id的好友請求
-	router.DELETE("/friend-requests", r.in.Handler.FriendRequestsHandler.Delete) // 指定用戶ID刪除來自requester-id的好友請求
+	router.GET("/friend-requests", r.in.Handler.FriendRequestsHandler.GetList) // 獲取指定用戶ID收到的好友請求列表
+	router.POST("/friend-requests", r.in.Handler.FriendRequestsHandler.Create) // 向指定用戶ID發送好友請求
+	router.PUT("/friend-requests", r.in.Handler.FriendRequestsHandler.Update)  // 指定用戶ID接受或拒絕來自requester-id的好友請求
 }

@@ -43,10 +43,10 @@ func (h FriendRequestsHandler) GetList(ctx *gin.Context) {
 // @Tags FriendRequests
 // @Param body body request.FriendRequestsCreate true "param"
 // @Success 200 {object} response.APIResponse[string]
-// @Failure 400 {object} response.APIResponse[string] "Invalid user ID(s)"
-// @Failure 401 {object} response.APIResponse[string] "Unauthorized. Please log in to send friend requests."
+// @Failure 400 {object} response.APIResponse[string] "无效的用户"
+// @Failure 401 {object} response.APIResponse[string] "Unauthorized"
 // @Failure 409 {object} response.APIResponse[string] "Friend request already exists between these users."
-// @Failure 500 {object} response.APIResponse[string] "Internal Server Error. Please try again later."
+// @Failure 500 {object} response.APIResponse[string] "未知错误"
 // @Router /friend-requests [post]
 func (h FriendRequestsHandler) Create(ctx *gin.Context) {
 	req := &request.FriendRequestsCreate{}
@@ -67,6 +67,9 @@ func (h FriendRequestsHandler) Create(ctx *gin.Context) {
 // @Tags FriendRequests
 // @Param body body request.FriendRequestsUpdate true "param"
 // @Success 200 {object} response.APIResponse[string]
+// @Failure 400 {object} response.APIResponse[string] "无效的ID"
+// @Failure 401 {object} response.APIResponse[string] "Unauthorized"
+// @Failure 500 {object} response.APIResponse[string] "未知错误"
 // @Router /friend-requests [put]
 func (h FriendRequestsHandler) Update(ctx *gin.Context) {
 	req := &request.FriendRequestsUpdate{}
@@ -76,26 +79,6 @@ func (h FriendRequestsHandler) Update(ctx *gin.Context) {
 	}
 
 	err := h.in.Service.FriendRequestsrv.Update(ctx, req)
-	if err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	ctxs.SetSuccessResp(ctx)
-}
-
-// Delete
-// @Summary 刪除來自requester-id的好友請求
-// @Tags FriendRequests
-// @Param body body request.FriendRequestsDelete true "param"
-// @Success 200 {object} response.APIResponse[string]
-// @Router /friend-requests [delete]
-func (h FriendRequestsHandler) Delete(ctx *gin.Context) {
-	req := &request.FriendRequestsDelete{}
-	if err := ctx.ShouldBindJSON(req); err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	err := h.in.Service.FriendRequestsrv.Delete(ctx, req)
 	if err != nil {
 		ctxs.SetError(ctx, err)
 		return

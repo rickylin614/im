@@ -25,7 +25,7 @@ type FriendRequestsRepository struct {
 
 func (r FriendRequestsRepository) Get(db *gorm.DB, cond *req.FriendRequestsGet) (*models.FriendRequests, error) {
 	result := &models.FriendRequests{}
-	if err := db.Find(result, cond).Error; err != nil {
+	if err := db.Scopes(cond.Scope).Find(result, cond).Error; err != nil {
 		return nil, err
 	}
 	return result, nil
