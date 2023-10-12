@@ -34,7 +34,7 @@ func NewRedis(in digIn) redis.UniversalClient {
 			ConnMaxIdleTime: time.Duration(in.Config.RedisConfig.IdleTimeout) * time.Second,
 		})
 	} else {
-		redis.NewClusterClient(&redis.ClusterOptions{
+		rdb = redis.NewClusterClient(&redis.ClusterOptions{
 			Addrs:           addrs,
 			Password:        in.Config.RedisConfig.Password,
 			PoolSize:        in.Config.RedisConfig.MaxActive,
