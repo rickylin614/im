@@ -11,6 +11,7 @@ type Friend struct {
 	PUserName string              `gorm:"p_user_name"`
 	FUserID   string              `gorm:"primarykey;f_user_id"`
 	FUserName string              `gorm:"f_user_name"`
+	MessageId string              `gorm:"message_id"`
 	Status    consts.FriendStatus `gorm:"status"`
 	Mute      bool                `gorm:"mute"`
 	CreatedAt time.Time           `gorm:"created_at"`

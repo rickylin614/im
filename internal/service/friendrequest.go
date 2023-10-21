@@ -171,18 +171,27 @@ func (s FriendRequestservice) Delete(ctx *gin.Context, cond *req.FriendRequestsD
 // createFriend 創建好友
 func (s FriendRequestservice) createFriend(ctx *gin.Context, db *gorm.DB, fr *models.FriendRequests) error {
 	// 建立好友
+	msgId := uuid.New()
 	_, err := s.in.Repository.FriendRepo.Create(db, &models.Friend{
-		ID: uuid.New(), PUserID: fr.SenderID, FUserID: fr.ReceiverID,
-		PUserName: fr.SenderName, FUserName: fr.ReceiverName,
-		Status: consts.FriendStatusActive, Mute: false,
+		ID:        uuid.New(),
+		PUserID:   fr.SenderID,
+		FUserID:   fr.ReceiverID,
+		PUserName: fr.SenderName,
+		FUserName: fr.ReceiverName,
+		MessageId: msgId,
+		Status:    consts.FriendStatusActive, Mute: false,
 	})
 	if err != nil {
 		return err
 	}
 	_, err = s.in.Repository.FriendRepo.Create(db, &models.Friend{
-		ID: uuid.New(), PUserID: fr.ReceiverID, FUserID: fr.SenderID,
-		PUserName: fr.ReceiverName, FUserName: fr.SenderName,
-		Status: consts.FriendStatusActive, Mute: false,
+		ID:        uuid.New(),
+		PUserID:   fr.ReceiverID,
+		FUserID:   fr.SenderID,
+		PUserName: fr.ReceiverName,
+		FUserName: fr.SenderName,
+		MessageId: msgId,
+		Status:    consts.FriendStatusActive, Mute: false,
 	})
 	if err != nil {
 		return err

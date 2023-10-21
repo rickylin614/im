@@ -5,10 +5,8 @@ import (
 	"im/internal/models"
 	"im/internal/models/req"
 	"im/internal/util/ctxs"
-	"im/internal/util/uuid"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/copier"
 )
 
 type IFriendService interface {
@@ -16,7 +14,6 @@ type IFriendService interface {
 	GetList(ctx *gin.Context, cond *req.FriendGetList) (*models.PageResult[*models.Friend], error)
 	GetBlackList(ctx *gin.Context, cond *req.FriendGetList) (*models.PageResult[*models.Friend], error)
 	GetMutualList(ctx *gin.Context, cond *req.FriendMutualGet) (*models.PageResult[*models.Friend], error)
-	Create(ctx *gin.Context, cond *req.FriendCreate) (id any, err error)
 	Update(ctx *gin.Context, cond *req.FriendUpdate) (err error)
 	Delete(ctx *gin.Context, cond *req.FriendDelete) (err error)
 }
@@ -52,15 +49,6 @@ func (s friendService) GetMutualList(ctx *gin.Context, cond *req.FriendMutualGet
 	db := s.in.DB.Session(ctx)
 	cond.UserID = ctxs.GetUserInfo(ctx).ID
 	return s.in.Repository.FriendRepo.GetMutualList(db, cond)
-}
-
-func (s friendService) Create(ctx *gin.Context, cond *req.FriendCreate) (id any, err error) {
-	db := s.in.DB.Session(ctx)
-	insertData := &models.Friend{ID: uuid.New()}
-	if err := copier.Copy(insertData, cond); err != nil {
-		return nil, err
-	}
-	return s.in.Repository.FriendRepo.Create(db, insertData)
 }
 
 func (s friendService) Update(ctx *gin.Context, cond *req.FriendUpdate) (err error) {

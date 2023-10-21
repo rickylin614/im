@@ -33,6 +33,7 @@ CREATE TABLE `friends` (
     `p_user_name` varchar(255) DEFAULT NULL, -- 用戶名
     `f_user_id` VARCHAR(36) NOT NULL,        -- 好友ID
     `f_user_name` varchar(255) DEFAULT NULL, -- 好友名
+    `message_id` varchar(36) DEFAULT NULL,   -- 訊息記錄用id
     `status` ENUM('active', 'blocked') NOT NULL COMMENT '友情狀態: active=正常, blocked=封鎖',
     `mute` BOOLEAN DEFAULT FALSE COMMENT '靜音狀態: TRUE=已靜音, FALSE=未靜音',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -101,8 +102,8 @@ CREATE TABLE `messages` (
     `id` VARCHAR(36)  PRIMARY KEY,
     `sender_id` VARCHAR(36) NOT NULL,
     `content` TEXT NOT NULL,
-    `friend_id` VARCHAR(36) DEFAULT NULL,           -- 用於保存好友之間的對話
-    `group_id` VARCHAR(36) DEFAULT NULL,            -- 用於保存群組的對話
+    `friend_id` VARCHAR(36) DEFAULT NULL,           -- 用於保存好友之間的對話 friend.message_id
+    `group_id` VARCHAR(36) DEFAULT NULL,            -- 用於保存群組的對話 group.id
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CHECK (`friend_id` IS NOT NULL OR `group_id` IS NOT NULL) -- 確保每條消息要麼是好友對話，要麼是群組對話
