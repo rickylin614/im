@@ -19,58 +19,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/blocked-friend": {
-            "get": {
-                "tags": [
-                    "friend"
-                ],
-                "summary": "獲取指定用戶ID的已封鎖好友列表",
-                "parameters": [
-                    {
-                        "description": "param",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.FriendDelete"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-string"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "friend"
-                ],
-                "summary": "指定用戶ID封鎖或取消封鎖指定好友ID",
-                "parameters": [
-                    {
-                        "description": "param",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.FriendDelete"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-string"
-                        }
-                    }
-                }
-            }
-        },
         "/example": {
             "get": {
                 "tags": [
@@ -396,6 +344,60 @@ const docTemplate = `{
                 }
             }
         },
+        "/friend/blocked": {
+            "get": {
+                "tags": [
+                    "friend"
+                ],
+                "summary": "獲取指定用戶ID的已封鎖好友列表",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FriendGetList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/friend/mutual": {
+            "get": {
+                "tags": [
+                    "friend"
+                ],
+                "summary": "獲取指定用戶ID與另一指定用戶ID的共同好友列表",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FriendMutualGet"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
         "/loginRecord": {
             "get": {
                 "tags": [
@@ -434,33 +436,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/mutual-friend": {
-            "get": {
-                "tags": [
-                    "friend"
-                ],
-                "summary": "獲取指定用戶ID與另一指定用戶ID的共同好友列表",
-                "parameters": [
-                    {
-                        "description": "param",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.FriendDelete"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-string"
                         }
                     }
                 }
@@ -665,6 +640,15 @@ const docTemplate = `{
                 "FriendReqStatusPending"
             ]
         },
+        "consts.FriendStatus": {
+            "type": "string",
+            "enum": [
+                "active"
+            ],
+            "x-enum-varnames": [
+                "FriendStatusActive"
+            ]
+        },
         "req.ExampleCreate": {
             "type": "object",
             "properties": {
@@ -795,6 +779,31 @@ const docTemplate = `{
                 }
             }
         },
+        "req.FriendMutualGet": {
+            "type": "object",
+            "required": [
+                "t_user_id"
+            ],
+            "properties": {
+                "index": {
+                    "description": "頁碼",
+                    "type": "integer"
+                },
+                "order": {
+                    "description": "排序",
+                    "type": "string",
+                    "example": "id asc"
+                },
+                "size": {
+                    "description": "筆數",
+                    "type": "integer"
+                },
+                "t_user_id": {
+                    "description": "對象用户ID",
+                    "type": "string"
+                }
+            }
+        },
         "req.FriendRequestsCreate": {
             "type": "object",
             "required": [
@@ -851,7 +860,28 @@ const docTemplate = `{
             }
         },
         "req.FriendUpdate": {
-            "type": "object"
+            "type": "object",
+            "required": [
+                "f_user_id",
+                "status"
+            ],
+            "properties": {
+                "f_user_id": {
+                    "description": "好友的用户ID",
+                    "type": "string"
+                },
+                "status": {
+                    "enum": [
+                        "active",
+                        "blocked"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/consts.FriendStatus"
+                        }
+                    ]
+                }
+            }
         },
         "req.LoginRecordGetList": {
             "type": "object",
@@ -1200,7 +1230,30 @@ const docTemplate = `{
             }
         },
         "resp.FriendGet": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "f_user_id": {
+                    "type": "string"
+                },
+                "f_user_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "mute": {
+                    "type": "boolean"
+                },
+                "p_user_id": {
+                    "type": "string"
+                },
+                "p_user_name": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/consts.FriendStatus"
+                }
+            }
         },
         "resp.FriendGetList": {
             "type": "object",

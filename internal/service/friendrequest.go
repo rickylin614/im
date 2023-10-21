@@ -123,7 +123,8 @@ func (s FriendRequestservice) Update(ctx *gin.Context, cond *req.FriendRequestsU
 
 	// 確認好友請求存在
 	fr, err := s.in.Repository.FriendRequestsRepo.Get(db, &req.FriendRequestsGet{
-		ID: cond.ID,
+		ID:         cond.ID,
+		ReceiverID: ctxs.GetUserInfo(ctx).ID, // 必須是自己的ID
 		RequestStatusConds: []consts.FriendReqStatus{
 			consts.FriendReqStatusPending,
 		},
@@ -172,6 +173,7 @@ func (s FriendRequestservice) createFriend(ctx *gin.Context, db *gorm.DB, fr *mo
 	// 建立好友
 	_, err := s.in.Repository.FriendRepo.Create(db, &models.Friend{
 		ID: uuid.New(), PUserID: fr.SenderID, FUserID: fr.ReceiverID,
+		PUserName: fr.SenderName, FUserName: fr.ReceiverName,
 		Status: consts.FriendStatusActive, Mute: false,
 	})
 	if err != nil {
@@ -179,6 +181,7 @@ func (s FriendRequestservice) createFriend(ctx *gin.Context, db *gorm.DB, fr *mo
 	}
 	_, err = s.in.Repository.FriendRepo.Create(db, &models.Friend{
 		ID: uuid.New(), PUserID: fr.ReceiverID, FUserID: fr.SenderID,
+		PUserName: fr.ReceiverName, FUserName: fr.SenderName,
 		Status: consts.FriendStatusActive, Mute: false,
 	})
 	if err != nil {

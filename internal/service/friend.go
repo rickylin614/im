@@ -1,8 +1,10 @@
 package service
 
 import (
+	"im/internal/consts"
 	"im/internal/models"
 	"im/internal/models/req"
+	"im/internal/util/ctxs"
 	"im/internal/util/uuid"
 
 	"github.com/gin-gonic/gin"
@@ -12,6 +14,8 @@ import (
 type IFriendService interface {
 	Get(ctx *gin.Context, cond *req.FriendGet) (*models.Friend, error)
 	GetList(ctx *gin.Context, cond *req.FriendGetList) (*models.PageResult[*models.Friend], error)
+	GetBlackList(ctx *gin.Context, cond *req.FriendGetList) (*models.PageResult[*models.Friend], error)
+	GetMutualList(ctx *gin.Context, cond *req.FriendMutualGet) (*models.PageResult[*models.Friend], error)
 	Create(ctx *gin.Context, cond *req.FriendCreate) (id any, err error)
 	Update(ctx *gin.Context, cond *req.FriendUpdate) (err error)
 	Delete(ctx *gin.Context, cond *req.FriendDelete) (err error)
@@ -32,7 +36,22 @@ func (s friendService) Get(ctx *gin.Context, cond *req.FriendGet) (*models.Frien
 
 func (s friendService) GetList(ctx *gin.Context, cond *req.FriendGetList) (*models.PageResult[*models.Friend], error) {
 	db := s.in.DB.Session(ctx)
+	cond.PUserID = ctxs.GetUserInfo(ctx).ID
+	cond.Status = consts.FriendStatusActive
 	return s.in.Repository.FriendRepo.GetList(db, cond)
+}
+
+func (s friendService) GetBlackList(ctx *gin.Context, cond *req.FriendGetList) (*models.PageResult[*models.Friend], error) {
+	db := s.in.DB.Session(ctx)
+	cond.PUserID = ctxs.GetUserInfo(ctx).ID
+	cond.Status = consts.FriendStatusBlocked
+	return s.in.Repository.FriendRepo.GetList(db, cond)
+}
+
+func (s friendService) GetMutualList(ctx *gin.Context, cond *req.FriendMutualGet) (*models.PageResult[*models.Friend], error) {
+	db := s.in.DB.Session(ctx)
+	cond.UserID = ctxs.GetUserInfo(ctx).ID
+	return s.in.Repository.FriendRepo.GetMutualList(db, cond)
 }
 
 func (s friendService) Create(ctx *gin.Context, cond *req.FriendCreate) (id any, err error) {
@@ -46,9 +65,10 @@ func (s friendService) Create(ctx *gin.Context, cond *req.FriendCreate) (id any,
 
 func (s friendService) Update(ctx *gin.Context, cond *req.FriendUpdate) (err error) {
 	db := s.in.DB.Session(ctx)
-	updateData := &models.Friend{}
-	if err := copier.Copy(updateData, cond); err != nil {
-		return err
+	updateData := &models.Friend{
+		PUserID: ctxs.GetUserInfo(ctx).ID,
+		FUserID: cond.FUserID,
+		Status:  cond.Status,
 	}
 	return s.in.Repository.FriendRepo.Update(db, updateData)
 }

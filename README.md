@@ -24,7 +24,6 @@ instant message project
 1. `GET` `/im/users/friend-requests`：獲取指定用戶ID收到的好友請求列表。
 1. `POST` `/im/users/friend-requests`：讓指定的requester-id向指定用戶ID發送好友請求。
 1. `PUT` `/im/users/friend-requests`：指定用戶ID接受或拒絕來自requester-id的好友請求。
-1. `DELETE` `/im/users/friend-requests`：指定用戶ID刪除來自requester-id的好友請求。
 1. `GET` `/im/users/blocked-friends`：獲取指定用戶ID的已封鎖好友列表。
 1. `PUT` `/im/users/blocked-friends`：指定用戶ID封鎖或取消封鎖指定好友ID。
 1. `GET` `/im/users/mutual-friends`：獲取指定用戶ID與另一指定用戶ID的共同好友列表。

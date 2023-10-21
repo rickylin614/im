@@ -82,59 +82,49 @@ func (h friendHandler) DeleteFriend(ctx *gin.Context) {
 // GetBlockedFriends
 // @Summary 獲取指定用戶ID的已封鎖好友列表
 // @Tags friend
-// @Param body body request.FriendDelete true "param"
+// @Param body body request.FriendGetList true "param"
 // @Success 200 {object} response.APIResponse[string]
-// @Router /blocked-friend [get]
+// @Router /friend/blocked [get]
 func (h friendHandler) GetBlockedFriends(ctx *gin.Context) {
-	req := &request.FriendDelete{}
+	req := &request.FriendGetList{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		ctxs.SetError(ctx, err)
 		return
 	}
-	err := h.in.Service.FriendSrv.Delete(ctx, req)
+	data, err := h.in.Service.FriendSrv.GetBlackList(ctx, req)
 	if err != nil {
 		ctxs.SetError(ctx, err)
 		return
 	}
-	ctxs.SetSuccessResp(ctx)
-}
-
-// BlockOrUnblockFriend
-// @Summary 指定用戶ID封鎖或取消封鎖指定好友ID
-// @Tags friend
-// @Param body body request.FriendDelete true "param"
-// @Success 200 {object} response.APIResponse[string]
-// @Router /blocked-friend [put]
-func (h friendHandler) BlockOrUnblockFriend(ctx *gin.Context) {
-	req := &request.FriendDelete{}
-	if err := ctx.ShouldBindJSON(req); err != nil {
+	result := &response.FriendGetList{}
+	if err := copier.Copy(result, data); err != nil {
 		ctxs.SetError(ctx, err)
 		return
 	}
-	err := h.in.Service.FriendSrv.Delete(ctx, req)
-	if err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	ctxs.SetSuccessResp(ctx)
+	ctxs.SetResp(ctx, result)
 }
 
 // GetMutualFriends
 // @Summary 獲取指定用戶ID與另一指定用戶ID的共同好友列表
 // @Tags friend
-// @Param body body request.FriendDelete true "param"
+// @Param body body request.FriendMutualGet true "param"
 // @Success 200 {object} response.APIResponse[string]
-// @Router /mutual-friend [get]
+// @Router /friend/mutual [get]
 func (h friendHandler) GetMutualFriends(ctx *gin.Context) {
-	req := &request.FriendDelete{}
+	req := &request.FriendMutualGet{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		ctxs.SetError(ctx, err)
 		return
 	}
-	err := h.in.Service.FriendSrv.Delete(ctx, req)
+	data, err := h.in.Service.FriendSrv.GetMutualList(ctx, req)
 	if err != nil {
 		ctxs.SetError(ctx, err)
 		return
 	}
-	ctxs.SetSuccessResp(ctx)
+	result := &response.FriendMutualList{}
+	if err := copier.Copy(result, data); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+	ctxs.SetResp(ctx, result)
 }

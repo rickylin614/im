@@ -55,12 +55,11 @@ func (r WebRouter) setAuthRouter(router *gin.RouterGroup) {
 	router.PUT("/users/{id}/online-status", r.in.Handler.UsersHandler.UpdateOnlineStatus) // 更新指定用戶ID的在線狀態
 
 	// friend
-	router.GET("/friend", r.in.Handler.FriendHandler.GetFriends)                   // 獲取用戶的好友列表
-	router.PUT("/friend", r.in.Handler.FriendHandler.UpdateFriendStatus)           // 更新與指定用戶的好友關係（接受/拒絕/阻止）
-	router.DELETE("/friend", r.in.Handler.FriendHandler.DeleteFriend)              // 刪除與指定用戶的好友關係
-	router.GET("/blocked-friend", r.in.Handler.FriendHandler.GetBlockedFriends)    // 獲取指定用戶ID的已封鎖好友列表
-	router.PUT("/blocked-friend", r.in.Handler.FriendHandler.BlockOrUnblockFriend) // 指定用戶ID封鎖或取消封鎖指定好友ID
-	router.GET("/mutual-friend", r.in.Handler.FriendHandler.GetMutualFriends)      // 獲取指定用戶ID與另一指定用戶ID的共同好友列表
+	router.GET("/friend", r.in.Handler.FriendHandler.GetFriends)                // 獲取用戶的好友列表
+	router.PUT("/friend", r.in.Handler.FriendHandler.UpdateFriendStatus)        // 指定用戶ID封鎖或取消封鎖指定好友ID
+	router.DELETE("/friend", r.in.Handler.FriendHandler.DeleteFriend)           // 刪除與指定用戶的好友關係
+	router.GET("/friend/blocked", r.in.Handler.FriendHandler.GetBlockedFriends) // 獲取指定用戶ID的已封鎖好友列表
+	router.GET("/friend/mutual", r.in.Handler.FriendHandler.GetMutualFriends)   // 獲取指定用戶ID與另一指定用戶ID的共同好友列表
 
 	// TODO nunu router @Router 部分改為-做為切割版本
 	// friend-requests

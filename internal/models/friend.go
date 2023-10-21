@@ -7,8 +7,10 @@ import (
 
 type Friend struct {
 	ID        string              `gorm:"primarykey;id"`
-	PUserID   string              `gorm:"p_user_id"`
-	FUserID   string              `gorm:"f_user_id"`
+	PUserID   string              `gorm:"primarykey;p_user_id"`
+	PUserName string              `gorm:"p_user_name"`
+	FUserID   string              `gorm:"primarykey;f_user_id"`
+	FUserName string              `gorm:"f_user_name"`
 	Status    consts.FriendStatus `gorm:"status"`
 	Mute      bool                `gorm:"mute"`
 	CreatedAt time.Time           `gorm:"created_at"`

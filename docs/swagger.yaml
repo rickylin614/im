@@ -6,6 +6,12 @@ definitions:
     type: string
     x-enum-varnames:
     - FriendReqStatusPending
+  consts.FriendStatus:
+    enum:
+    - active
+    type: string
+    x-enum-varnames:
+    - FriendStatusActive
   req.ExampleCreate:
     properties:
       description:
@@ -101,6 +107,24 @@ definitions:
         description: 筆數
         type: integer
     type: object
+  req.FriendMutualGet:
+    properties:
+      index:
+        description: 頁碼
+        type: integer
+      order:
+        description: 排序
+        example: id asc
+        type: string
+      size:
+        description: 筆數
+        type: integer
+      t_user_id:
+        description: 對象用户ID
+        type: string
+    required:
+    - t_user_id
+    type: object
   req.FriendRequestsCreate:
     properties:
       user_name:
@@ -141,6 +165,19 @@ definitions:
     - request_status
     type: object
   req.FriendUpdate:
+    properties:
+      f_user_id:
+        description: 好友的用户ID
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/consts.FriendStatus'
+        enum:
+        - active
+        - blocked
+    required:
+    - f_user_id
+    - status
     type: object
   req.LoginRecordGetList:
     properties:
@@ -372,6 +409,21 @@ definitions:
         $ref: '#/definitions/resp.PageResponse'
     type: object
   resp.FriendGet:
+    properties:
+      f_user_id:
+        type: string
+      f_user_name:
+        type: string
+      id:
+        type: string
+      mute:
+        type: boolean
+      p_user_id:
+        type: string
+      p_user_name:
+        type: string
+      status:
+        $ref: '#/definitions/consts.FriendStatus'
     type: object
   resp.FriendGetList:
     properties:
@@ -485,39 +537,6 @@ info:
   title: Im
   version: "1.0"
 paths:
-  /blocked-friend:
-    get:
-      parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.FriendDelete'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/resp.APIResponse-string'
-      summary: 獲取指定用戶ID的已封鎖好友列表
-      tags:
-      - friend
-    put:
-      parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.FriendDelete'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/resp.APIResponse-string'
-      summary: 指定用戶ID封鎖或取消封鎖指定好友ID
-      tags:
-      - friend
   /example:
     delete:
       parameters:
@@ -726,6 +745,40 @@ paths:
       summary: 接受或拒絕來自id的好友請求
       tags:
       - FriendRequests
+  /friend/blocked:
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.FriendGetList'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: 獲取指定用戶ID的已封鎖好友列表
+      tags:
+      - friend
+  /friend/mutual:
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.FriendMutualGet'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: 獲取指定用戶ID與另一指定用戶ID的共同好友列表
+      tags:
+      - friend
   /loginRecord:
     get:
       parameters:
@@ -753,23 +806,6 @@ paths:
       summary: Metrics
       tags:
       - public
-  /mutual-friend:
-    get:
-      parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.FriendDelete'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/resp.APIResponse-string'
-      summary: 獲取指定用戶ID與另一指定用戶ID的共同好友列表
-      tags:
-      - friend
   /ping:
     get:
       responses:
