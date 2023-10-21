@@ -37,7 +37,7 @@ func (s groupMembersService) GetList(ctx *gin.Context, cond *req.GroupMembersGet
 
 func (s groupMembersService) Create(ctx *gin.Context, cond *req.GroupMembersCreate) (id any, err error) {
 	db := s.in.DB.Session(ctx)
-	insertData := &models.GroupMembers{ID: uuid.New()}
+	insertData := &models.GroupMembers{GroupID: uuid.New()}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}

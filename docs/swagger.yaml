@@ -179,6 +179,63 @@ definitions:
     - f_user_id
     - status
     type: object
+  req.GroupMembersCreate:
+    type: object
+  req.GroupMembersDelete:
+    properties:
+      id:
+        type: string
+    type: object
+  req.GroupMembersGet:
+    type: object
+  req.GroupMembersGetList:
+    properties:
+      index:
+        description: 頁碼
+        type: integer
+      order:
+        description: 排序
+        example: id asc
+        type: string
+      size:
+        description: 筆數
+        type: integer
+    type: object
+  req.GroupMembersUpdate:
+    type: object
+  req.GroupsCreate:
+    properties:
+      description:
+        description: 描述
+        type: string
+      group_name:
+        description: 群組名稱
+        type: string
+    required:
+    - group_name
+    type: object
+  req.GroupsDelete:
+    properties:
+      id:
+        type: string
+    type: object
+  req.GroupsGet:
+    type: object
+  req.GroupsGetList:
+    properties:
+      index:
+        description: 頁碼
+        type: integer
+      order:
+        description: 排序
+        example: id asc
+        type: string
+      size:
+        description: 筆數
+        type: integer
+    type: object
+  req.GroupsUpdate:
+    type: object
   req.LoginRecordGetList:
     properties:
       index:
@@ -323,6 +380,58 @@ definitions:
         description: 訊息
         type: string
     type: object
+  resp.APIResponse-resp_GroupMembersGet:
+    properties:
+      code:
+        description: 回傳代碼
+        type: string
+      data:
+        allOf:
+        - $ref: '#/definitions/resp.GroupMembersGet'
+        description: 資料
+      msg:
+        description: 訊息
+        type: string
+    type: object
+  resp.APIResponse-resp_GroupMembersGetList:
+    properties:
+      code:
+        description: 回傳代碼
+        type: string
+      data:
+        allOf:
+        - $ref: '#/definitions/resp.GroupMembersGetList'
+        description: 資料
+      msg:
+        description: 訊息
+        type: string
+    type: object
+  resp.APIResponse-resp_GroupsGet:
+    properties:
+      code:
+        description: 回傳代碼
+        type: string
+      data:
+        allOf:
+        - $ref: '#/definitions/resp.GroupsGet'
+        description: 資料
+      msg:
+        description: 訊息
+        type: string
+    type: object
+  resp.APIResponse-resp_GroupsGetList:
+    properties:
+      code:
+        description: 回傳代碼
+        type: string
+      data:
+        allOf:
+        - $ref: '#/definitions/resp.GroupsGetList'
+        description: 資料
+      msg:
+        description: 訊息
+        type: string
+    type: object
   resp.APIResponse-resp_LoginRecordGetList:
     properties:
       code:
@@ -456,6 +565,28 @@ definitions:
       data:
         items:
           $ref: '#/definitions/resp.FriendRequestsGet'
+        type: array
+      page:
+        $ref: '#/definitions/resp.PageResponse'
+    type: object
+  resp.GroupMembersGet:
+    type: object
+  resp.GroupMembersGetList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/resp.GroupMembersGet'
+        type: array
+      page:
+        $ref: '#/definitions/resp.PageResponse'
+    type: object
+  resp.GroupsGet:
+    type: object
+  resp.GroupsGetList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/resp.GroupsGet'
         type: array
       page:
         $ref: '#/definitions/resp.PageResponse'
@@ -779,6 +910,170 @@ paths:
       summary: 獲取指定用戶ID與另一指定用戶ID的共同好友列表
       tags:
       - friend
+  /groupMembers:
+    delete:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupMembersDelete'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: Delete
+      tags:
+      - groupMembers
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupMembersGetList'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_GroupMembersGetList'
+      summary: GetList
+      tags:
+      - groupMembers
+    post:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupMembersCreate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: Create
+      tags:
+      - groupMembers
+    put:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupMembersUpdate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: Update
+      tags:
+      - groupMembers
+  /groupMembers/:id:
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupMembersGet'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_GroupMembersGet'
+      summary: Get
+      tags:
+      - groupMembers
+  /groups:
+    delete:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupsDelete'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: Delete
+      tags:
+      - groups
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupsGetList'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_GroupsGetList'
+      summary: GetList
+      tags:
+      - groups
+    post:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupsCreate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: 創建群組
+      tags:
+      - groups
+    put:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupsUpdate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: Update
+      tags:
+      - groups
+  /groups/:id:
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupsGet'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_GroupsGet'
+      summary: Get
+      tags:
+      - groups
   /loginRecord:
     get:
       parameters:

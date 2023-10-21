@@ -50,7 +50,7 @@ func (r groupMembersRepository) Create(db *gorm.DB, data *models.GroupMembers) (
 	if err := db.Create(data).Error; err != nil {
 		return nil, err
 	}
-	return data.ID, nil
+	return data.GroupID, nil
 }
 
 func (r groupMembersRepository) Update(db *gorm.DB, data *models.GroupMembers) (err error) {

@@ -71,7 +71,7 @@ func (h groupsHandler) GetList(ctx *gin.Context) {
 }
 
 // Create
-// @Summary Create
+// @Summary 創建群組
 // @Tags groups
 // @Param body body request.GroupsCreate true "param"
 // @Success 200 {object} response.APIResponse[string]

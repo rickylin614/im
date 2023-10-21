@@ -48,21 +48,9 @@ instant message project
 1. `GET` `/im/groups/search?query={search-query}`：根據搜索條件（例如群組名稱）查找群組。
 1. `POST` `/im/private-messages/{message-id}/reactions`：為指定私人訊息ID添加表情符號或反應。
 1. `DELETE` `/im/private-messages/{message-id}/reactions/{reaction-id}`：刪除指定私人訊息ID的表情符號或反應。
-### Private Message
-
-1. `GET` `/im/users/{id}/private-messages`: 獲取用戶的私人訊息列表。
-1. `GET` `/im/users/{id}/private-messages`：獲取指定用戶ID的所有私人訊息列表。
-1. `GET` `/im/users/{id}/private-messages/{friend-id}`：獲取指定用戶ID與指定好友ID之間的私人訊息列表。
-1. `POST` `/im/users/{id}/private-messages/{friend-id}`：指定用戶ID向指定好友ID發送私人訊息。
-1. `PUT` `/im/private-messages/{message-id}`：更新指定私人訊息ID的訊息內容（例如，標記為已讀）。
-1. `DELETE` `/im/private-messages/{message-id}`：刪除指定私人訊息ID的訊息。
-1. `GET` `/im/private-messages/{message-id}`：根據私人訊息ID獲取訊息詳情。
-1. `POST` `/im/private-messages/{message-id}/reactions`：為指定私人訊息ID添加表情符號或反應。
-1. `DELETE` `/im/private-messages/{message-id}/reactions/{reaction-id}`：刪除指定私人訊息ID的表情符號或反應。
 
 ### Group Message
 
-1. `GET` `/im/users/{id}/group-messages`: 獲取用戶的私人訊息列表。
 1. `GET` `/im/users/{id}/group-messages`：獲取指定用戶ID的所有私人訊息列表。
 1. `GET` `/im/groups/{id}/messages`：獲取指定群組ID的所有訊息列表。
 1. `POST` `/im/groups/{id}/messages`：向指定群組ID發送訊息。

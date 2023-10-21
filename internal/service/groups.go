@@ -3,6 +3,7 @@ package service
 import (
 	"im/internal/models"
 	"im/internal/models/req"
+	"im/internal/util/ctxs"
 	"im/internal/util/uuid"
 
 	"github.com/gin-gonic/gin"
@@ -37,7 +38,7 @@ func (s groupsService) GetList(ctx *gin.Context, cond *req.GroupsGetList) (*mode
 
 func (s groupsService) Create(ctx *gin.Context, cond *req.GroupsCreate) (id any, err error) {
 	db := s.in.DB.Session(ctx)
-	insertData := &models.Groups{ID: uuid.New()}
+	insertData := &models.Groups{ID: uuid.New(), GroupOwnerID: ctxs.GetUserInfo(ctx).ID}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}

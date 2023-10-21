@@ -1,7 +1,12 @@
 package models
 
+import "time"
+
 type GroupMembers struct {
-	ID string `gorm:"column:id"`
+	GroupID  string    `gorm:"primarykey;column:group_id"`
+	UserID   string    `gorm:"primarykey;column:user_id"`
+	Role     string    `gorm:"column:role"`
+	JoinedAt time.Time `gorm:"column:joined_at"`
 }
 
 func (*GroupMembers) TableName() string {
