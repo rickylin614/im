@@ -19,6 +19,8 @@ func NewHandler(in digIn) *Handler {
 		LoginRecordHandler:    &loginRecordHandler{in: in},
 		FriendHandler:         &friendHandler{in: in},
 		FriendRequestsHandler: &FriendRequestsHandler{in: in},
+		GroupsHandler:         &groupsHandler{in: in},
+		GroupMembersHandler:   &groupMembersHandler{in: in},
 	}
 }
 
@@ -32,6 +34,8 @@ type Handler struct {
 	LoginRecordHandler    *loginRecordHandler
 	FriendHandler         *friendHandler
 	FriendRequestsHandler *FriendRequestsHandler
+	GroupsHandler         *groupsHandler
+	GroupMembersHandler   *groupMembersHandler
 }
 
 type digIn struct {

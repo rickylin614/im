@@ -67,12 +67,13 @@ CREATE TABLE `groups` (
 
 -- 6. Group_members table
 CREATE TABLE `group_members` (
-    `group_id` VARCHAR(36) NOT NULL,
-    `user_id` VARCHAR(36) NOT NULL,
-    `role` ENUM('owner', 'admin', 'member') NOT NULL,
-    `joined_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `group_id` VARCHAR(36) NOT NULL COMMENT '唯一标识群组的ID',
+    `user_id` VARCHAR(36) NOT NULL COMMENT '唯一标识用户的ID',
+    `role` VARCHAR(10) NOT NULL COMMENT '成员的角色,可以是owner、admin或member',
+    `joined_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '成员加入群组的时间',
     PRIMARY KEY (`group_id`, `user_id`)
 );
+
 
 -- 7. Group_invitations table
 CREATE TABLE `group_invitations` (

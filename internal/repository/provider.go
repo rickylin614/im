@@ -15,6 +15,8 @@ func NewRepository(in digIn) *Repository {
 		LoginRecordRepo:    NewLoginRecordRepository(in),
 		FriendRepo:         NewFriendRepository(in),
 		FriendRequestsRepo: NewFriendRequestsRepository(in),
+		GroupsRepo:         NewGroupsRepository(in),
+		GroupMembersRepo:   NewGroupMembersRepository(in),
 	}
 }
 
@@ -26,6 +28,8 @@ type Repository struct {
 	LoginRecordRepo    ILoginRecordRepository
 	FriendRepo         IFriendRepository
 	FriendRequestsRepo IFriendRequestsRepository
+	GroupsRepo         IGroupsRepository
+	GroupMembersRepo   IGroupMembersRepository
 }
 
 // digIn repository require indendency

@@ -1,11 +1,11 @@
 package service
 
 import (
-	"context"
 	"{{ .ProjectName }}/internal/models"
 	"{{ .ProjectName }}/internal/models/req"
 	"{{ .ProjectName }}/internal/util/uuid"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 )
 
