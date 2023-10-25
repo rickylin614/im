@@ -1,11 +1,12 @@
 package service
 
 import (
+	"context"
 	"fmt"
 
 	"im/internal/models"
 	"im/internal/models/req"
-	consts2 "im/internal/pkg/consts"
+	"im/internal/pkg/consts"
 	"im/internal/util/crypto"
 	"im/internal/util/errs"
 	"im/internal/util/uuid"
@@ -78,25 +79,22 @@ func (s usersService) Login(ctx *gin.Context, cond *req.UsersLogin) (token strin
 
 	// 驗證密碼
 	if user.PasswordHash != crypto.Hash(cond.Password) {
-		loginRecord := composeLoginRecord(ctx, user, consts2.LoginStateFailed)
-		s.in.Repository.LoginRecordRepo.Create(db, loginRecord)
+		loginRecord := composeLoginRecord(ctx, user, consts.LoginStateFailed)
+		go s.loginRecord(loginRecord)
 		return "", errs.LoginCommonError
 	}
 
 	// 驗證用戶狀態
-	if user.Status != consts2.UserStatusActive {
-		loginRecord := composeLoginRecord(ctx, user, consts2.LoginStateBlocked)
-		s.in.Repository.LoginRecordRepo.Create(db, loginRecord)
+	if user.Status != consts.UserStatusActive {
+		loginRecord := composeLoginRecord(ctx, user, consts.LoginStateBlocked)
+		go s.loginRecord(loginRecord)
 		return "", errs.LoginLockedError
 	}
 
 	// 產token並記錄
 	token = uuid.New()
-	loginRecord := composeLoginRecord(ctx, user, consts2.LoginStateSuccess)
-	if _, err = s.in.Repository.LoginRecordRepo.Create(db, loginRecord); err != nil {
-		s.in.Logger.Error(ctx, fmt.Errorf("login record create err: %w", err))
-		return
-	}
+	loginRecord := composeLoginRecord(ctx, user, consts.LoginStateSuccess)
+	go s.loginRecord(loginRecord)
 	if err = s.in.Repository.UsersRepo.SetToken(ctx, token, user); err != nil {
 		s.in.Logger.Error(ctx, fmt.Errorf("service set token err: %w", err))
 		return "", errs.CommonServiceUnavailable
@@ -104,7 +102,15 @@ func (s usersService) Login(ctx *gin.Context, cond *req.UsersLogin) (token strin
 	return token, nil
 }
 
-func composeLoginRecord(ctx *gin.Context, user *models.Users, loginStatus consts2.LoginState) *models.LoginRecord {
+func (s usersService) loginRecord(loginRecord *models.LoginRecord) {
+	ctx := context.Background()
+	db := s.in.DB.Session(ctx)
+	if _, err := s.in.Repository.LoginRecordRepo.Create(db, loginRecord); err != nil {
+		s.in.Logger.Error(ctx, fmt.Errorf("login record create err: %w", err))
+	}
+}
+
+func composeLoginRecord(ctx *gin.Context, user *models.Users, loginStatus consts.LoginState) *models.LoginRecord {
 	return &models.LoginRecord{
 		Name:       user.Nickname,
 		UserID:     user.ID,
