@@ -3,9 +3,11 @@ package repository
 import (
 	"context"
 	"encoding/json"
-	"im/internal/consts"
+
 	"im/internal/models"
 	"im/internal/models/req"
+	"im/internal/pkg/consts"
+
 	"time"
 
 	"gorm.io/gorm"

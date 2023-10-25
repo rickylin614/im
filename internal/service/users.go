@@ -2,9 +2,10 @@ package service
 
 import (
 	"fmt"
-	"im/internal/consts"
+
 	"im/internal/models"
 	"im/internal/models/req"
+	consts2 "im/internal/pkg/consts"
 	"im/internal/util/crypto"
 	"im/internal/util/errs"
 	"im/internal/util/uuid"
@@ -77,21 +78,21 @@ func (s usersService) Login(ctx *gin.Context, cond *req.UsersLogin) (token strin
 
 	// 驗證密碼
 	if user.PasswordHash != crypto.Hash(cond.Password) {
-		loginRecord := composeLoginRecord(ctx, user, consts.LoginStateFailed)
+		loginRecord := composeLoginRecord(ctx, user, consts2.LoginStateFailed)
 		s.in.Repository.LoginRecordRepo.Create(db, loginRecord)
 		return "", errs.LoginCommonError
 	}
 
 	// 驗證用戶狀態
-	if user.Status != consts.UserStatusActive {
-		loginRecord := composeLoginRecord(ctx, user, consts.LoginStateBlocked)
+	if user.Status != consts2.UserStatusActive {
+		loginRecord := composeLoginRecord(ctx, user, consts2.LoginStateBlocked)
 		s.in.Repository.LoginRecordRepo.Create(db, loginRecord)
 		return "", errs.LoginLockedError
 	}
 
 	// 產token並記錄
 	token = uuid.New()
-	loginRecord := composeLoginRecord(ctx, user, consts.LoginStateSuccess)
+	loginRecord := composeLoginRecord(ctx, user, consts2.LoginStateSuccess)
 	if _, err = s.in.Repository.LoginRecordRepo.Create(db, loginRecord); err != nil {
 		s.in.Logger.Error(ctx, fmt.Errorf("login record create err: %w", err))
 		return
@@ -103,7 +104,7 @@ func (s usersService) Login(ctx *gin.Context, cond *req.UsersLogin) (token strin
 	return token, nil
 }
 
-func composeLoginRecord(ctx *gin.Context, user *models.Users, loginStatus consts.LoginState) *models.LoginRecord {
+func composeLoginRecord(ctx *gin.Context, user *models.Users, loginStatus consts2.LoginState) *models.LoginRecord {
 	return &models.LoginRecord{
 		Name:       user.Nickname,
 		UserID:     user.ID,

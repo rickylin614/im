@@ -1,8 +1,9 @@
 package resp
 
 import (
-	"im/internal/consts"
 	"time"
+
+	"im/internal/pkg/consts"
 )
 
 type FriendRequestsGet struct {

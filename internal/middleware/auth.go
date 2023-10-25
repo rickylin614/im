@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"im/internal/consts"
+	"im/internal/pkg/consts"
 	"im/internal/util/ctxs"
 	"im/internal/util/errs"
 

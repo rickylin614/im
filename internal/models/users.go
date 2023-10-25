@@ -1,8 +1,9 @@
 package models
 
 import (
-	"im/internal/consts"
 	"time"
+
+	"im/internal/pkg/consts"
 )
 
 type Users struct {

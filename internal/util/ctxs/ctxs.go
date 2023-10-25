@@ -3,11 +3,12 @@ package ctxs
 import (
 	"errors"
 	"fmt"
-	"im/internal/consts"
+	"net/http"
+
 	"im/internal/models"
 	"im/internal/models/resp"
+	"im/internal/pkg/consts"
 	"im/internal/util/errs"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"

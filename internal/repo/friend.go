@@ -1,8 +1,8 @@
 package repo
 
 import (
-	"im/internal/consts"
 	"im/internal/models"
+	"im/internal/pkg/consts"
 
 	"gorm.io/gorm"
 )

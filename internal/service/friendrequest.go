@@ -1,9 +1,9 @@
 package service
 
 import (
-	"im/internal/consts"
 	"im/internal/models"
 	"im/internal/models/req"
+	"im/internal/pkg/consts"
 	"im/internal/util/ctxs"
 	"im/internal/util/errs"
 	"im/internal/util/uuid"

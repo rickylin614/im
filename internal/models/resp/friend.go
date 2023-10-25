@@ -1,6 +1,8 @@
 package resp
 
-import "im/internal/consts"
+import (
+	"im/internal/pkg/consts"
+)
 
 type FriendGet struct {
 	ID        string              `json:"id"`

@@ -1,8 +1,9 @@
 package req
 
 import (
-	"im/internal/consts"
 	"im/internal/models"
+	"im/internal/pkg/consts"
+
 	"time"
 
 	"gorm.io/gorm"

@@ -3,8 +3,8 @@ package logger
 import (
 	"time"
 
-	"im/internal/consts"
 	"im/internal/pkg/config"
+	"im/internal/pkg/consts"
 
 	"go.uber.org/dig"
 	"go.uber.org/zap"
