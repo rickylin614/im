@@ -95,3 +95,10 @@ instant message project
 ```
 go install github.com/rickylin614/nunu@v1.0.3-rc.4
 ```
+
+## 標籤
+
+- 使gin的json編碼使用非基礎套件:
+  - tags加上`go_json`, 會使用`github.com/goccy/go-json`
+
+- singleflight 避免緩存擊穿

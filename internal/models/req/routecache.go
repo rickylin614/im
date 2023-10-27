@@ -1,26 +1,13 @@
 package req
 
-import (
-	"im/internal/models"
+import "time"
 
-	"gorm.io/gorm"
-)
-
-type RouteCacheGet struct{}
-
-type RouteCacheGetList struct {
-	models.Page `gorm:"-"`
+type RouteCacheGet struct {
+	RouteCacheKey string
 }
 
-func (list RouteCacheGetList) Scope(db *gorm.DB) *gorm.DB {
-	// TODO write where condition
-	return db
-}
-
-type RouteCacheCreate struct{}
-
-type RouteCacheUpdate struct{}
-
-type RouteCacheDelete struct {
-	ID string `json:"id"`
+type RouteCacheSet struct {
+	RouteCacheKey  string
+	RouteCacheData string
+	TTL            time.Duration
 }

@@ -8,11 +8,15 @@ import (
 )
 
 func NewMiddleware(in digIn) *Middleware {
-	return &Middleware{Auth: authMiddleware{in: in}}
+	return &Middleware{
+		Auth:  authMiddleware{in: in},
+		Cache: CacheMiddleware{in: in},
+	}
 }
 
 type Middleware struct {
-	Auth authMiddleware
+	Auth  authMiddleware
+	Cache CacheMiddleware
 }
 
 type digIn struct {

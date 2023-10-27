@@ -2,15 +2,14 @@ package repository
 
 import (
 	"context"
-	"encoding/json"
+	"time"
+
+	"github.com/goccy/go-json"
+	"gorm.io/gorm"
 
 	"im/internal/models"
 	"im/internal/models/req"
 	"im/internal/pkg/consts"
-
-	"time"
-
-	"gorm.io/gorm"
 )
 
 type IUsersRepository interface {

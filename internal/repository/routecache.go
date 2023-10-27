@@ -1,68 +1,42 @@
 package repository
 
 import (
-	"im/internal/models"
-	"im/internal/models/req"
+	"context"
 
-	"gorm.io/gorm"
+	"golang.org/x/sync/singleflight"
+
+	"im/internal/models/req"
 )
 
 type IRouteCacheRepository interface {
-	Get(db *gorm.DB, cond *req.RouteCacheGet) (*models.RouteCache, error)
-	GetList(db *gorm.DB, cond *req.RouteCacheGetList) (*models.PageResult[*models.RouteCache], error)
-	Create(db *gorm.DB, data *models.RouteCache) (id any, err error)
-	Update(db *gorm.DB, data *models.RouteCache) (err error)
-	Delete(db *gorm.DB, id string) (err error)
+	Get(ctx context.Context, cond *req.RouteCacheGet) (string, error)
+	Set(ctx context.Context, cond *req.RouteCacheSet) error
 }
 
 func NewRouteCacheRepository(in digIn) IRouteCacheRepository {
-	return routeCacheRepository{in: in}
+	return routeCacheRepository{in: in, group: singleflight.Group{}}
 }
 
 type routeCacheRepository struct {
-	in digIn
+	in    digIn
+	group singleflight.Group
 }
 
-func (r routeCacheRepository) Get(db *gorm.DB, cond *req.RouteCacheGet) (*models.RouteCache, error) {
-	result := &models.RouteCache{}
-	if err := db.Find(result, cond).Error; err != nil {
-		return nil, err
+func (r routeCacheRepository) Get(ctx context.Context, cond *req.RouteCacheGet) (string, error) {
+	// 使用 singleflight 確保只有一個 goroutine 呼叫此 function 對於相同的一個 key
+	data, err, _ := r.group.Do(cond.RouteCacheKey, func() (interface{}, error) {
+		if data := r.in.Rdb.Get(ctx, cond.RouteCacheKey); data.Err() != nil {
+			return "", data.Err()
+		} else {
+			return data.String(), nil
+		}
+	})
+	if err != nil {
+		return "", err
 	}
-	return result, nil
+	return data.(string), nil
 }
 
-func (r routeCacheRepository) GetList(db *gorm.DB, cond *req.RouteCacheGetList) (*models.PageResult[*models.RouteCache], error) {
-	result := &models.PageResult[*models.RouteCache]{
-		Page: cond.GetPager(),
-		Data: make([]*models.RouteCache, 0),
-	}
-	db = db.Model(models.RouteCache{}).Scopes(cond.Scope)
-	if err := db.Count(&result.Total).Error; err != nil {
-		return nil, err
-	}
-	if err := db.Scopes(result.PagerCond).Find(&result.Data).Error; err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
-func (r routeCacheRepository) Create(db *gorm.DB, data *models.RouteCache) (id any, err error) {
-	if err := db.Create(data).Error; err != nil {
-		return nil, err
-	}
-	return data.ID, nil
-}
-
-func (r routeCacheRepository) Update(db *gorm.DB, data *models.RouteCache) (err error) {
-	if err := db.Updates(data).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r routeCacheRepository) Delete(db *gorm.DB, id string) (err error) {
-	if err := db.Model(models.RouteCache{}).Delete("where id = ?", id).Error; err != nil {
-		return err
-	}
-	return nil
+func (r routeCacheRepository) Set(ctx context.Context, cond *req.RouteCacheSet) error {
+	return r.in.Rdb.Set(ctx, cond.RouteCacheKey, cond.RouteCacheData, cond.TTL).Err()
 }
