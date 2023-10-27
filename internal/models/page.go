@@ -1,8 +1,6 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
+import "gorm.io/gorm"
 
 type Page struct {
 	Index     int    `gorm:"-" json:"index"`                  // 頁碼
@@ -39,19 +37,19 @@ func (p *PageResult[T]) getOrder() string {
 }
 
 func (p *PageResult[T]) setTotalPage() {
+	if p.Index <= 0 {
+		p.Index = 1
+	}
+	if p.Size <= 0 {
+		p.Size = 1
+	}
 	p.TotalPage = (int(p.Total) + p.Size - 1) / p.Size
 }
 
-func (p *PageResult[T]) PagerCond() func(db *gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		if p.Index <= 0 {
-			p.Index = 1
-		}
-		if p.Size <= 0 {
-			p.Size = 1
-		}
-		p.setTotalPage()
-
-		return db.Order(p.getOrder()).Offset(p.getOffset()).Limit(p.getLimit())
-	}
+func (p *PageResult[T]) PagerCond(db *gorm.DB) *gorm.DB {
+	p.setTotalPage()
+	order := p.getOrder()
+	offset := p.getOffset()
+	limit := p.getLimit()
+	return db.Order(order).Offset(offset).Limit(limit)
 }

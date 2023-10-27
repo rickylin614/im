@@ -41,7 +41,7 @@ func (r friendRepository) GetList(db *gorm.DB, cond *req.FriendGetList) (*models
 	if err := db.Count(&result.Total).Error; err != nil {
 		return nil, err
 	}
-	if err := db.Scopes(result.PagerCond()).Find(&result.Data).Error; err != nil {
+	if err := db.Scopes(result.PagerCond).Find(&result.Data).Error; err != nil {
 		return nil, err
 	}
 	return result, nil
@@ -56,7 +56,7 @@ func (r friendRepository) GetMutualList(db *gorm.DB, cond *req.FriendMutualGet) 
 	db = db.Table("friends").
 		Joins("JOIN friends AS f2 ON friends.p_user_id = f2.p_user_id").
 		Where("friends.f_user_id = ? AND f2.f_user_id = ?", cond.UserID, cond.TUserId)
-	if err := db.Scopes(result.PagerCond()).Find(&result.Data).Error; err != nil {
+	if err := db.Scopes(result.PagerCond).Find(&result.Data).Error; err != nil {
 		return nil, err
 	}
 	return result, nil

@@ -49,7 +49,7 @@ func (r usersRepository) GetList(db *gorm.DB, cond *req.UsersGetList) (*models.P
 	if err := db.Count(&result.Total).Error; err != nil {
 		return nil, err
 	}
-	if err := db.Scopes(result.PagerCond()).Find(&result.Data).Error; err != nil {
+	if err := db.Scopes(result.PagerCond).Find(&result.Data).Error; err != nil {
 		return nil, err
 	}
 	return result, nil
