@@ -17,6 +17,7 @@ func NewRepository(in digIn) *Repository {
 		FriendRequestsRepo: NewFriendRequestsRepository(in),
 		GroupsRepo:         NewGroupsRepository(in),
 		GroupMembersRepo:   NewGroupMembersRepository(in),
+		RouteCacheRepo:     NewRouteCacheRepository(in),
 	}
 }
 
@@ -30,13 +31,14 @@ type Repository struct {
 	FriendRequestsRepo IFriendRequestsRepository
 	GroupsRepo         IGroupsRepository
 	GroupMembersRepo   IGroupMembersRepository
+	RouteCacheRepo     IRouteCacheRepository
 }
 
 // digIn repository require indendency
 type digIn struct {
 	dig.In
 
-	Logger *logger.Logger
+	Logger logger.Logger
 	Db     sqldb.Client
 	Rdb    redis.UniversalClient
 }

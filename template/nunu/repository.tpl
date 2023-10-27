@@ -40,7 +40,7 @@ func (r {{ .FileNameTitleLower }}Repository) GetList(db *gorm.DB, cond *req.{{ .
 	if err := db.Count(&result.Total).Error; err != nil {
 		return nil, err
 	}
-	if err := db.Scopes(result.PagerCond()).Find(&result.Data).Error; err != nil {
+	if err := db.Scopes(result.PagerCond).Find(&result.Data).Error; err != nil {
 		return nil, err
 	}
 	return result, nil

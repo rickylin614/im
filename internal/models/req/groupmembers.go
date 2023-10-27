@@ -21,6 +21,6 @@ type GroupMembersCreate struct{}
 
 type GroupMembersUpdate struct{}
 
-type GroupMembersDelete  struct {
+type GroupMembersDelete struct {
 	ID string `json:"id"`
 }

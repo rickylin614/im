@@ -1,0 +1,1 @@
+SELECT demo.id FROM demo;

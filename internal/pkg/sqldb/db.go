@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -51,19 +52,22 @@ func newDB(in digIn) Client {
 	masterDB := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=UTC", dbSetting[0], dbSetting[1], dbSetting[2], dbSetting[3])
 	slaveDB := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=UTC", dbSetting[0], dbSetting[1], dbSetting[2], dbSetting[3])
 
-	logger := zapgorm2.New(in.Log.GetLogger())
-	logger.SetAsDefault()
+	gormConfig := &gorm.Config{
+		//Logger:                 logger,
+		SkipDefaultTransaction: true,
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true,
+		},
+	}
+
+	if l, ok := in.Log.GetLogger().(*zap.Logger); ok {
+		logger := zapgorm2.New(l)
+		logger.SetAsDefault()
+		gormConfig.Logger = logger
+	}
 
 	var err error
-	db, err := gorm.Open(mysql.Open(masterDB),
-		&gorm.Config{
-			Logger:                 logger,
-			SkipDefaultTransaction: true,
-			NamingStrategy: schema.NamingStrategy{
-				SingularTable: true,
-			},
-		},
-	)
+	db, err := gorm.Open(mysql.Open(masterDB), gormConfig)
 	if err != nil {
 		panic(fmt.Sprintf("conn: %s err: %v", masterDB, err))
 	}

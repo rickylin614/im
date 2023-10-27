@@ -13,6 +13,7 @@ import (
 	"im/internal/pkg/redis"
 	"im/internal/pkg/sqldb"
 	"im/internal/repository"
+	"im/internal/repository/sql"
 	"im/internal/router"
 	"im/internal/server"
 	"im/internal/service"
@@ -51,6 +52,9 @@ func New() *dig.Container {
 			panic(err)
 		}
 		if err := container.Provide(service.NewService); err != nil {
+			panic(err)
+		}
+		if err := container.Provide(sql.NewSqlEmbedFile); err != nil {
 			panic(err)
 		}
 		if err := container.Provide(repository.NewRepository); err != nil {

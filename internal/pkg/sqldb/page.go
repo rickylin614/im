@@ -17,7 +17,7 @@ type Paged interface {
 	GetTableName() string
 }
 
-// AddPreQueryCallback 新增查詢前動作, 在有pager的資料查詢時，先查詢count，並且總數寫回count
+// Deprecated: use db.Scope(PageResult.PagerCond) instead
 func AddPreQueryCallback(db *gorm.DB) {
 	db.Callback().Query().Before("gorm:query").Register("pre_page_callback", func(db *gorm.DB) {
 		if _, ok := db.Statement.Context.Value(consts.COUNTING).(bool); ok {

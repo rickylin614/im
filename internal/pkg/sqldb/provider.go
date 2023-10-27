@@ -11,7 +11,7 @@ type digIn struct {
 	dig.In
 
 	Config *config.Config
-	Log    *logger.Logger
+	Log    logger.Logger
 }
 
 func NewDB(in digIn) Client {

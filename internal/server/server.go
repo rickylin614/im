@@ -21,14 +21,14 @@ type digIn struct {
 
 	WebRouter    *router.WebRouter
 	Config       *config.Config
-	Logger       *logger.Logger
+	Logger       logger.Logger
 	ServerRunner *Controller
 }
 
 type serverDigIn struct {
 	dig.In
 
-	Logger *logger.Logger
+	Logger logger.Logger
 }
 
 type IServer interface {

@@ -18,6 +18,6 @@ type Middleware struct {
 type digIn struct {
 	dig.In
 
-	Logger  *logger.Logger
+	Logger  logger.Logger
 	Service *service.Service
 }

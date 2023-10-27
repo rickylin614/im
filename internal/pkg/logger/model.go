@@ -9,36 +9,46 @@ import (
 	"im/internal/pkg/consts"
 )
 
-type Logger struct {
+type Logger interface {
+	Level() string
+	Debug(ctx context.Context, message string)
+	Info(ctx context.Context, message string)
+	Warn(ctx context.Context, message string)
+	Error(ctx context.Context, err error)
+	Panic(ctx context.Context, err error)
+	GetLogger() any
+}
+
+type ZapLogger struct {
 	logger *zap.Logger
 	level  zapcore.Level
 }
 
-func (lg *Logger) Level() string {
+func (lg *ZapLogger) Level() string {
 	return lg.level.String()
 }
 
-func (lg *Logger) Debug(ctx context.Context, message string) {
+func (lg *ZapLogger) Debug(ctx context.Context, message string) {
 	lg.logger.Debug(message, requestID(ctx))
 }
 
-func (lg *Logger) Info(ctx context.Context, message string) {
+func (lg *ZapLogger) Info(ctx context.Context, message string) {
 	lg.logger.Info(message, requestID(ctx))
 }
 
-func (lg *Logger) Warn(ctx context.Context, message string) {
+func (lg *ZapLogger) Warn(ctx context.Context, message string) {
 	lg.logger.Warn(message, requestID(ctx))
 }
 
-func (lg *Logger) Error(ctx context.Context, err error) {
+func (lg *ZapLogger) Error(ctx context.Context, err error) {
 	lg.logger.Error(err.Error(), requestID(ctx))
 }
 
-func (lg *Logger) Panic(ctx context.Context, err error) {
+func (lg *ZapLogger) Panic(ctx context.Context, err error) {
 	lg.logger.Panic(err.Error(), requestID(ctx))
 }
 
-func (lg *Logger) GetLogger() *zap.Logger {
+func (lg *ZapLogger) GetLogger() any {
 	return lg.logger
 }
 

@@ -17,15 +17,14 @@ type digIn struct {
 	Config *config.Config
 }
 
-func NewLogger(in digIn) *Logger {
+func NewLogger(in digIn) Logger {
 	level := GetZapLevel(in.Config.LogConfig.Level)
 	serverName := in.Config.LogConfig.Name
 	env := in.Config.LogConfig.Env
 	return newLogger(level, serverName, env)
 }
 
-// TODO
-func newLogger(level zapcore.Level, serviceName string, env string) *Logger {
+func newLogger(level zapcore.Level, serviceName string, env string) *ZapLogger {
 	encoderConfig := zapcore.EncoderConfig{
 		TimeKey:        "time",
 		LevelKey:       "level",
@@ -73,7 +72,7 @@ func newLogger(level zapcore.Level, serviceName string, env string) *Logger {
 		panic(err)
 	}
 
-	return &Logger{
+	return &ZapLogger{
 		logger: logger,
 		level:  level,
 	}

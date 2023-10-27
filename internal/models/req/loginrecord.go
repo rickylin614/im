@@ -21,6 +21,6 @@ type LoginRecordCreate struct{}
 
 type LoginRecordUpdate struct{}
 
-type LoginRecordDelete  struct {
+type LoginRecordDelete struct {
 	ID string `json:"id"`
 }
