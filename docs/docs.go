@@ -1752,7 +1752,18 @@ const docTemplate = `{
             }
         },
         "resp.GroupsGet": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "group_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
         },
         "resp.GroupsGetList": {
             "type": "object",

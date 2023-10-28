@@ -581,6 +581,13 @@ definitions:
         $ref: '#/definitions/resp.PageResponse'
     type: object
   resp.GroupsGet:
+    properties:
+      description:
+        type: string
+      group_name:
+        type: string
+      id:
+        type: string
     type: object
   resp.GroupsGetList:
     properties:

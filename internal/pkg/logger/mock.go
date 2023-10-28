@@ -36,5 +36,5 @@ func (m *MockLogger) Panic(ctx context.Context, err error) {
 }
 
 func (m *MockLogger) GetLogger() any {
-	return m.Mock
+	return nil
 }
