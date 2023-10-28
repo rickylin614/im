@@ -6,6 +6,8 @@ type Config struct {
 	MySQLConfig MySQLConfig `mapstructure:"mysql_config"`
 	RedisConfig RedisConfig `mapstructure:"redis_config"`
 	MongoConfig MongoConfig `mapstructure:"mongo_config"`
+	CacheConfig CacheConfig `mapstructure:"cache_config"`
+	RateConfig  RateConfig  `mapstructure:"rate_config"`
 }
 
 type LogConfig struct {
@@ -50,4 +52,15 @@ type MongoConfig struct {
 	DB          string `mapstructure:"db"`
 	MaxIdleTime int    `mapstructure:"max_idle_time"`
 	MaxOpenConn uint64 `mapstructure:"max_open_conn"`
+}
+
+type CacheConfig struct {
+	CacheSize int `json:"cache_size"` // 單位bytes
+}
+
+type RateConfig struct {
+	Rate           int  `json:"rate"`             // 请求速率
+	Burst          int  `json:"burst"`            // 请求突发数
+	StoreSize      int  `json:"store_size"`       // 为内存存储定义大小
+	UseMemoryStore bool `json:"use_memory_store"` // 使用内存存储还是Redis存储
 }

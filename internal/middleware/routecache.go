@@ -5,18 +5,20 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/singleflight"
 
 	"im/internal/models/req"
 	"im/internal/pkg/consts"
 )
 
 type CacheMiddleware struct {
-	in digIn
+	in    digIn
+	group singleflight.Group
 }
 
 func (m *CacheMiddleware) RouteCacheMiddleware(ctx *gin.Context) {
 
-	key := ctx.Request.Method + ":" + ctx.FullPath()
+	key := consts.ROUTE_CACHE_KEY + ctx.Request.Method + ":" + ctx.FullPath()
 
 	// 確認緩存
 	cache, err := m.in.Service.RouteCacheSrv.Get(ctx, &req.RouteCacheGet{

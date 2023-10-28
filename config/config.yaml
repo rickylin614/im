@@ -33,6 +33,12 @@ config:
     db: "demo"
     max_idle_time: 5
     max_open_conn: 50
-    
+  cache_config:
+    cache_size: 2097152
+  rate_config:
+    rate: 200
+    burst: 200
+    store_size: 65536
+    use_memory_store: false
 
     

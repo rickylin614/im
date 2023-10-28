@@ -4,6 +4,7 @@ import (
 	"im/internal/pkg/logger"
 	"im/internal/pkg/sqldb"
 
+	"github.com/coocood/freecache"
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/dig"
 )
@@ -41,4 +42,5 @@ type digIn struct {
 	Logger logger.Logger
 	Db     sqldb.Client
 	Rdb    redis.UniversalClient
+	Cache  *freecache.Cache
 }

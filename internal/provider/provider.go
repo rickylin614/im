@@ -8,6 +8,7 @@ import (
 	"im/internal/handler"
 	"im/internal/middleware"
 	"im/internal/pkg/config"
+	"im/internal/pkg/localcache"
 	"im/internal/pkg/logger"
 	"im/internal/pkg/mongo"
 	"im/internal/pkg/redis"
@@ -27,12 +28,18 @@ func New() *dig.Container {
 	var container *dig.Container
 	once.Do(func() {
 		container = dig.New()
+		// 基礎套件
 		if err := container.Provide(logger.NewLogger); err != nil {
 			panic(err)
 		}
 		if err := container.Provide(config.NewConfig); err != nil {
 			panic(err)
 		}
+		if err := container.Provide(localcache.NewLocalCache); err != nil {
+			panic(err)
+		}
+		// localcache
+		// 需要連線配置的套件
 		if err := container.Provide(sqldb.NewDB); err != nil {
 			panic(err)
 		}
@@ -42,6 +49,7 @@ func New() *dig.Container {
 		if err := container.Provide(mongo.NewMongoDB); err != nil {
 			panic(err)
 		}
+		// Web業務配置
 		if err := container.Provide(router.NewRouter); err != nil {
 			panic(err)
 		}
@@ -60,6 +68,7 @@ func New() *dig.Container {
 		if err := container.Provide(repository.NewRepository); err != nil {
 			panic(err)
 		}
+		// 啟動程序
 		if err := container.Provide(server.NewServerController); err != nil {
 			panic(err)
 		}

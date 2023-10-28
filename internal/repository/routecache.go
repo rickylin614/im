@@ -14,7 +14,7 @@ type IRouteCacheRepository interface {
 }
 
 func NewRouteCacheRepository(in digIn) IRouteCacheRepository {
-	return routeCacheRepository{in: in, group: singleflight.Group{}}
+	return &routeCacheRepository{in: in, group: singleflight.Group{}}
 }
 
 type routeCacheRepository struct {
@@ -22,12 +22,19 @@ type routeCacheRepository struct {
 	group singleflight.Group
 }
 
-func (r routeCacheRepository) Get(ctx context.Context, cond *req.RouteCacheGet) (string, error) {
+func (r *routeCacheRepository) Get(ctx context.Context, cond *req.RouteCacheGet) (string, error) {
+	// 設定三秒以內的吃內存
+	cachedata, err := r.in.Cache.Get([]byte(cond.RouteCacheKey))
+	if err == nil {
+		return string(cachedata), nil
+	}
+
 	// 使用 singleflight 確保只有一個 goroutine 呼叫此 function 對於相同的一個 key
 	data, err, _ := r.group.Do(cond.RouteCacheKey, func() (interface{}, error) {
 		if data := r.in.Rdb.Get(ctx, cond.RouteCacheKey); data.Err() != nil {
 			return "", data.Err()
 		} else {
+			r.in.Cache.Set([]byte(cond.RouteCacheKey), []byte(data.String()), 3)
 			return data.String(), nil
 		}
 	})
@@ -37,6 +44,6 @@ func (r routeCacheRepository) Get(ctx context.Context, cond *req.RouteCacheGet) 
 	return data.(string), nil
 }
 
-func (r routeCacheRepository) Set(ctx context.Context, cond *req.RouteCacheSet) error {
+func (r *routeCacheRepository) Set(ctx context.Context, cond *req.RouteCacheSet) error {
 	return r.in.Rdb.Set(ctx, cond.RouteCacheKey, cond.RouteCacheData, cond.TTL).Err()
 }
