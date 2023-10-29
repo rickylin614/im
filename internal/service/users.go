@@ -3,15 +3,19 @@ package service
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"im/internal/models"
 	"im/internal/models/req"
 	"im/internal/pkg/consts"
 	"im/internal/util/crypto"
+	"im/internal/util/ctxs"
 	"im/internal/util/errs"
 	"im/internal/util/uuid"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/goccy/go-json"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/jinzhu/copier"
 )
 
@@ -91,11 +95,29 @@ func (s usersService) Login(ctx *gin.Context, cond *req.UsersLogin) (token strin
 		return "", errs.LoginLockedError
 	}
 
-	// 產token並記錄
-	token = uuid.New()
+	// 登入成功
 	loginRecord := composeLoginRecord(ctx, user, consts.LoginStateSuccess)
 	go s.loginRecord(loginRecord)
-	if err = s.in.Repository.UsersRepo.SetToken(ctx, token, user); err != nil {
+
+	// 產token並返回
+	jwtTokenUuid := uuid.New()
+	jwfclaims := jwt.NewWithClaims(jwt.SigningMethodRS256,
+		&models.JWTClaims{
+			User:     user,
+			DeviceID: ctxs.GetDeviceID(ctx),
+			RegisteredClaims: jwt.RegisteredClaims{
+				Issuer:    user.ID,
+				ExpiresAt: jwt.NewNumericDate(time.Now().Add(consts.TOKEN_EXPIRED)), // 假設token有效期為24小時
+				ID:        jwtTokenUuid,
+			},
+		})
+	token, err = jwfclaims.SignedString(crypto.GetRsaPrivateKey())
+	if err != nil {
+		s.in.Logger.Error(ctx, fmt.Errorf("sjwfclaims.SignedString err: %w", err))
+		return "", errs.CommonServiceUnavailable
+	}
+
+	if err = s.in.Repository.UsersRepo.SetToken(ctx, user.ID, ctxs.GetDeviceID(ctx), token); err != nil {
 		s.in.Logger.Error(ctx, fmt.Errorf("service set token err: %w", err))
 		return "", errs.CommonServiceUnavailable
 	}
@@ -121,10 +143,50 @@ func composeLoginRecord(ctx *gin.Context, user *models.Users, loginStatus consts
 	}
 }
 
-func (s usersService) Logout(ctx *gin.Context, token string) (err error) {
-	return s.in.Repository.UsersRepo.DelToken(ctx, token)
+func (s usersService) Logout(ctx *gin.Context, jwtToken string) (err error) {
+	token, err := jwt.ParseWithClaims(jwtToken, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+		// 确保token的签名算法是我们预期的
+		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return crypto.GetRsaPublicKey(), nil
+	})
+
+	if err != nil {
+		s.in.Logger.Error(ctx, err)
+		return errs.RequestTokenError
+	}
+
+	claims, ok := token.Claims.(*models.JWTClaims)
+	if !ok || token.Valid {
+		return errs.RequestTokenError
+	}
+
+	return s.in.Repository.UsersRepo.DelToken(ctx, claims.Issuer, claims.DeviceID)
 }
 
-func (s usersService) GetByToken(ctx *gin.Context, token string) (user *models.Users, err error) {
-	return s.in.Repository.UsersRepo.GetByToken(ctx, token)
+func (s usersService) GetByToken(ctx *gin.Context, jwtToken string) (user *models.Users, err error) {
+	token, err := jwt.ParseWithClaims(jwtToken, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+		// 驗證算法
+		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return crypto.GetRsaPublicKey(), nil
+	})
+
+	if err != nil {
+		s.in.Logger.Error(ctx, err)
+		return nil, errs.RequestTokenError
+	}
+
+	claims, ok := token.Claims.(*models.JWTClaims)
+	if !ok || !token.Valid {
+		return nil, errs.RequestTokenError
+	}
+	_, err = s.in.Repository.UsersRepo.GetByToken(ctx, claims.Issuer, claims.DeviceID, claims.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return claims.User, nil
 }

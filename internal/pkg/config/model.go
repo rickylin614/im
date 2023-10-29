@@ -1,13 +1,14 @@
 package config
 
 type Config struct {
-	LogConfig   LogConfig   `mapstructure:"log_config"`
-	GinConfig   GinConfig   `mapstructure:"gin_config"`
-	MySQLConfig MySQLConfig `mapstructure:"mysql_config"`
-	RedisConfig RedisConfig `mapstructure:"redis_config"`
-	MongoConfig MongoConfig `mapstructure:"mongo_config"`
-	CacheConfig CacheConfig `mapstructure:"cache_config"`
-	RateConfig  RateConfig  `mapstructure:"rate_config"`
+	LogConfig    LogConfig    `mapstructure:"log_config"`
+	GinConfig    GinConfig    `mapstructure:"gin_config"`
+	MySQLConfig  MySQLConfig  `mapstructure:"mysql_config"`
+	RedisConfig  RedisConfig  `mapstructure:"redis_config"`
+	MongoConfig  MongoConfig  `mapstructure:"mongo_config"`
+	CacheConfig  CacheConfig  `mapstructure:"cache_config"`
+	RateConfig   RateConfig   `mapstructure:"rate_config"`
+	CryptoConfig CryptoConfig `mapstructure:"crypto_config"`
 }
 
 type LogConfig struct {
@@ -55,12 +56,16 @@ type MongoConfig struct {
 }
 
 type CacheConfig struct {
-	CacheSize int `json:"cache_size"` // 單位bytes
+	CacheSize int `mapstructure:"cache_size"` // 單位bytes
 }
 
 type RateConfig struct {
-	Rate           int  `json:"rate"`             // 请求速率
-	Burst          int  `json:"burst"`            // 请求突发数
-	StoreSize      int  `json:"store_size"`       // 为内存存储定义大小
-	UseMemoryStore bool `json:"use_memory_store"` // 使用内存存储还是Redis存储
+	Rate           int  `mapstructure:"rate"`             // 请求速率
+	Burst          int  `mapstructure:"burst"`            // 请求突发数
+	StoreSize      int  `mapstructure:"store_size"`       // 为内存存储定义大小
+	UseMemoryStore bool `mapstructure:"use_memory_store"` // 使用内存存储还是Redis存储
+}
+
+type CryptoConfig struct {
+	TokenSecret string `mapstructure:"token_secret"`
 }

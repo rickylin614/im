@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"im/internal/models"
 	"im/internal/models/resp"
@@ -73,6 +74,27 @@ func GetUserInfo(ctx *gin.Context) (user *models.Users) {
 		panic(errors.New("Not Login Func Use UserInfo"))
 	}
 	return
+}
+
+func GetDeviceID(ctx *gin.Context) string {
+	deviceID := ctx.GetHeader("X-Device-ID")
+	if deviceID != "" {
+		return deviceID
+	}
+
+	// 如果header中沒有X-Device-ID，嘗試從User-Agent解析
+	userAgent := ctx.GetHeader("User-Agent")
+	return parseDeviceIDFromUserAgent(userAgent)
+}
+
+// parseDeviceIDFromUserAgent 簡易從userAgent中分析設備
+func parseDeviceIDFromUserAgent(userAgent string) string {
+	if strings.Contains(userAgent, "iPhone") {
+		return "iPhone"
+	} else if strings.Contains(userAgent, "Android") {
+		return "Android"
+	}
+	return "Default"
 }
 
 func ParseError(err error) (code string, msg string, data any, statusCode int) {

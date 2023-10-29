@@ -35,8 +35,8 @@ func (r *routeCacheRepository) Get(ctx context.Context, cond *req.RouteCacheGet)
 			r.in.Logger.Error(ctx, err)
 			return "", data.Err()
 		} else {
-			r.in.Cache.Set([]byte(cond.RouteCacheKey), []byte(data.String()), 3)
-			return data.String(), nil
+			r.in.Cache.Set([]byte(cond.RouteCacheKey), []byte(data.Val()), 3)
+			return data.Val(), nil
 		}
 	})
 	if err != nil {

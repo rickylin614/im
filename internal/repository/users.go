@@ -2,14 +2,16 @@ package repository
 
 import (
 	"context"
-	"time"
+	"fmt"
 
-	"github.com/goccy/go-json"
+	"github.com/golang-jwt/jwt/v5"
 	"gorm.io/gorm"
 
 	"im/internal/models"
 	"im/internal/models/req"
 	"im/internal/pkg/consts"
+	"im/internal/util/crypto"
+	"im/internal/util/errs"
 )
 
 type IUsersRepository interface {
@@ -18,9 +20,9 @@ type IUsersRepository interface {
 	Create(db *gorm.DB, data *models.Users) (id any, err error)
 	Update(db *gorm.DB, data *models.Users) (err error)
 	Delete(db *gorm.DB, id string) (err error)
-	GetByToken(ctx context.Context, token string) (*models.Users, error)
-	SetToken(ctx context.Context, token string, user *models.Users) error
-	DelToken(ctx context.Context, token string) error
+	GetByToken(ctx context.Context, UserID, deviceID, reqToken string) (*models.JWTClaims, error)
+	SetToken(ctx context.Context, UserID, deviceID, jwtData string) error
+	DelToken(ctx context.Context, UserID, deviceID string) error
 }
 
 func NewUsersRepository(in digIn) IUsersRepository {
@@ -75,29 +77,50 @@ func (r usersRepository) Delete(db *gorm.DB, id string) (err error) {
 	return nil
 }
 
-func (r usersRepository) GetByToken(ctx context.Context, token string) (*models.Users, error) {
-	result := &models.Users{}
-	key := consts.LoginKey + token
-	rdata, err := r.in.Rdb.Get(ctx, key).Bytes()
+func (r usersRepository) GetByToken(ctx context.Context, UserID, deviceID, reqToken string) (*models.JWTClaims, error) {
+	key := consts.LoginKey + UserID + ":" + deviceID
+	rget := r.in.Rdb.Get(ctx, key)
+	if rget.Err() != nil {
+		r.in.Logger.Error(ctx, rget.Err())
+		return nil, rget.Err()
+	}
+
+	token, err := jwt.ParseWithClaims(rget.Val(), &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+		// 确保token的签名算法是我们预期的
+		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return crypto.GetRsaPublicKey(), nil
+	})
+
 	if err != nil {
-		r.in.Logger.Info(ctx, err.Error())
-		return nil, err
-	}
-	if err := json.Unmarshal(rdata, result); err != nil {
 		r.in.Logger.Error(ctx, err)
-		return nil, err
+		return nil, errs.RequestTokenError
 	}
-	r.in.Rdb.Expire(ctx, token, time.Hour*2)
-	return result, nil
+
+	claims, ok := token.Claims.(*models.JWTClaims)
+	if !ok || !token.Valid {
+		r.in.Logger.Error(ctx, fmt.Errorf("token.Claims.(*models.JWTClaims) error, useId: %s, device: %s", UserID, deviceID))
+		return nil, errs.RequestTokenError
+	}
+
+	if claims.ID != reqToken {
+		r.in.Logger.Error(ctx, fmt.Errorf("token.Claims.(*models.JWTClaims) error, useId: %s, device: %s, claims.ID: %s, reqToken: %s",
+			UserID, deviceID, claims.ID, reqToken))
+		return nil, errs.RequestTokenError
+	}
+
+	// 延長token時效
+	r.in.Rdb.Expire(ctx, key, consts.TOKEN_EXPIRED)
+	return claims, nil
 }
 
-func (r usersRepository) SetToken(ctx context.Context, token string, user *models.Users) error {
-	key := consts.LoginKey + token
-	data, _ := json.Marshal(user)
-	return r.in.Rdb.Set(ctx, key, data, time.Hour*2).Err()
+func (r usersRepository) SetToken(ctx context.Context, UserID, deviceID, jwtData string) error {
+	key := consts.LoginKey + UserID + ":" + deviceID
+	return r.in.Rdb.Set(ctx, key, jwtData, consts.TOKEN_EXPIRED).Err()
 }
 
-func (r usersRepository) DelToken(ctx context.Context, token string) error {
-	key := consts.LoginKey + token
+func (r usersRepository) DelToken(ctx context.Context, UserID, deviceID string) error {
+	key := consts.LoginKey + UserID + ":" + deviceID
 	return r.in.Rdb.Del(ctx, key).Err()
 }

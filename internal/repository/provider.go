@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"im/internal/pkg/config"
 	"im/internal/pkg/logger"
 	"im/internal/pkg/sqldb"
 
@@ -43,4 +44,5 @@ type digIn struct {
 	Db     sqldb.Client
 	Rdb    redis.UniversalClient
 	Cache  *freecache.Cache
+	Config *config.Config
 }

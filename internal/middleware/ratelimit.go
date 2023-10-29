@@ -39,17 +39,19 @@ func (m *RateLimitMiddleware) RateLimitMiddleware() gin.HandlerFunc {
 	rateLimiter, err := throttled.NewGCRARateLimiterCtx(store, quota)
 
 	rateLimitMiddleware := func(ctx *gin.Context) {
-		key := consts.RATE_LIMIT_KEY + ctx.Request.Method + ":" + ctx.FullPath()
+		key := consts.RATE_LIMIT_KEY + ctx.ClientIP()
 		// quantity 表示消耗配額, 如果限制每分鐘100次。消耗配額填50，則每分鐘只能通過該請求2次
 		quantity := 1
-		ok, _, err := rateLimiter.RateLimitCtx(ctx, key, quantity)
+		isLimit, _, err := rateLimiter.RateLimitCtx(ctx, key, quantity)
 		if err != nil {
 			m.in.Logger.Error(ctx, err)
 			ctxs.SetError(ctx, errs.CommonUnknownError)
+			ctx.Abort()
 			return
 		}
-		if !ok {
+		if isLimit {
 			ctxs.SetError(ctx, errs.RequestFrequentOperationError)
+			ctx.Abort()
 			return
 		}
 

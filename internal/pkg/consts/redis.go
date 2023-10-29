@@ -1,5 +1,5 @@
 package consts
 
 const (
-	LoginKey = "user:token:"
+	LoginKey = "user:device:"
 )

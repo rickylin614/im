@@ -3,6 +3,7 @@ package service
 import (
 	"go.uber.org/dig"
 
+	"im/internal/pkg/config"
 	"im/internal/pkg/logger"
 	"im/internal/pkg/sqldb"
 	"im/internal/repository"
@@ -41,4 +42,5 @@ type digIn struct {
 	Repository *repository.Repository
 	Logger     logger.Logger
 	DB         sqldb.Client
+	Config     *config.Config
 }

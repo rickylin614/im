@@ -13,12 +13,14 @@ func (r WebRouter) SetRouter(router *gin.Engine) {
 	if r.in.Config.GinConfig.DebugMode {
 		gin.SetMode(gin.DebugMode)
 	}
+	// TODO define recovery middleware
 	router.Use(
 		gin.Logger(),
 		gin.Recovery(),
 	)
 
 	pubGroup := router.Group("/im/")
+	pubGroup.Use(r.in.Middle.Rate.RateLimitMiddleware())
 	r.setPublicRouter(pubGroup)
 
 	priGroup := router.Group("/im/")
@@ -28,6 +30,7 @@ func (r WebRouter) SetRouter(router *gin.Engine) {
 
 // 不需要登入的API
 func (r WebRouter) setPublicRouter(router *gin.RouterGroup) {
+
 	router.GET("/ping", r.in.Handler.BaseHandler.Ping)
 	router.GET("/metrics", r.in.Handler.BaseHandler.Metrics())
 
@@ -67,7 +70,7 @@ func (r WebRouter) setAuthRouter(router *gin.RouterGroup) {
 	router.POST("/friend-requests", r.in.Handler.FriendRequestsHandler.Create) // 向指定用戶ID發送好友請求
 	router.PUT("/friend-requests", r.in.Handler.FriendRequestsHandler.Update)  // 指定用戶ID接受或拒絕來自requester-id的好友請求
 
-	router.GET("/group/:id", r.in.Handler.GroupsHandler.Get)
+	router.GET("/group/:id", r.in.Handler.GroupsHandler.Get, r.in.Middle.Cache.RouteCacheMiddleware)
 	router.GET("/group", r.in.Handler.GroupsHandler.GetList)
 	router.POST("/group", r.in.Handler.GroupsHandler.Create)
 	router.PUT("/group", r.in.Handler.GroupsHandler.Update)

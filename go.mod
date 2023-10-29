@@ -11,6 +11,7 @@ require (
 	github.com/go-redsync/redsync/v4 v4.10.0
 	github.com/goccy/go-json v0.10.2
 	github.com/gofrs/uuid v4.4.0+incompatible
+	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/jinzhu/copier v0.4.0
 	github.com/prometheus/client_golang v1.17.0
 	github.com/redis/go-redis/v9 v9.2.1
