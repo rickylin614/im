@@ -32,7 +32,7 @@ func (r *routeCacheRepository) Get(ctx context.Context, cond *req.RouteCacheGet)
 	// 使用 singleflight 確保只有一個 goroutine 呼叫此 function 對於相同的一個 key
 	data, err, _ := r.group.Do(cond.RouteCacheKey, func() (interface{}, error) {
 		if data := r.in.Rdb.Get(ctx, cond.RouteCacheKey); data.Err() != nil {
-			r.in.Logger.Error(ctx, err)
+			// r.in.Logger.Error(ctx, err)
 			return "", data.Err()
 		} else {
 			r.in.Cache.Set([]byte(cond.RouteCacheKey), []byte(data.Val()), 3)
