@@ -25,10 +25,6 @@ func (h groupsHandler) Get(ctx *gin.Context) {
 		ctxs.SetError(ctx, err)
 		return
 	}
-	if err := ctx.ShouldBindJSON(req); err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
 	data, err := h.in.Service.GroupsSrv.Get(ctx, req)
 	if err != nil {
 		ctxs.SetError(ctx, err)

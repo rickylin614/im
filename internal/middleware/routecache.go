@@ -2,13 +2,12 @@ package middleware
 
 import (
 	"bytes"
-	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/singleflight"
 
-	"im/internal/models/req"
+	"im/internal/models"
 	"im/internal/pkg/consts"
 	"im/internal/util/ctxs"
 	"im/internal/util/errs"
@@ -24,13 +23,13 @@ func (m *CacheMiddleware) RouteCacheMiddleware(ctx *gin.Context) {
 	key := consts.ROUTE_CACHE_KEY + ctx.Request.Method + ":" + ctx.FullPath()
 
 	// 確認緩存
-	cache, err := m.in.Service.RouteCacheSrv.Get(ctx, &req.RouteCacheGet{
+	cache, err := m.in.Service.RouteCacheSrv.Get(ctx, &models.RouteCacheGet{
 		RouteCacheKey: key,
 	})
 
 	// 有緩存，返回緩存資料
-	if err == nil && len(cache) > 0 {
-		ctx.String(http.StatusOK, cache)
+	if err == nil && len(cache.Bytes()) > 0 {
+		ctx.Data(cache.Status, "application/json; charset=utf-8", cache.Body)
 		ctx.Abort()
 		return
 	}
@@ -54,12 +53,14 @@ func (m *CacheMiddleware) RouteCacheMiddleware(ctx *gin.Context) {
 		}
 
 		// 取得response資料
-		responseData := wrappedWriter.body.String()
+		responseData := wrappedWriter.body.Bytes()
+		status := wrappedWriter.Status()
 
+		routeCache := models.NewRouteCache(status, responseData)
 		// 保存緩存資料
-		err := m.in.Service.RouteCacheSrv.Set(ctx, &req.RouteCacheSet{
+		err := m.in.Service.RouteCacheSrv.Set(ctx, &models.RouteCacheSet{
 			RouteCacheKey:  key,
-			RouteCacheData: responseData,
+			RouteCacheData: routeCache,
 			TTL:            ttl,
 		})
 
@@ -68,15 +69,14 @@ func (m *CacheMiddleware) RouteCacheMiddleware(ctx *gin.Context) {
 		}
 
 		// 获取response数据
-		return responseData, nil
+		return routeCache, nil
 	})
 
-	if shared {
-		ctx.Abort()
-	}
-
-	if v, ok := data.(string); err == nil && ok {
-		ctx.String(http.StatusOK, v)
+	if v, ok := data.(*models.RouteCache); err == nil && ok {
+		if shared {
+			ctx.Data(v.Status, "application/json; charset=utf-8", v.Body)
+			ctx.Abort()
+		}
 	} else {
 		if err != nil {
 			m.in.Logger.Error(ctx, err)

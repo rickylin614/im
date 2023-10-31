@@ -7,6 +7,7 @@ CREATE TABLE
         `email` varchar(255) NOT NULL,
         `password_hash` varchar(255) NOT NULL,
         `phone_number` varchar(255) DEFAULT NULL COMMENT '手機號碼',
+        `nickname` varchar(100) DEFAULT NULL  COMMENT '會員暱稱',
         `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
         `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (`id`),

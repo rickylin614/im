@@ -2,7 +2,7 @@ config:
   log_config:
     name: "im"
     env: "local"
-    level: "debug"
+    level: "error"
   mysql_config:
     master: "localhost:3306"
     slave: "localhost:3306"
@@ -15,8 +15,7 @@ config:
     log_mode: true
   gin_config:
     port: ":9000"
-    debug_mode: true
-    swagger_mode: true
+    debug_mode: false
   redis_config:
     address: "localhost:6379"
     Password: ""
@@ -40,7 +39,5 @@ config:
     burst: 0
     store_size: 65536
     use_memory_store: false
-  crypto_config:
-    token_secret: "abcdefg"
 
     

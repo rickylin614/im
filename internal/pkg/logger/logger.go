@@ -1,11 +1,13 @@
 package logger
 
 import (
+	"log/slog"
 	"time"
 
 	"im/internal/pkg/config"
 	"im/internal/pkg/consts"
 
+	slogzap "github.com/samber/slog-zap/v2"
 	"go.uber.org/dig"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -51,7 +53,7 @@ func newLogger(level zapcore.Level, serviceName string, env string) *ZapLogger {
 		errorOutputPaths = append(errorOutputPaths, "./im_error.log")
 	}
 
-	config := zap.Config{
+	configs := zap.Config{
 		Level:             zap.NewAtomicLevelAt(level), // 日志级别
 		DisableStacktrace: true,
 		Development:       false,         // 开发模式，堆栈跟踪
@@ -67,10 +69,14 @@ func newLogger(level zapcore.Level, serviceName string, env string) *ZapLogger {
 	options[0] = zap.AddCallerSkip(1)
 	options[1] = zap.AddStacktrace(zapcore.ErrorLevel)
 
-	logger, err := config.Build(options...)
+	logger, err := configs.Build(options...)
 	if err != nil {
 		panic(err)
 	}
+
+	// 設置全局 給沒有di的共用方法使用
+	s := slog.New(slogzap.Option{Logger: logger}.NewZapHandler())
+	slog.SetDefault(s)
 
 	return &ZapLogger{
 		logger: logger,

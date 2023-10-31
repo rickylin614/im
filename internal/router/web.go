@@ -12,10 +12,12 @@ func (r WebRouter) SetRouter(router *gin.Engine) {
 	// set middleware
 	if r.in.Config.GinConfig.DebugMode {
 		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
 	}
 	// TODO define recovery middleware
 	router.Use(
-		gin.Logger(),
+		//gin.Logger(),
 		gin.Recovery(),
 	)
 
@@ -24,7 +26,7 @@ func (r WebRouter) SetRouter(router *gin.Engine) {
 	r.setPublicRouter(pubGroup)
 
 	priGroup := router.Group("/im/")
-	priGroup.Use(r.in.Middle.Auth.IsLogin)
+	// priGroup.Use(r.in.Middle.Auth.IsLogin)
 	r.setAuthRouter(priGroup)
 }
 
