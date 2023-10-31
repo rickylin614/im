@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +16,8 @@ func (r WebRouter) SetRouter(router *gin.Engine) {
 	} else {
 		gin.SetMode(gin.ReleaseMode)
 	}
+	pprof.Register(router, "/debug/pprof")
+
 	// TODO define recovery middleware
 	router.Use(
 		//gin.Logger(),
