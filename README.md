@@ -126,15 +126,18 @@ func NewConfig() *Config {
 └─scripts
 ```
 
-# template快速創建
+## 套件安裝
 
-- 安裝套件 ``
+- 快速產生套件
 
+```shell
+go install github.com/rickylin614/nunu@v1.0.4
 ```
-go install github.com/rickylin614/nunu@v1.0.3-rc.4
+```shell
+go install github.com/vektra/mockery/v3
 ```
 
-## 標籤
+## 執行時標籤
 
 - 使gin的json編碼使用非基礎套件:
   - tags加上`go_json`, 會使用`github.com/goccy/go-json`

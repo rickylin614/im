@@ -18,7 +18,7 @@ type {{ .FileNameTitleLower }}Handler struct {
 // @Tags {{ .FileNameTitleLower }}
 // @Param body body request.{{ .FileName }}Get true "param"
 // @Success 200 {object} response.APIResponse[response.{{ .FileName }}Get]
-// @Router /{{ .FileNameTitleLower }}/:id [get]
+// @Router /{{ .FileNameKebabCase }}/:id [get]
 func (h {{ .FileNameTitleLower }}Handler) Get(ctx *gin.Context) {
 	req := &request.{{ .FileName }}Get{}
 	if err := ctx.ShouldBindUri(req); err != nil {
@@ -50,7 +50,7 @@ func (h {{ .FileNameTitleLower }}Handler) Get(ctx *gin.Context) {
 // @Tags {{ .FileNameTitleLower }}
 // @Param body body request.{{ .FileName }}GetList true "param"
 // @Success 200 {object} response.APIResponse[response.{{ .FileName }}GetList]
-// @Router /{{ .FileNameTitleLower }} [get]
+// @Router /{{ .FileNameKebabCase }} [get]
 func (h {{ .FileNameTitleLower }}Handler) GetList(ctx *gin.Context) {
 	req := &request.{{ .FileName }}GetList{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
@@ -75,7 +75,7 @@ func (h {{ .FileNameTitleLower }}Handler) GetList(ctx *gin.Context) {
 // @Tags {{ .FileNameTitleLower }}
 // @Param body body request.{{ .FileName }}Create true "param"
 // @Success 200 {object} response.APIResponse[string]
-// @Router /{{ .FileNameTitleLower }} [post]
+// @Router /{{ .FileNameKebabCase }} [post]
 func (h {{ .FileNameTitleLower }}Handler) Create(ctx *gin.Context) {
 	req := &request.{{ .FileName }}Create{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
@@ -95,7 +95,7 @@ func (h {{ .FileNameTitleLower }}Handler) Create(ctx *gin.Context) {
 // @Tags {{ .FileNameTitleLower }}
 // @Param body body request.{{ .FileName }}Update true "param"
 // @Success 200 {object} response.APIResponse[string]
-// @Router /{{ .FileNameTitleLower }} [put]
+// @Router /{{ .FileNameKebabCase }} [put]
 func (h {{ .FileNameTitleLower }}Handler) Update(ctx *gin.Context) {
 	req := &request.{{ .FileName }}Update{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
@@ -116,7 +116,7 @@ func (h {{ .FileNameTitleLower }}Handler) Update(ctx *gin.Context) {
 // @Tags {{ .FileNameTitleLower }}
 // @Param body body request.{{ .FileName }}Delete true "param"
 // @Success 200 {object} response.APIResponse[string]
-// @Router /{{ .FileNameTitleLower }} [delete]
+// @Router /{{ .FileNameKebabCase }} [delete]
 func (h {{ .FileNameTitleLower }}Handler) Delete(ctx *gin.Context) {
 	req := &request.{{ .FileName }}Delete{}
 	if err := ctx.ShouldBindJSON(req); err != nil {

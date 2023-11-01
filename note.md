@@ -62,10 +62,6 @@ nunu append user
 
 - `go install github.com/swaggo/swag/cmd/swag@latest`
 
-### swagger local path
-
-- http://localhost:8800/swagger/index.html
-
 ### swagger generate
 
 - `make docs`
