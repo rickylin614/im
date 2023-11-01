@@ -10,17 +10,18 @@ type WebRouter struct {
 }
 
 func (r WebRouter) SetRouter(router *gin.Engine) {
-	// set middleware
+	//	註冊pprof
+	pprof.Register(router, "/debug/pprof")
+	// check mode
 	if r.in.Config.GinConfig.DebugMode {
 		gin.SetMode(gin.DebugMode)
+		router.Use(gin.Logger())
 	} else {
 		gin.SetMode(gin.ReleaseMode)
 	}
-	pprof.Register(router, "/debug/pprof")
 
 	// TODO define recovery middleware
 	router.Use(
-		//gin.Logger(),
 		gin.Recovery(),
 	)
 
@@ -29,7 +30,7 @@ func (r WebRouter) SetRouter(router *gin.Engine) {
 	r.setPublicRouter(pubGroup)
 
 	priGroup := router.Group("/im/")
-	// priGroup.Use(r.in.Middle.Auth.IsLogin)
+	priGroup.Use(r.in.Middle.Auth.IsLogin)
 	r.setAuthRouter(priGroup)
 }
 

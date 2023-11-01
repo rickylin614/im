@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/redis/go-redis/v9"
 	"golang.org/x/sync/singleflight"
@@ -24,7 +23,6 @@ func NewRouteCacheRepository(in digIn) IRouteCacheRepository {
 type routeCacheRepository struct {
 	in    digIn
 	group singleflight.Group
-	count int
 }
 
 func (r *routeCacheRepository) Get(ctx context.Context, cond *models.RouteCacheGet) (*models.RouteCache, error) {
@@ -37,8 +35,6 @@ func (r *routeCacheRepository) Get(ctx context.Context, cond *models.RouteCacheG
 
 	// 使用 singleflight 確保只有一個 goroutine 呼叫此 function 對於相同的一個 key
 	data, err, _ := r.group.Do(cond.RouteCacheKey, func() (interface{}, error) {
-		fmt.Println(r.count)
-		r.count++
 		if data := r.in.Rdb.Get(ctx, cond.RouteCacheKey); data.Err() != nil {
 			if !errors.Is(data.Err(), redis.Nil) {
 				r.in.Logger.Error(ctx, err)

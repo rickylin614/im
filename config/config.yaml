@@ -15,7 +15,7 @@ config:
     log_mode: true
   gin_config:
     port: ":9000"
-    debug_mode: false
+    debug_mode: true
   redis_config:
     address: "localhost:6379"
     Password: ""
@@ -35,8 +35,8 @@ config:
   cache_config:
     cache_size: 2097152
   rate_config:
-    rate: 1
-    burst: 0
+    rate: 5
+    burst: 10
     store_size: 65536
     use_memory_store: false
 

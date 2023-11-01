@@ -15,7 +15,7 @@ func NewService(in digIn) *Service {
 		UsersSrv:         NewUsersService(in),
 		LoginRecordSrv:   NewLoginRecordService(in),
 		FriendSrv:        NewFriendService(in),
-		FriendRequestsrv: NewFriendRequestservice(in),
+		FriendRequestSrv: NewFriendRequestservice(in),
 		GroupsSrv:        NewGroupsService(in),
 		GroupMembersSrv:  NewGroupMembersService(in),
 		RouteCacheSrv:    NewRouteCacheService(in),
@@ -29,7 +29,7 @@ type Service struct {
 	UsersSrv         IUsersService
 	LoginRecordSrv   ILoginRecordService
 	FriendSrv        IFriendService
-	FriendRequestsrv IFriendRequestservice
+	FriendRequestSrv IFriendRequestservice
 	GroupsSrv        IGroupsService
 	GroupMembersSrv  IGroupMembersService
 	RouteCacheSrv    IRouteCacheService

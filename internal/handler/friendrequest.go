@@ -25,7 +25,7 @@ func (h FriendRequestsHandler) GetList(ctx *gin.Context) {
 		ctxs.SetError(ctx, err)
 		return
 	}
-	data, err := h.in.Service.FriendRequestsrv.GetList(ctx, req)
+	data, err := h.in.Service.FriendRequestSrv.GetList(ctx, req)
 	if err != nil {
 		ctxs.SetError(ctx, err)
 		return
@@ -54,7 +54,7 @@ func (h FriendRequestsHandler) Create(ctx *gin.Context) {
 		ctxs.SetError(ctx, err)
 		return
 	}
-	id, err := h.in.Service.FriendRequestsrv.Create(ctx, req)
+	id, err := h.in.Service.FriendRequestSrv.Create(ctx, req)
 	if err != nil {
 		ctxs.SetError(ctx, err)
 		return
@@ -78,7 +78,7 @@ func (h FriendRequestsHandler) Update(ctx *gin.Context) {
 		return
 	}
 
-	err := h.in.Service.FriendRequestsrv.Update(ctx, req)
+	err := h.in.Service.FriendRequestSrv.Update(ctx, req)
 	if err != nil {
 		ctxs.SetError(ctx, err)
 		return
