@@ -9,7 +9,7 @@ import (
 	"im/internal/repository"
 )
 
-func NewService(in digIn) *Service {
+func NewService(in DigIn) *Service {
 	return &Service{in: in,
 		ExampleSrv:       NewExampleService(in),
 		UsersSrv:         NewUsersService(in),
@@ -23,7 +23,7 @@ func NewService(in digIn) *Service {
 }
 
 type Service struct {
-	in digIn
+	in DigIn
 
 	ExampleSrv       IExampleService
 	UsersSrv         IUsersService
@@ -35,8 +35,8 @@ type Service struct {
 	RouteCacheSrv    IRouteCacheService
 }
 
-// digIn repository require independence
-type digIn struct {
+// DigIn repository require independence
+type DigIn struct {
 	dig.In
 
 	Repository *repository.Repository

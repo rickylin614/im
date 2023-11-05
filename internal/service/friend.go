@@ -18,12 +18,12 @@ type IFriendService interface {
 	Delete(ctx *gin.Context, cond *req.FriendDelete) (err error)
 }
 
-func NewFriendService(in digIn) IFriendService {
+func NewFriendService(in DigIn) IFriendService {
 	return friendService{in: in}
 }
 
 type friendService struct {
-	in digIn
+	in DigIn
 }
 
 func (s friendService) Get(ctx *gin.Context, cond *req.FriendGet) (*models.Friend, error) {

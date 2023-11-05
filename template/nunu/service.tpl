@@ -18,42 +18,42 @@ type I{{ .FileName }}Service interface {
 }
 
 func New{{ .FileName }}Service(in digIn) I{{ .FileName }}Service {
-	return {{ .FileNameTitleLower }}Service{in: in}
+	return {{ .FileNameTitleLower }}Service{In: in}
 }
 
 type {{ .FileNameTitleLower }}Service struct {
-	in digIn
+	In digIn
 }
 
 func (s {{ .FileNameTitleLower }}Service) Get(ctx *gin.Context, cond *req.{{ .FileName }}Get) (*models.{{ .FileName }}, error) {
-	db := s.in.DB.Session(ctx)
-	return s.in.Repository.{{ .FileName }}Repo.Get(db, cond)
+	db := s.In.DB.Session(ctx)
+	return s.In.Repository.{{ .FileName }}Repo.Get(db, cond)
 }
 
 func (s {{ .FileNameTitleLower }}Service) GetList(ctx *gin.Context, cond *req.{{ .FileName }}GetList) (*models.PageResult[*models.{{ .FileName }}], error) {
-	db := s.in.DB.Session(ctx)
-	return s.in.Repository.{{ .FileName }}Repo.GetList(db, cond)
+	db := s.In.DB.Session(ctx)
+	return s.In.Repository.{{ .FileName }}Repo.GetList(db, cond)
 }
 
 func (s {{ .FileNameTitleLower }}Service) Create(ctx *gin.Context, cond *req.{{ .FileName }}Create) (id any, err error) {
-	db := s.in.DB.Session(ctx)
+	db := s.In.DB.Session(ctx)
 	insertData := &models.{{ .FileName }}{ID: uuid.New()}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}
-	return s.in.Repository.{{ .FileName }}Repo.Create(db, insertData)
+	return s.In.Repository.{{ .FileName }}Repo.Create(db, insertData)
 }
 
 func (s {{ .FileNameTitleLower }}Service) Update(ctx *gin.Context, cond *req.{{ .FileName }}Update) (err error) {
-	db := s.in.DB.Session(ctx)
+	db := s.In.DB.Session(ctx)
 	updateData := &models.{{ .FileName }}{}
 	if err := copier.Copy(updateData, cond); err != nil {
 		return err
 	}
-	return s.in.Repository.{{ .FileName }}Repo.Update(db, updateData)
+	return s.In.Repository.{{ .FileName }}Repo.Update(db, updateData)
 }
 
 func (s {{ .FileNameTitleLower }}Service) Delete(ctx *gin.Context, cond *req.{{ .FileName }}Delete) (err error) {
-	db := s.in.DB.Session(ctx)
-	return s.in.Repository.{{ .FileName }}Repo.Delete(db, cond.ID)
+	db := s.In.DB.Session(ctx)
+	return s.In.Repository.{{ .FileName }}Repo.Delete(db, cond.ID)
 }

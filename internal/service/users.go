@@ -30,53 +30,53 @@ type IUsersService interface {
 	GetByToken(ctx *gin.Context, token string) (user *models.Users, err error)
 }
 
-func NewUsersService(in digIn) IUsersService {
-	return usersService{in: in}
+func NewUsersService(in DigIn) IUsersService {
+	return UsersService{In: in}
 }
 
-type usersService struct {
-	in digIn
+type UsersService struct {
+	In DigIn
 }
 
-func (s usersService) Get(ctx *gin.Context, cond *req.UsersGet) (*models.Users, error) {
-	db := s.in.DB.Session(ctx)
-	return s.in.Repository.UsersRepo.Get(db, cond)
+func (s UsersService) Get(ctx *gin.Context, cond *req.UsersGet) (*models.Users, error) {
+	db := s.In.DB.Session(ctx)
+	return s.In.Repository.UsersRepo.Get(db, cond)
 }
 
-func (s usersService) GetList(ctx *gin.Context, cond *req.UsersGetList) (*models.PageResult[*models.Users], error) {
-	db := s.in.DB.Session(ctx)
-	return s.in.Repository.UsersRepo.GetList(db, cond)
+func (s UsersService) GetList(ctx *gin.Context, cond *req.UsersGetList) (*models.PageResult[*models.Users], error) {
+	db := s.In.DB.Session(ctx)
+	return s.In.Repository.UsersRepo.GetList(db, cond)
 }
 
-func (s usersService) Create(ctx *gin.Context, cond *req.UsersCreate) (id any, err error) {
-	db := s.in.DB.Session(ctx)
+func (s UsersService) Create(ctx *gin.Context, cond *req.UsersCreate) (id any, err error) {
+	db := s.In.DB.Session(ctx)
 	insertData := &models.Users{ID: uuid.New(), PasswordHash: crypto.Hash(cond.Password)}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}
-	return s.in.Repository.UsersRepo.Create(db, insertData)
+	return s.In.Repository.UsersRepo.Create(db, insertData)
 }
 
-func (s usersService) Update(ctx *gin.Context, cond *req.UsersUpdate) (err error) {
-	db := s.in.DB.Session(ctx)
+func (s UsersService) Update(ctx *gin.Context, cond *req.UsersUpdate) (err error) {
+	db := s.In.DB.Session(ctx)
 	updateData := &models.Users{}
 	if err := copier.Copy(updateData, cond); err != nil {
 		return err
 	}
-	return s.in.Repository.UsersRepo.Update(db, updateData)
+	return s.In.Repository.UsersRepo.Update(db, updateData)
 }
 
-func (s usersService) Delete(ctx *gin.Context, cond *req.UsersDelete) (err error) {
-	db := s.in.DB.Session(ctx)
-	return s.in.Repository.UsersRepo.Delete(db, cond.ID)
+func (s UsersService) Delete(ctx *gin.Context, cond *req.UsersDelete) (err error) {
+	db := s.In.DB.Session(ctx)
+	return s.In.Repository.UsersRepo.Delete(db, cond.ID)
 }
 
-func (s usersService) Login(ctx *gin.Context, cond *req.UsersLogin) (token string, err error) {
-	db := s.in.DB.Session(ctx)
+func (s UsersService) Login(ctx *gin.Context, cond *req.UsersLogin) (token string, err error) {
+	db := s.In.DB.Session(ctx)
 
 	// 取得使用者資訊
 	getCond := &req.UsersGet{Username: cond.Username}
-	user, err := s.in.Repository.UsersRepo.Get(db, getCond)
+	user, err := s.In.Repository.UsersRepo.Get(db, getCond)
 	if err != nil || user == nil {
 		return "", errs.LoginCommonError
 	}
@@ -113,22 +113,22 @@ func (s usersService) Login(ctx *gin.Context, cond *req.UsersLogin) (token strin
 		})
 	token, err = jwfclaims.SignedString(crypto.GetRsaPrivateKey())
 	if err != nil {
-		s.in.Logger.Error(ctx, fmt.Errorf("sjwfclaims.SignedString err: %w", err))
+		s.In.Logger.Error(ctx, fmt.Errorf("sjwfclaims.SignedString err: %w", err))
 		return "", errs.CommonServiceUnavailable
 	}
 
-	if err = s.in.Repository.UsersRepo.SetToken(ctx, user.ID, ctxs.GetDeviceID(ctx), token); err != nil {
-		s.in.Logger.Error(ctx, fmt.Errorf("service set token err: %w", err))
+	if err = s.In.Repository.UsersRepo.SetToken(ctx, user.ID, ctxs.GetDeviceID(ctx), token); err != nil {
+		s.In.Logger.Error(ctx, fmt.Errorf("service set token err: %w", err))
 		return "", errs.CommonServiceUnavailable
 	}
 	return token, nil
 }
 
-func (s usersService) loginRecord(loginRecord *models.LoginRecord) {
+func (s UsersService) loginRecord(loginRecord *models.LoginRecord) {
 	ctx := context.Background()
-	db := s.in.DB.Session(ctx)
-	if _, err := s.in.Repository.LoginRecordRepo.Create(db, loginRecord); err != nil {
-		s.in.Logger.Error(ctx, fmt.Errorf("login record create err: %w", err))
+	db := s.In.DB.Session(ctx)
+	if _, err := s.In.Repository.LoginRecordRepo.Create(db, loginRecord); err != nil {
+		s.In.Logger.Error(ctx, fmt.Errorf("login record create err: %w", err))
 	}
 }
 
@@ -143,7 +143,7 @@ func composeLoginRecord(ctx *gin.Context, user *models.Users, loginStatus consts
 	}
 }
 
-func (s usersService) Logout(ctx *gin.Context, jwtToken string) (err error) {
+func (s UsersService) Logout(ctx *gin.Context, jwtToken string) (err error) {
 	token, err := jwt.ParseWithClaims(jwtToken, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// 确保token的签名算法是我们预期的
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
@@ -153,7 +153,7 @@ func (s usersService) Logout(ctx *gin.Context, jwtToken string) (err error) {
 	})
 
 	if err != nil {
-		s.in.Logger.Error(ctx, err)
+		s.In.Logger.Error(ctx, err)
 		return errs.RequestTokenError
 	}
 
@@ -162,10 +162,10 @@ func (s usersService) Logout(ctx *gin.Context, jwtToken string) (err error) {
 		return errs.RequestTokenError
 	}
 
-	return s.in.Repository.UsersRepo.DelToken(ctx, claims.Issuer, claims.DeviceID)
+	return s.In.Repository.UsersRepo.DelToken(ctx, claims.Issuer, claims.DeviceID)
 }
 
-func (s usersService) GetByToken(ctx *gin.Context, jwtToken string) (user *models.Users, err error) {
+func (s UsersService) GetByToken(ctx *gin.Context, jwtToken string) (user *models.Users, err error) {
 	token, err := jwt.ParseWithClaims(jwtToken, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// 驗證算法
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
@@ -175,7 +175,7 @@ func (s usersService) GetByToken(ctx *gin.Context, jwtToken string) (user *model
 	})
 
 	if err != nil {
-		s.in.Logger.Error(ctx, err)
+		s.In.Logger.Error(ctx, err)
 		return nil, errs.RequestTokenError
 	}
 
@@ -183,7 +183,7 @@ func (s usersService) GetByToken(ctx *gin.Context, jwtToken string) (user *model
 	if !ok || !token.Valid {
 		return nil, errs.RequestTokenError
 	}
-	_, err = s.in.Repository.UsersRepo.GetByToken(ctx, claims.Issuer, claims.DeviceID, claims.ID)
+	_, err = s.In.Repository.UsersRepo.GetByToken(ctx, claims.Issuer, claims.DeviceID, claims.ID)
 	if err != nil {
 		return nil, err
 	}

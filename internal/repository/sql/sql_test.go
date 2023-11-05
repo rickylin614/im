@@ -35,7 +35,7 @@ func (s *SQLSuite) TestLoadSuccessfulRead() {
 }
 
 func (s *SQLSuite) TestLoadFileNotFound() {
-	s.MockFS.On("ReadFile", "notfound.sql").Return(nil, errors.New("file not found"))
+	s.MockFS.On("ReadFile", "notfound.sql").Return([]byte{}, errors.New("file not found"))
 	s.MockLogger.On("Error", mock.Anything, mock.Anything).Once()
 	s.Equal("", s.Files.Load("notfound.sql"))
 	s.MockLogger.AssertExpectations(s.T())
