@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name IFriendRepository --structname MockFriendRepository --filename mock_friend.go --output mock_repository --outpkg mock_repository --with-expecter
 type IFriendRepository interface {
 	Get(db *gorm.DB, cond *req.FriendGet) (*models.Friend, error)
 	GetList(db *gorm.DB, cond *req.FriendGetList) (*models.PageResult[*models.Friend], error)

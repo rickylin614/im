@@ -158,7 +158,7 @@ func (s UsersService) Logout(ctx *gin.Context, jwtToken string) (err error) {
 	}
 
 	claims, ok := token.Claims.(*models.JWTClaims)
-	if !ok || token.Valid {
+	if !ok || !token.Valid {
 		return errs.RequestTokenError
 	}
 

@@ -14,7 +14,7 @@ import (
 	"im/internal/util/errs"
 )
 
-//go:generate mockery --name IUsersRepository --structname MockUsersRepository --output mock_repository --outpkg mock_repository --filename mock_users.go --with-expecter
+//go:generate mockery --name IUsersRepository --structname MockUsersRepository --filename mock_users.go --output mock_repository --outpkg mock_repository --with-expecter
 type IUsersRepository interface {
 	Get(db *gorm.DB, cond *req.UsersGet) (*models.Users, error)
 	GetList(db *gorm.DB, cond *req.UsersGetList) (*models.PageResult[*models.Users], error)

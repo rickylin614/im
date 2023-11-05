@@ -7,7 +7,7 @@ import (
 )
 
 type MockLogger struct {
-	mock.Mock
+	*mock.Mock
 }
 
 func (m *MockLogger) Level() string {
