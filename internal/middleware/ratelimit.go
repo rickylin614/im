@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/throttled/throttled/v2"
-	goredisstore "github.com/throttled/throttled/v2/store/goredisstore.v9"
+	"github.com/throttled/throttled/v2/store/goredisstore.v9"
 	"github.com/throttled/throttled/v2/store/memstore"
 )
 
@@ -37,6 +37,9 @@ func (m *RateLimitMiddleware) RateLimitMiddleware() gin.HandlerFunc {
 	}
 
 	rateLimiter, err := throttled.NewGCRARateLimiterCtx(store, quota)
+	if err != nil {
+		panic(err)
+	}
 
 	rateLimitMiddleware := func(ctx *gin.Context) {
 		key := consts.RATE_LIMIT_KEY + ctx.ClientIP()

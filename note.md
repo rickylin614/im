@@ -13,7 +13,7 @@
 ## nunu
 
 - 根據模板快速創立文件
-    - 模板放置template/nunu目錄底下
+    - 模板放置 template / nunu 目錄底下
 
 ```sh
 # 安裝
@@ -76,7 +76,6 @@ tx := DB.Clauses(dbresolver.Read).Begin()
 // Start transaction based on default sources db
 tx := DB.Clauses(dbresolver.Write).Begin()
 ```
-
 
 ## Binding 使用
 

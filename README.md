@@ -3,40 +3,63 @@
 # im
 instant message project
 
+## 預計架構
+
+- 實現下方WebRTC, Web, WebSocket端
+
+```mermaid
+graph LR
+    Flutter["Flutter<br>(Frontend)"] -->|HTTP/HTTPS| Nginx["Nginx<br>(Routing & Load Balancing)"]
+    Nginx -->|HTTP/HTTPS| Web["Web<br>(Backend Service)"]
+    Nginx -->|HTTP/HTTPS| WebSocket["WebSocket<br>(Backend Service)"]
+    Nginx -->|Static Content| FileServer["FileServer<br>(Image Storage)"]
+    Nginx -->|HTTP/HTTPS| WebRTC["WebRTC<br>(Backend Service)"]
+    Web -->|Message| Queue[Message Queue]
+    Queue -->|Notification| WebSocket
+    WebSocket -->|Ws Signaling| Flutter
+    Flutter -->|WebRTC Signaling| WebSocket
+    WebRTC -->|WebRTC Media & Data| Flutter
+```
+
 ## 程序業務
 
 ### 中間件
 
-#### 
 
-#### RouteCache
 
-```shell
-func NewConfig() *Config {
-	path, err := filepath.Abs("config/config.yaml")
-	if err != nil {
-		panic(err)
-	}
+#### RouteCache 
 
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		panic(err)
-	}
+- 路由根據url設定緩存
+- 設置RouteCache不會有route參數以外的其餘參數
+- 流程圖
+  ```mermaid
+  graph TD;
+  C[嘗試獲取緩存數據]
+  C -->|緩存命中| D[返回緩存數據並中止]
+  C -->|緩存未命中| E["進入SingleFlight (Redis級別)"]
+  E --> F[嘗試獲取Redis數據]
+  F -->|Redis命中| G[設置緩存數據, 返回Redis數據]
+  F -->|Redis未命中| H["進入SingleFlight (DB級別)"]
+  H --> I[獲取DB數據]
+  I --> J[設置Redis和緩存數據]
+  J --> K[返回DB數據]
+  ```
 
-	v := viper.New()
-	v.SetConfigType("yaml")
-	v.SetConfigFile(path)
-	if err := v.ReadInConfig(); err != nil {
-		panic(err)
-	}
-	conf := &Config{}
-	if err := v.UnmarshalKey("config", conf); err != nil {
-		panic(err)
-	}
+#### Ratelimit
 
-  
-
-	return conf
-}
+- 限制用戶ip登入次數
+- 視條件更改所有
+```mermaid
+graph LR
+    A[開始] --> B{使用內存存儲?}
+    B --是--> C[初始化內存存儲]
+    B --否--> D[初始化Redis存儲]
+    C --> E[設置速率和突發值<br>創建GCRARateLimiter]
+    D --> E
+    E --> G[定義中間件]
+    G --> H{檢查是否超限}
+    H --是--> I[返回錯誤: 請求過於頻繁]
+    H --否--> J[繼續處理請求]
 ```
 
 ## API List
@@ -134,8 +157,10 @@ func NewConfig() *Config {
 go install github.com/rickylin614/nunu@v1.0.4
 ```
 ```shell
-go install github.com/vektra/mockery/v3
+go install github.com/vektra/mockery/v2@v2.36.0
 ```
+
+-- v2.36.0
 
 ## 執行時標籤
 
