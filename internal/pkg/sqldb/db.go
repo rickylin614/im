@@ -37,7 +37,6 @@ func (g *GormDB) Begin(ctx context.Context) *gorm.DB {
 	return tx
 }
 
-// GetDB 返回 *gorm.DB
 func (g *GormDB) GetMock() sqlmock.Sqlmock {
 	return nil
 }
