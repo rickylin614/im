@@ -82,6 +82,7 @@ func (suite *UserServiceTestSuite) TearDownTest() {
 // After all tests
 func (suite *UserServiceTestSuite) TearDownSuite() {
 	suite.Deps.UsersRepo.AssertExpectations(suite.T())
+	suite.Deps.LoginRecordRepo.AssertExpectations(suite.T())
 }
 
 func (suite *UserServiceTestSuite) TestGetUser() {
@@ -94,7 +95,6 @@ func (suite *UserServiceTestSuite) TestGetUser() {
 
 	suite.NoError(err)
 	suite.Equal(expectedUser, user)
-	suite.Deps.UsersRepo.AssertExpectations(suite.T())
 }
 
 func (suite *UserServiceTestSuite) TestGetList() {

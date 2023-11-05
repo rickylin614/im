@@ -20,7 +20,7 @@ type SQLSuite struct {
 func (s *SQLSuite) SetupTest() {
 	// 初始化模拟对象
 	s.MockFS = new(MockFS)
-	s.MockLogger = &logger.MockLogger{}
+	s.MockLogger = &logger.MockLogger{Mock: &mock.Mock{}}
 
 	// 初始化Files
 	s.Files = &Files{
