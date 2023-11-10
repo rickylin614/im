@@ -67,11 +67,11 @@ func SetUserInfo(ctx *gin.Context, user *models.Users) {
 func GetUserInfo(ctx *gin.Context) (user *models.Users) {
 	data, ok := ctx.Get(consts.UserInfo)
 	if !ok {
-		panic(errors.New("Not Login Func Use UserInfo"))
+		panic(errors.New("not Login Func Use UserInfo"))
 	}
 	user, ok = data.(*models.Users)
 	if !ok {
-		panic(errors.New("Not Login Func Use UserInfo"))
+		panic(errors.New("not Login Func Use UserInfo"))
 	}
 	return
 }
@@ -121,7 +121,8 @@ func ParseError(err error) (code string, msg string, data any, statusCode int) {
 // ParseBindingErrMsg
 // 轉換binding錯誤
 func ParseBindingErrMsg(err error) ([]string, bool) {
-	ValidationErrors, ok := err.(validator.ValidationErrors)
+	var ValidationErrors validator.ValidationErrors
+	ok := errors.As(err, &ValidationErrors)
 	if !ok {
 		return nil, false
 	}
