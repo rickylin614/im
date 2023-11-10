@@ -7,6 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name I{{ .FileName }}Repository --structname Mock{{ .FileName }}Repository --filename mock_{{ .FileNameSnakeCase }}.go --output mock_repository --outpkg mock_repository --with-expecter
+
 type I{{ .FileName }}Repository interface {
 	Get(db *gorm.DB, cond *req.{{ .FileName }}Get) (*models.{{ .FileName }}, error)
 	GetList(db *gorm.DB, cond *req.{{ .FileName }}GetList) (*models.PageResult[*models.{{ .FileName }}], error)

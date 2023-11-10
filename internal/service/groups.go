@@ -18,12 +18,12 @@ type IGroupsService interface {
 	Delete(ctx *gin.Context, cond *req.GroupsDelete) (err error)
 }
 
-func NewGroupsService(in digIn) IGroupsService {
+func NewGroupsService(in DigIn) IGroupsService {
 	return groupsService{in: in}
 }
 
 type groupsService struct {
-	in digIn
+	in DigIn
 }
 
 func (s groupsService) Get(ctx *gin.Context, cond *req.GroupsGet) (*models.Groups, error) {

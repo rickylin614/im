@@ -1,20 +1,20 @@
 
 -- 1. Users table
-CREATE TABLE
-    `users` (
-        `id` VARCHAR(64) NOT NULL,
-        `username` VARCHAR(255) NOT NULL,
-        `email` VARCHAR(255) NOT NULL,
-        `password_hash` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-        `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        `phone_number` VARCHAR(255) DEFAULT NULL COMMENT '手機號碼',
-        `nickname` VARCHAR(50) DEFAULT NULL COMMENT '暱稱',
-        `status` int NOT NULL DEFAULT '0' COMMENT '用戶狀態',
-        PRIMARY KEY (`id`),
-        UNIQUE KEY `username` (`username`),
-        UNIQUE KEY `email` (`email`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci
+CREATE TABLE `users` (
+    `id` VARCHAR(64) NOT NULL COMMENT '用戶的唯一標識',
+    `username` VARCHAR(255) NOT NULL COMMENT '用戶名',
+    `email` VARCHAR(255) NOT NULL COMMENT '電子郵件地址',
+    `password_hash` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用戶密碼的哈希值',
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '賬戶創建的時間',
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '賬戶信息最後更新的時間',
+    `phone_number` VARCHAR(255) DEFAULT NULL COMMENT '手機號碼',
+    `nickname` VARCHAR(50) DEFAULT NULL COMMENT '暱稱',
+    `status` INT NOT NULL DEFAULT '0' COMMENT '用戶狀態碼，如0表示未激活',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `username` (`username`) COMMENT '用戶名唯一索引',
+    UNIQUE KEY `email` (`email`) COMMENT '電子郵件地址唯一索引'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='儲存用戶基本信息的資料表';
+
 
 -- 2. User_profiles table
 CREATE TABLE `user_profiles` (

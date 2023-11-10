@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name ILoginRecordRepository --structname MockLoginRecordRepository --output mock_repository --outpkg mock_repository --filename mock_login_record.go --with-expecter
 type ILoginRecordRepository interface {
 	Get(db *gorm.DB, cond *req.LoginRecordGet) (*models.LoginRecord, error)
 	GetList(db *gorm.DB, cond *req.LoginRecordGetList) (*models.PageResult[*models.LoginRecord], error)

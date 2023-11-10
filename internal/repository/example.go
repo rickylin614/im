@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name IExampleRepository --structname MockExampleRepository --filename mock_example.go --output mock_repository --outpkg mock_repository --with-expecter
 type IExampleRepository interface {
 	Get(db *gorm.DB, cond *req.ExampleGet) (*models.Example, error)
 	GetList(db *gorm.DB, cond *req.ExampleGetList) (*models.PageResult[*models.Example], error)

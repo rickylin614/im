@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name IGroupsRepository --structname MockGroupsRepository --filename mock_groups.go --output mock_repository --outpkg mock_repository --with-expecter
 type IGroupsRepository interface {
 	Get(db *gorm.DB, cond *req.GroupsGet) (*models.Groups, error)
 	GetList(db *gorm.DB, cond *req.GroupsGetList) (*models.PageResult[*models.Groups], error)

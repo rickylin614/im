@@ -21,12 +21,12 @@ type IFriendRequestservice interface {
 	Delete(ctx *gin.Context, cond *req.FriendRequestsDelete) (err error)
 }
 
-func NewFriendRequestservice(in digIn) IFriendRequestservice {
+func NewFriendRequestservice(in DigIn) IFriendRequestservice {
 	return FriendRequestservice{in: in}
 }
 
 type FriendRequestservice struct {
-	in digIn
+	in DigIn
 }
 
 func (s FriendRequestservice) Get(ctx *gin.Context, cond *req.FriendRequestsGet) (*models.FriendRequests, error) {

@@ -16,12 +16,12 @@ type ILoginRecordService interface {
 	Delete(ctx *gin.Context, cond *req.LoginRecordDelete) (err error)
 }
 
-func NewLoginRecordService(in digIn) ILoginRecordService {
+func NewLoginRecordService(in DigIn) ILoginRecordService {
 	return loginRecordService{in: in}
 }
 
 type loginRecordService struct {
-	in digIn
+	in DigIn
 }
 
 func (s loginRecordService) Get(ctx *gin.Context, cond *req.LoginRecordGet) (*models.LoginRecord, error) {

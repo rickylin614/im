@@ -17,12 +17,12 @@ type IExampleService interface {
 	Delete(ctx *gin.Context, cond *req.ExampleDelete) (err error)
 }
 
-func NewExampleService(in digIn) IExampleService {
+func NewExampleService(in DigIn) IExampleService {
 	return exampleService{in: in}
 }
 
 type exampleService struct {
-	in digIn
+	in DigIn
 }
 
 func (s exampleService) Get(ctx *gin.Context, cond *req.ExampleGet) (*models.Example, error) {

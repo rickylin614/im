@@ -11,12 +11,12 @@ type IRouteCacheService interface {
 	Set(ctx *gin.Context, cond *models.RouteCacheSet) error
 }
 
-func NewRouteCacheService(in digIn) IRouteCacheService {
+func NewRouteCacheService(in DigIn) IRouteCacheService {
 	return routeCacheService{in: in}
 }
 
 type routeCacheService struct {
-	in digIn
+	in DigIn
 }
 
 func (s routeCacheService) Get(ctx *gin.Context, cond *models.RouteCacheGet) (*models.RouteCache, error) {

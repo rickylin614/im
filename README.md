@@ -13,12 +13,11 @@ graph LR
     Nginx -->|HTTP/HTTPS| Web["Web<br>(Backend Service)"]
     Nginx -->|HTTP/HTTPS| WebSocket["WebSocket<br>(Backend Service)"]
     Nginx -->|Static Content| FileServer["FileServer<br>(Image Storage)"]
-    Nginx -->|HTTP/HTTPS| WebRTC["WebRTC<br>(Backend Service)"]
+    Flutter -->|WebRTC| Flutter
     Web -->|Message| Queue[Message Queue]
     Queue -->|Notification| WebSocket
     WebSocket -->|Ws Signaling| Flutter
     Flutter -->|WebRTC Signaling| WebSocket
-    WebRTC -->|WebRTC Media & Data| Flutter
 ```
 
 ## 程序業務
