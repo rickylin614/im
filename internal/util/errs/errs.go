@@ -8,11 +8,12 @@ import (
 const defaultErr = "00-000"
 
 var (
-	commGroup                = Codes.Group("01")                                     // error from server
-	CommonUnknownError       = commGroup.Add("未知错误", http.StatusInternalServerError) // 未知错误 (HTTP 500)
-	CommonServiceUnavailable = commGroup.Add("系统维护中", http.StatusServiceUnavailable) // 系统维护中 (HTTP 503)
-	CommonConfigureInvalid   = commGroup.Add("设置参数错误", http.StatusBadRequest)        // 设置参数错误 (HTTP 400)
-	CommonParseError         = commGroup.Add("解析失败", http.StatusBadRequest)          // 解析失败 (HTTP 400)
+	commGroup                = Codes.Group("01")                                        // error from server
+	CommonUnknownError       = commGroup.Add("未知错误", http.StatusInternalServerError)    // 未知错误 (HTTP 500)
+	CommonServiceUnavailable = commGroup.Add("系统维护中", http.StatusServiceUnavailable)    // 系统维护中 (HTTP 503)
+	CommonConfigureInvalid   = commGroup.Add("设置参数错误", http.StatusBadRequest)           // 设置参数错误 (HTTP 400)
+	CommonParseError         = commGroup.Add("解析失败", http.StatusBadRequest)             // 解析失败 (HTTP 400)
+	CommonSQLExecutionError  = commGroup.Add("服务器执行错误", http.StatusInternalServerError) // 服务器执行错误 (HTTP 500)
 )
 
 var (

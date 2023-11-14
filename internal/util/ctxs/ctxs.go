@@ -4,7 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
+
+	"github.com/go-sql-driver/mysql"
 
 	"im/internal/models"
 	"im/internal/models/resp"
@@ -104,6 +107,9 @@ func ParseError(err error) (code string, msg string, data any, statusCode int) {
 	if data, ok := ParseBindingErrMsg(err); ok {
 		return errs.RequestParamInvalid.GetCode(), errs.RequestParamInvalid.GetMessage(), data, statusCode
 	}
+	if data, ok := ParseMySQLError(err); ok {
+		return errs.CommonSQLExecutionError.GetCode(), errs.CommonSQLExecutionError.GetMessage(), data, statusCode
+	}
 
 	if v, ok := err.(IMessage); ok {
 		msg = v.GetMessage()
@@ -122,8 +128,7 @@ func ParseError(err error) (code string, msg string, data any, statusCode int) {
 // 轉換binding錯誤
 func ParseBindingErrMsg(err error) ([]string, bool) {
 	var ValidationErrors validator.ValidationErrors
-	ok := errors.As(err, &ValidationErrors)
-	if !ok {
+	if !errors.As(err, &ValidationErrors) {
 		return nil, false
 	}
 
@@ -175,6 +180,67 @@ func ParseBindingErrMsg(err error) ([]string, bool) {
 		default:
 			errorMessages = append(errorMessages, fmt.Sprintf("%s 无效参数", fieldErr))
 		}
+	}
+
+	return errorMessages, true
+}
+
+func ParseMySQLError(err error) ([]string, bool) {
+	var mySQLError *mysql.MySQLError
+	if !errors.As(err, &mySQLError) {
+		return nil, false
+	}
+
+	var errorMessages []string
+	switch mySQLError.Number {
+	case 1045:
+		errorMessages = append(errorMessages, "无效的用户名或密码")
+	case 1049:
+		errorMessages = append(errorMessages, "未知的数据库")
+	case 1054:
+		errorMessages = append(errorMessages, "未知的列")
+	case 1062:
+		// 正则表达式来提取重复键的名称
+		re := regexp.MustCompile(`for key '(.+)'`)
+		matches := re.FindStringSubmatch(mySQLError.Message)
+		if len(matches) > 1 {
+			errorMessages = append(errorMessages, fmt.Sprintf("重复的条目 '%s'", matches[0]))
+		} else {
+			errorMessages = append(errorMessages, "重复的条目")
+		}
+	case 1064:
+		errorMessages = append(errorMessages, "SQL 语法错误")
+	case 1136:
+		errorMessages = append(errorMessages, "列数不匹配")
+	case 1146:
+		// 正则表达式来提取表名
+		re := regexp.MustCompile(`Table '(.+)' doesn't exist`)
+		matches := re.FindStringSubmatch(mySQLError.Message)
+		if len(matches) > 1 {
+			errorMessages = append(errorMessages, fmt.Sprintf("未知的表 '%s'", matches[0]))
+		} else {
+			errorMessages = append(errorMessages, "未知的表")
+		}
+	case 1217:
+		errorMessages = append(errorMessages, "存在外键约束")
+	case 1451:
+		errorMessages = append(errorMessages, "无法删除或更新父行")
+	case 1452:
+		errorMessages = append(errorMessages, "不能添加或更新子行")
+	case 2002:
+		errorMessages = append(errorMessages, "无法连接到 MySQL 服务器")
+	case 2003:
+		errorMessages = append(errorMessages, "无法连接到 MySQL 服务器")
+	case 2006:
+		errorMessages = append(errorMessages, "MySQL 服务器已经断开连接")
+	case 2013:
+		errorMessages = append(errorMessages, "在与 MySQL 服务器通信时丢失连接")
+	case 2026:
+		errorMessages = append(errorMessages, "SSL 连接错误")
+	case 2055:
+		errorMessages = append(errorMessages, "失去与 MySQL 服务器的连接")
+	default:
+		errorMessages = append(errorMessages, fmt.Sprintf("MySQL错误 [%d]: %s", mySQLError.Number, mySQLError.Message))
 	}
 
 	return errorMessages, true
