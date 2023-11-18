@@ -917,6 +917,88 @@ paths:
       summary: 獲取指定用戶ID與另一指定用戶ID的共同好友列表
       tags:
       - friend
+  /group:
+    delete:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupsDelete'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: Delete
+      tags:
+      - groups
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupsGetList'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_GroupsGetList'
+      summary: GetList
+      tags:
+      - groups
+    post:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupsCreate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: 創建群組
+      tags:
+      - groups
+    put:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupsUpdate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: Update
+      tags:
+      - groups
+  /group/:id:
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupsGet'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_GroupsGet'
+      summary: Get
+      tags:
+      - groups
   /groupMembers:
     delete:
       parameters:
@@ -999,88 +1081,6 @@ paths:
       summary: Get
       tags:
       - groupMembers
-  /groups:
-    delete:
-      parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.GroupsDelete'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/resp.APIResponse-string'
-      summary: Delete
-      tags:
-      - groups
-    get:
-      parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.GroupsGetList'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/resp.APIResponse-resp_GroupsGetList'
-      summary: GetList
-      tags:
-      - groups
-    post:
-      parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.GroupsCreate'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/resp.APIResponse-string'
-      summary: 創建群組
-      tags:
-      - groups
-    put:
-      parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.GroupsUpdate'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/resp.APIResponse-string'
-      summary: Update
-      tags:
-      - groups
-  /groups/:id:
-    get:
-      parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.GroupsGet'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/resp.APIResponse-resp_GroupsGet'
-      summary: Get
-      tags:
-      - groups
   /loginRecord:
     get:
       parameters:

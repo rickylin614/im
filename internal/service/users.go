@@ -50,7 +50,7 @@ func (s UsersService) GetList(ctx *gin.Context, cond *req.UsersGetList) (*models
 
 func (s UsersService) Create(ctx *gin.Context, cond *req.UsersCreate) (id any, err error) {
 	db := s.In.DB.Session(ctx)
-	insertData := &models.Users{ID: uuid.New(), PasswordHash: crypto.Hash(cond.Password)}
+	insertData := &models.Users{ID: uuid.New(), PasswordHash: crypto.Hash(cond.Password), Status: consts.UserStatusActive}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}

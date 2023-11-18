@@ -9,7 +9,7 @@ CREATE TABLE `users` (
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '賬戶信息最後更新的時間',
     `phone_number` VARCHAR(255) DEFAULT NULL COMMENT '手機號碼',
     `nickname` VARCHAR(50) DEFAULT NULL COMMENT '暱稱',
-    `status` INT NOT NULL DEFAULT '0' COMMENT '用戶狀態碼，如0表示未激活',
+    `status` INT NOT NULL DEFAULT '0' COMMENT '用戶狀態碼',
     PRIMARY KEY (`id`),
     UNIQUE KEY `username` (`username`) COMMENT '用戶名唯一索引',
     UNIQUE KEY `email` (`email`) COMMENT '電子郵件地址唯一索引'

@@ -398,6 +398,135 @@ const docTemplate = `{
                 }
             }
         },
+        "/group": {
+            "get": {
+                "tags": [
+                    "groups"
+                ],
+                "summary": "GetList",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupsGetList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-resp_GroupsGetList"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Update",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupsUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "groups"
+                ],
+                "summary": "創建群組",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupsCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Delete",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupsDelete"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/group/:id": {
+            "get": {
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Get",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupsGet"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-resp_GroupsGet"
+                        }
+                    }
+                }
+            }
+        },
         "/groupMembers": {
             "get": {
                 "tags": [
@@ -522,135 +651,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/resp.APIResponse-resp_GroupMembersGet"
-                        }
-                    }
-                }
-            }
-        },
-        "/groups": {
-            "get": {
-                "tags": [
-                    "groups"
-                ],
-                "summary": "GetList",
-                "parameters": [
-                    {
-                        "description": "param",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.GroupsGetList"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-resp_GroupsGetList"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "groups"
-                ],
-                "summary": "Update",
-                "parameters": [
-                    {
-                        "description": "param",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.GroupsUpdate"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-string"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "groups"
-                ],
-                "summary": "創建群組",
-                "parameters": [
-                    {
-                        "description": "param",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.GroupsCreate"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-string"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "groups"
-                ],
-                "summary": "Delete",
-                "parameters": [
-                    {
-                        "description": "param",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.GroupsDelete"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-string"
-                        }
-                    }
-                }
-            }
-        },
-        "/groups/:id": {
-            "get": {
-                "tags": [
-                    "groups"
-                ],
-                "summary": "Get",
-                "parameters": [
-                    {
-                        "description": "param",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.GroupsGet"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-resp_GroupsGet"
                         }
                     }
                 }
