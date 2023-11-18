@@ -61,6 +61,41 @@ graph LR
     H --否--> J[繼續處理請求]
 ```
 
+#### 登入驗證(JWT)
+
+```mermaid
+graph LR
+
+A[接收Request]
+B[檢查Token頭部]
+C[Token頭部不存在?]
+D[回傳RequestTokenError]
+E[通過UsersService取得Token資料]
+F[檢查錯誤或使用者狀態]
+G[設置使用者資訊並進行下一步]
+
+H1["解析JWTToken(續)"]
+H2["解析JWTToken(續)"]
+I[檢查Token有效性]
+J[取得Token內容]
+K[回傳使用者資訊]
+
+L[從Redis取得Token<br>解析Redis內的JWTToken]
+N[檢查Token內容<br>確認Token與請求的Token一致]
+P[延長Token時效<br>回傳Token內容]
+
+A --> B --> C
+C -->|否| E
+C -->|是| D
+E --> F
+F -->|成功| G
+F -->|失敗| D
+E --> H2
+
+H1 --> I --> J --> K
+J --> L --> N --> P
+```
+
 ## API List
 
 ### User
