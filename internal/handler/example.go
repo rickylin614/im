@@ -16,7 +16,7 @@ type exampleHandler struct {
 // Get
 // @Summary Get
 // @Tags example
-// @Param body body request.ExampleGet true "param"
+// @Param request body request.ExampleGet true "param"
 // @Success 200 {object} response.APIResponse[response.ExampleGet]
 // @Router /example/:id [get]
 func (h exampleHandler) Get(ctx *gin.Context) {
@@ -48,7 +48,7 @@ func (h exampleHandler) Get(ctx *gin.Context) {
 // GetList
 // @Summary GetList
 // @Tags example
-// @Param body body request.ExampleGetList true "param"
+// @Param request body request.ExampleGetList true "param"
 // @Success 200 {object} response.APIResponse[response.ExampleGetList]
 // @Router /example [get]
 func (h exampleHandler) GetList(ctx *gin.Context) {
@@ -73,7 +73,7 @@ func (h exampleHandler) GetList(ctx *gin.Context) {
 // Create
 // @Summary Create
 // @Tags example
-// @Param body body request.ExampleCreate true "param"
+// @Param request body request.ExampleCreate true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /example [post]
 func (h exampleHandler) Create(ctx *gin.Context) {
@@ -93,7 +93,7 @@ func (h exampleHandler) Create(ctx *gin.Context) {
 // Update
 // @Summary Update
 // @Tags example
-// @Param body body request.ExampleUpdate true "param"
+// @Param request body request.ExampleUpdate true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /example [put]
 func (h exampleHandler) Update(ctx *gin.Context) {
@@ -114,7 +114,7 @@ func (h exampleHandler) Update(ctx *gin.Context) {
 // Delete
 // @Summary Delete
 // @Tags example
-// @Param body body request.ExampleDelete true "param"
+// @Param request body request.ExampleDelete true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /example [delete]
 func (h exampleHandler) Delete(ctx *gin.Context) {

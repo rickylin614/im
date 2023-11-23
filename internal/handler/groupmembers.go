@@ -13,47 +13,15 @@ type groupMembersHandler struct {
 	in digIn
 }
 
-// Get
-// @Summary Get
-// @Tags groupMembers
-// @Param body body request.GroupMembersGet true "param"
-// @Success 200 {object} response.APIResponse[response.GroupMembersGet]
-// @Router /groupMembers/:id [get]
-func (h groupMembersHandler) Get(ctx *gin.Context) {
-	req := &request.GroupMembersGet{}
-	if err := ctx.ShouldBindUri(req); err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	if err := ctx.ShouldBindJSON(req); err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	data, err := h.in.Service.GroupMembersSrv.Get(ctx, req)
-	if err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	if data == nil {
-		ctxs.SetResp(ctx, data)
-	}
-	result := &response.GroupMembersGet{}
-	if err := copier.Copy(result, data); err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	ctxs.SetResp(ctx, result)
-}
-
 // GetList
 // @Summary GetList
 // @Tags groupMembers
-// @Param body body request.GroupMembersGetList true "param"
+// @Param request query request.GroupMembersGetList true "param"
 // @Success 200 {object} response.APIResponse[response.GroupMembersGetList]
-// @Router /groupMembers [get]
+// @Router /group-members/:id [get]
 func (h groupMembersHandler) GetList(ctx *gin.Context) {
 	req := &request.GroupMembersGetList{}
-	if err := ctx.ShouldBindJSON(req); err != nil {
+	if err := ctx.ShouldBindUri(req); err != nil {
 		ctxs.SetError(ctx, err)
 		return
 	}
@@ -73,9 +41,9 @@ func (h groupMembersHandler) GetList(ctx *gin.Context) {
 // Create
 // @Summary Create
 // @Tags groupMembers
-// @Param body body request.GroupMembersCreate true "param"
+// @Param request body request.GroupMembersCreate true "param"
 // @Success 200 {object} response.APIResponse[string]
-// @Router /groupMembers [post]
+// @Router /group-members [post]
 func (h groupMembersHandler) Create(ctx *gin.Context) {
 	req := &request.GroupMembersCreate{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
@@ -93,9 +61,9 @@ func (h groupMembersHandler) Create(ctx *gin.Context) {
 // Update
 // @Summary Update
 // @Tags groupMembers
-// @Param body body request.GroupMembersUpdate true "param"
+// @Param request body request.GroupMembersUpdate true "param"
 // @Success 200 {object} response.APIResponse[string]
-// @Router /groupMembers [put]
+// @Router /group-members [put]
 func (h groupMembersHandler) Update(ctx *gin.Context) {
 	req := &request.GroupMembersUpdate{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
@@ -114,9 +82,9 @@ func (h groupMembersHandler) Update(ctx *gin.Context) {
 // Delete
 // @Summary Delete
 // @Tags groupMembers
-// @Param body body request.GroupMembersDelete true "param"
+// @Param request body request.GroupMembersDelete true "param"
 // @Success 200 {object} response.APIResponse[string]
-// @Router /groupMembers [delete]
+// @Router /group-members [delete]
 func (h groupMembersHandler) Delete(ctx *gin.Context) {
 	req := &request.GroupMembersDelete{}
 	if err := ctx.ShouldBindJSON(req); err != nil {

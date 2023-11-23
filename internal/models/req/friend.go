@@ -38,7 +38,7 @@ func (list FriendGetList) Scope(db *gorm.DB) *gorm.DB {
 
 type FriendUpdate struct {
 	FUserID string              `json:"f_user_id" binding:"required"` // 好友的用户ID
-	Status  consts.FriendStatus `json:"status" binding:"required,oneof=active blocked" enum:"active,blocked"`
+	Status  consts.FriendStatus `json:"status" `
 }
 
 type FriendDelete struct {

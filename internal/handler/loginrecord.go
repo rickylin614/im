@@ -16,7 +16,7 @@ type loginRecordHandler struct {
 // GetList
 // @Summary 取得登入記錄
 // @Tags loginRecord
-// @Param body body request.LoginRecordGetList true "param"
+// @Param request body request.LoginRecordGetList true "param"
 // @Success 200 {object} response.APIResponse[response.LoginRecordGetList]
 // @Router /loginRecord [get]
 func (h loginRecordHandler) GetList(ctx *gin.Context) {

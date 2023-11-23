@@ -148,7 +148,7 @@ func (_m *MockLoginRecordRepository) Get(db *gorm.DB, cond *req.LoginRecordGet) 
 	return r0, r1
 }
 
-// MockLoginRecordRepository_Get_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Get'
+// MockLoginRecordRepository_Get_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetRouteCache'
 type MockLoginRecordRepository_Get_Call struct {
 	*mock.Call
 }
@@ -157,7 +157,7 @@ type MockLoginRecordRepository_Get_Call struct {
 //   - db *gorm.DB
 //   - cond *req.LoginRecordGet
 func (_e *MockLoginRecordRepository_Expecter) Get(db interface{}, cond interface{}) *MockLoginRecordRepository_Get_Call {
-	return &MockLoginRecordRepository_Get_Call{Call: _e.mock.On("Get", db, cond)}
+	return &MockLoginRecordRepository_Get_Call{Call: _e.mock.On("GetRouteCache", db, cond)}
 }
 
 func (_c *MockLoginRecordRepository_Get_Call) Run(run func(db *gorm.DB, cond *req.LoginRecordGet)) *MockLoginRecordRepository_Get_Call {

@@ -14,7 +14,6 @@ import (
 	"im/internal/util/uuid"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/goccy/go-json"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jinzhu/copier"
 )

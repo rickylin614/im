@@ -20,9 +20,9 @@ type routeCacheService struct {
 }
 
 func (s routeCacheService) Get(ctx *gin.Context, cond *models.RouteCacheGet) (*models.RouteCache, error) {
-	return s.in.Repository.RouteCacheRepo.Get(ctx, cond)
+	return s.in.Repository.CacheRepo.GetRouteCache(ctx, cond)
 }
 
 func (s routeCacheService) Set(ctx *gin.Context, cond *models.RouteCacheSet) error {
-	return s.in.Repository.RouteCacheRepo.Set(ctx, cond)
+	return s.in.Repository.CacheRepo.SetRouteCache(ctx, cond)
 }

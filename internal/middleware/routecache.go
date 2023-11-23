@@ -8,7 +8,7 @@ import (
 	"golang.org/x/sync/singleflight"
 
 	"im/internal/models"
-	"im/internal/pkg/consts"
+	"im/internal/pkg/consts/rediskey"
 	"im/internal/util/ctxs"
 	"im/internal/util/errs"
 )
@@ -18,9 +18,12 @@ type CacheMiddleware struct {
 	group singleflight.Group
 }
 
+// RouteCacheMiddleware 路由緩存
+//
+//	參數限定只能有Uri。避免過多差異性。
+//	使用gin.ShouldBindUri
 func (m *CacheMiddleware) RouteCacheMiddleware(ctx *gin.Context) {
-
-	key := consts.ROUTE_CACHE_KEY + ctx.Request.Method + ":" + ctx.FullPath()
+	key := rediskey.ROUTE_CACHE_KEY + ctx.Request.Method + ":" + ctx.FullPath()
 
 	// 確認緩存
 	cache, err := m.in.Service.RouteCacheSrv.Get(ctx, &models.RouteCacheGet{
@@ -46,7 +49,7 @@ func (m *CacheMiddleware) RouteCacheMiddleware(ctx *gin.Context) {
 
 		// 取得Route TTL時間
 		ttl := 5 * time.Minute
-		if customTTL, exists := ctx.Get(consts.ROUTE_TTL_KEY); exists {
+		if customTTL, exists := ctx.Get(rediskey.ROUTE_TTL_KEY); exists {
 			if t, ok := customTTL.(time.Duration); ok {
 				ttl = t
 			}

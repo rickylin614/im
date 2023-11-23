@@ -46,8 +46,8 @@ type FriendRequestsCreate struct {
 }
 
 type FriendRequestsUpdate struct {
-	ID            string `json:"id"` // 請求單ID
-	RequestStatus string `json:"request_status" binding:"required,oneof=accepted rejected" enums:"accepted,rejected"`
+	ID            string                 `json:"id"` // 請求單ID
+	RequestStatus consts.FriendReqStatus `json:"request_status" binding:"required,oneof=accepted rejected" enums:"accepted,rejected"`
 }
 
 type FriendRequestsDelete struct {

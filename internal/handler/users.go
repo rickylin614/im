@@ -17,7 +17,7 @@ type usersHandler struct {
 // Login
 // @Summary 用戶登錄並返回授權令牌
 // @Tags users
-// @Param body body request.UsersLogin true "param"
+// @Param request body request.UsersLogin true "param"
 // @Success 200 {object} response.APIResponse[response.UsersLogin]
 // @Router /users/login [post]
 func (h usersHandler) Login(ctx *gin.Context) {
@@ -55,7 +55,7 @@ func (h usersHandler) Logout(ctx *gin.Context) {
 // Get
 // @Summary 取得用戶訊息
 // @Tags users
-// @Param body body request.UsersGet true "param"
+// @Param request body request.UsersGet true "param"
 // @Success 200 {object} response.APIResponse[response.UsersGet]
 // @Router /users/:id [get]
 func (h usersHandler) Get(ctx *gin.Context) {
@@ -87,7 +87,7 @@ func (h usersHandler) Get(ctx *gin.Context) {
 // GetList
 // @Summary 用戶清單
 // @Tags users
-// @Param body body request.UsersGetList true "param"
+// @Param request body request.UsersGetList true "param"
 // @Success 200 {object} response.APIResponse[response.UsersGetList]
 // @Router /users/search [get]
 func (h usersHandler) GetList(ctx *gin.Context) {
@@ -112,7 +112,7 @@ func (h usersHandler) GetList(ctx *gin.Context) {
 // Create
 // @Summary 用戶註冊
 // @Tags users
-// @Param body body request.UsersCreate true "param"
+// @Param request body request.UsersCreate true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /users/register [post]
 func (h usersHandler) Create(ctx *gin.Context) {
@@ -133,7 +133,7 @@ func (h usersHandler) Create(ctx *gin.Context) {
 // Update
 // @Summary 用戶訊息修改
 // @Tags users
-// @Param body body request.UsersUpdate true "param"
+// @Param request body request.UsersUpdate true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /users [put]
 func (h usersHandler) Update(ctx *gin.Context) {

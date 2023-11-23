@@ -29,6 +29,7 @@ var (
 	RequestDuplicate              = requestGroup.Add("请求重复", http.StatusConflict)               // 请求重复 (HTTP 409)
 	RequestInvalidUser            = requestGroup.Add("无效的用户", http.StatusBadRequest)            // 无效的用户 (HTTP 400)
 	RequestInvalidID              = requestGroup.Add("无效的ID", http.StatusBadRequest)            // 无效的用户 (HTTP 400)
+	RequestInvalidPermission      = requestGroup.Add("权限不足", http.StatusBadRequest)             // 无效的用户 (HTTP 400)
 )
 
 var (

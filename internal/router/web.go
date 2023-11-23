@@ -72,7 +72,6 @@ func (r WebRouter) setAuthRouter(router *gin.RouterGroup) {
 	router.GET("/friend/blocked", r.in.Handler.FriendHandler.GetBlockedFriends) // 獲取指定用戶ID的已封鎖好友列表
 	router.GET("/friend/mutual", r.in.Handler.FriendHandler.GetMutualFriends)   // 獲取指定用戶ID與另一指定用戶ID的共同好友列表
 
-	// TODO nunu router @Router 部分改為-做為切割版本
 	// friend-requests
 	router.GET("/friend-requests", r.in.Handler.FriendRequestsHandler.GetList) // 獲取指定用戶ID收到的好友請求列表
 	router.POST("/friend-requests", r.in.Handler.FriendRequestsHandler.Create) // 向指定用戶ID發送好友請求
@@ -82,4 +81,9 @@ func (r WebRouter) setAuthRouter(router *gin.RouterGroup) {
 	router.GET("/group", r.in.Handler.GroupsHandler.GetList)
 	router.POST("/group", r.in.Handler.GroupsHandler.Create)
 	router.PUT("/group", r.in.Handler.GroupsHandler.Update)
+
+	router.GET("/group-members/:id", r.in.Handler.GroupMembersHandler.GetList)
+	router.POST("/group-members", r.in.Handler.GroupMembersHandler.Create)
+	router.PUT("/group-members", r.in.Handler.GroupMembersHandler.Update)
+	router.DELETE("/group-members", r.in.Handler.GroupMembersHandler.Delete)
 }

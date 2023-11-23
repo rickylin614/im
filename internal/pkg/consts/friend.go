@@ -4,13 +4,13 @@ type FriendReqStatus string
 
 const (
 	FriendReqStatusPending  FriendReqStatus = "pending"
-	FriendReqStatusAccepted                 = "accepted"
-	FriendReqStatusRejected                 = "rejected"
+	FriendReqStatusAccepted FriendReqStatus = "accepted"
+	FriendReqStatusRejected FriendReqStatus = "rejected"
 )
 
 type FriendStatus string
 
 const (
 	FriendStatusActive  FriendStatus = "active"
-	FriendStatusBlocked              = "blocked"
+	FriendStatusBlocked FriendStatus = "blocked"
 )

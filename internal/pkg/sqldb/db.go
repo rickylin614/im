@@ -6,12 +6,10 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 	"gorm.io/plugin/dbresolver"
-	"moul.io/zapgorm2"
 )
 
 type Client interface {
@@ -59,11 +57,11 @@ func newDB(in digIn) Client {
 		},
 	}
 
-	if l, ok := in.Log.GetLogger().(*zap.Logger); ok {
-		logger := zapgorm2.New(l)
-		logger.SetAsDefault()
-		gormConfig.Logger = logger
-	}
+	//if l, ok := in.Log.GetLogger().(*zap.Logger); ok {
+	//	logger := zapgorm2.New(l)
+	//	logger.SetAsDefault()
+	//	gormConfig.Logger = logger
+	//}
 
 	var err error
 	db, err := gorm.Open(mysql.Open(masterDB), gormConfig)

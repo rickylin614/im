@@ -227,9 +227,7 @@ func ParseMySQLError(err error) ([]string, bool) {
 		errorMessages = append(errorMessages, "无法删除或更新父行")
 	case 1452:
 		errorMessages = append(errorMessages, "不能添加或更新子行")
-	case 2002:
-		errorMessages = append(errorMessages, "无法连接到 MySQL 服务器")
-	case 2003:
+	case 2002, 2003:
 		errorMessages = append(errorMessages, "无法连接到 MySQL 服务器")
 	case 2006:
 		errorMessages = append(errorMessages, "MySQL 服务器已经断开连接")

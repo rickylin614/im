@@ -3,15 +3,45 @@ definitions:
   consts.FriendReqStatus:
     enum:
     - pending
+    - accepted
+    - rejected
     type: string
     x-enum-varnames:
     - FriendReqStatusPending
+    - FriendReqStatusAccepted
+    - FriendReqStatusRejected
   consts.FriendStatus:
     enum:
     - active
+    - blocked
     type: string
     x-enum-varnames:
     - FriendStatusActive
+    - FriendStatusBlocked
+  consts.GroupRole:
+    enum:
+    - owner
+    - admin
+    - member
+    type: string
+    x-enum-varnames:
+    - GroupRoleOwner
+    - GroupRoleAdmin
+    - GroupRoleMember
+  consts.UserStatus:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      UserStatusActive: 正常狀態
+      UserStatusBlocked: 被封鎖
+      UserStatusInactive: 無效或未激活
+    x-enum-varnames:
+    - UserStatusActive
+    - UserStatusBlocked
+    - UserStatusInactive
   req.ExampleCreate:
     properties:
       description:
@@ -157,10 +187,11 @@ definitions:
         description: 請求單ID
         type: string
       request_status:
+        allOf:
+        - $ref: '#/definitions/consts.FriendReqStatus'
         enum:
         - accepted
         - rejected
-        type: string
     required:
     - request_status
     type: object
@@ -170,14 +201,9 @@ definitions:
         description: 好友的用户ID
         type: string
       status:
-        allOf:
-        - $ref: '#/definitions/consts.FriendStatus'
-        enum:
-        - active
-        - blocked
+        $ref: '#/definitions/consts.FriendStatus'
     required:
     - f_user_id
-    - status
     type: object
   req.GroupMembersCreate:
     type: object
@@ -185,21 +211,6 @@ definitions:
     properties:
       id:
         type: string
-    type: object
-  req.GroupMembersGet:
-    type: object
-  req.GroupMembersGetList:
-    properties:
-      index:
-        description: 頁碼
-        type: integer
-      order:
-        description: 排序
-        example: id asc
-        type: string
-      size:
-        description: 筆數
-        type: integer
     type: object
   req.GroupMembersUpdate:
     type: object
@@ -279,6 +290,10 @@ definitions:
         type: string
       phone_number:
         type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/consts.UserStatus'
+        description: 用戶狀態
       username:
         type: string
     type: object
@@ -375,19 +390,6 @@ definitions:
       data:
         allOf:
         - $ref: '#/definitions/resp.FriendRequestsGetList'
-        description: 資料
-      msg:
-        description: 訊息
-        type: string
-    type: object
-  resp.APIResponse-resp_GroupMembersGet:
-    properties:
-      code:
-        description: 回傳代碼
-        type: string
-      data:
-        allOf:
-        - $ref: '#/definitions/resp.GroupMembersGet'
         description: 資料
       msg:
         description: 訊息
@@ -570,6 +572,33 @@ definitions:
         $ref: '#/definitions/resp.PageResponse'
     type: object
   resp.GroupMembersGet:
+    properties:
+      custom_permissions:
+        type: string
+      group_id:
+        type: string
+      invited_by_code:
+        type: string
+      invited_by_user_id:
+        type: string
+      joined_at:
+        type: string
+      last_seen:
+        type: string
+      message_read_up_to:
+        type: integer
+      mute_notifications:
+        type: boolean
+      nickname_in_group:
+        type: string
+      role:
+        type: string
+      status_in_group:
+        type: string
+      user_id:
+        type: string
+      user_name:
+        type: string
     type: object
   resp.GroupMembersGetList:
     properties:
@@ -680,7 +709,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.ExampleDelete'
@@ -696,7 +725,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.ExampleGetList'
@@ -712,7 +741,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.ExampleCreate'
@@ -728,7 +757,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.ExampleUpdate'
@@ -745,7 +774,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.ExampleGet'
@@ -762,7 +791,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.FriendDelete'
@@ -778,7 +807,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.FriendGetList'
@@ -794,7 +823,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.FriendUpdate'
@@ -811,7 +840,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.FriendRequestsGetList'
@@ -827,7 +856,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.FriendRequestsCreate'
@@ -859,7 +888,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.FriendRequestsUpdate'
@@ -888,7 +917,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.FriendGetList'
@@ -905,7 +934,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.FriendMutualGet'
@@ -922,7 +951,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.GroupsDelete'
@@ -938,7 +967,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.GroupsGetList'
@@ -954,7 +983,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.GroupsCreate'
@@ -970,7 +999,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.GroupsUpdate'
@@ -982,29 +1011,12 @@ paths:
       summary: Update
       tags:
       - groups
-  /group/:id:
-    get:
-      parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.GroupsGet'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/resp.APIResponse-resp_GroupsGet'
-      summary: Get
-      tags:
-      - groups
-  /groupMembers:
+  /group-members:
     delete:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.GroupMembersDelete'
@@ -1016,27 +1028,11 @@ paths:
       summary: Delete
       tags:
       - groupMembers
-    get:
-      parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.GroupMembersGetList'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/resp.APIResponse-resp_GroupMembersGetList'
-      summary: GetList
-      tags:
-      - groupMembers
     post:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.GroupMembersCreate'
@@ -1052,7 +1048,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.GroupMembersUpdate'
@@ -1064,29 +1060,60 @@ paths:
       summary: Update
       tags:
       - groupMembers
-  /groupMembers/:id:
+  /group-members/:id:
     get:
       parameters:
-      - description: param
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/req.GroupMembersGet'
+      - description: 群組ID
+        in: query
+        name: id
+        type: string
+      - description: 角色
+        enum:
+        - owner
+        - admin
+        - member
+        in: query
+        name: role
+        type: string
+        x-enum-varnames:
+        - GroupRoleOwner
+        - GroupRoleAdmin
+        - GroupRoleMember
+      - description: 群組內狀態
+        in: query
+        name: status_in_group
+        type: string
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/resp.APIResponse-resp_GroupMembersGet'
-      summary: Get
+            $ref: '#/definitions/resp.APIResponse-resp_GroupMembersGetList'
+      summary: GetList
       tags:
       - groupMembers
+  /group/:id:
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupsGet'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_GroupsGet'
+      summary: Get
+      tags:
+      - groups
   /loginRecord:
     get:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.LoginRecordGetList'
@@ -1123,7 +1150,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.UsersUpdate'
@@ -1140,7 +1167,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.UsersGet'
@@ -1168,7 +1195,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.UsersLogin'
@@ -1197,7 +1224,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.UsersCreate'
@@ -1214,7 +1241,7 @@ paths:
       parameters:
       - description: param
         in: body
-        name: body
+        name: request
         required: true
         schema:
           $ref: '#/definitions/req.UsersGetList'

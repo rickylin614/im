@@ -23,7 +23,7 @@ func (_m *MockRouteCacheRepository) EXPECT() *MockRouteCacheRepository_Expecter 
 }
 
 // Get provides a mock function with given fields: ctx, cond
-func (_m *MockRouteCacheRepository) Get(ctx context.Context, cond *models.RouteCacheGet) (*models.RouteCache, error) {
+func (_m *MockRouteCacheRepository) GetRouteCache(ctx context.Context, cond *models.RouteCacheGet) (*models.RouteCache, error) {
 	ret := _m.Called(ctx, cond)
 
 	var r0 *models.RouteCache
@@ -48,7 +48,7 @@ func (_m *MockRouteCacheRepository) Get(ctx context.Context, cond *models.RouteC
 	return r0, r1
 }
 
-// MockRouteCacheRepository_Get_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Get'
+// MockRouteCacheRepository_Get_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetRouteCache'
 type MockRouteCacheRepository_Get_Call struct {
 	*mock.Call
 }
@@ -57,7 +57,7 @@ type MockRouteCacheRepository_Get_Call struct {
 //   - ctx context.Context
 //   - cond *models.RouteCacheGet
 func (_e *MockRouteCacheRepository_Expecter) Get(ctx interface{}, cond interface{}) *MockRouteCacheRepository_Get_Call {
-	return &MockRouteCacheRepository_Get_Call{Call: _e.mock.On("Get", ctx, cond)}
+	return &MockRouteCacheRepository_Get_Call{Call: _e.mock.On("GetRouteCache", ctx, cond)}
 }
 
 func (_c *MockRouteCacheRepository_Get_Call) Run(run func(ctx context.Context, cond *models.RouteCacheGet)) *MockRouteCacheRepository_Get_Call {
@@ -78,7 +78,7 @@ func (_c *MockRouteCacheRepository_Get_Call) RunAndReturn(run func(context.Conte
 }
 
 // Set provides a mock function with given fields: ctx, cond
-func (_m *MockRouteCacheRepository) Set(ctx context.Context, cond *models.RouteCacheSet) error {
+func (_m *MockRouteCacheRepository) SetRouteCache(ctx context.Context, cond *models.RouteCacheSet) error {
 	ret := _m.Called(ctx, cond)
 
 	var r0 error
@@ -91,7 +91,7 @@ func (_m *MockRouteCacheRepository) Set(ctx context.Context, cond *models.RouteC
 	return r0
 }
 
-// MockRouteCacheRepository_Set_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Set'
+// MockRouteCacheRepository_Set_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetRouteCache'
 type MockRouteCacheRepository_Set_Call struct {
 	*mock.Call
 }
@@ -100,7 +100,7 @@ type MockRouteCacheRepository_Set_Call struct {
 //   - ctx context.Context
 //   - cond *models.RouteCacheSet
 func (_e *MockRouteCacheRepository_Expecter) Set(ctx interface{}, cond interface{}) *MockRouteCacheRepository_Set_Call {
-	return &MockRouteCacheRepository_Set_Call{Call: _e.mock.On("Set", ctx, cond)}
+	return &MockRouteCacheRepository_Set_Call{Call: _e.mock.On("SetRouteCache", ctx, cond)}
 }
 
 func (_c *MockRouteCacheRepository_Set_Call) Run(run func(ctx context.Context, cond *models.RouteCacheSet)) *MockRouteCacheRepository_Set_Call {

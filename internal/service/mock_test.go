@@ -1,12 +1,13 @@
 package service_test
 
 import (
+	"testing"
+
 	"im/internal/pkg/config"
 	"im/internal/pkg/logger"
 	"im/internal/pkg/sqldb"
 	"im/internal/repository"
 	"im/internal/repository/mock_repository"
-	"testing"
 
 	"github.com/stretchr/testify/mock"
 	"go.uber.org/dig"
@@ -51,7 +52,7 @@ func NewMockDigIn(t *testing.T) (*dig.Container, *MockRepoSet, *mock.Mock) {
 			FriendRequestsRepo: mockRepo.FriendRequestsRepo, // 添加模拟的FriendRequests仓库
 			GroupsRepo:         mockRepo.GroupsRepo,         // 添加模拟的Groups仓库
 			GroupMembersRepo:   mockRepo.GroupMembersRepo,   // 添加模拟的GroupMembers仓库
-			RouteCacheRepo:     mockRepo.RouteCacheRepo,     // 添加模拟的RouteCache仓库
+			CacheRepo:          mockRepo.RouteCacheRepo,     // 添加模拟的RouteCache仓库
 		}
 	})
 

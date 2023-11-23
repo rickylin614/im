@@ -1,8 +1,8 @@
 -- Active: 1693666258757@@127.0.0.1@3306@demo
 
 -- 創建用戶清單
-DELIMITER //
 DROP PROCEDURE IF EXISTS CreateRickyUsers;
+DELIMITER //
 CREATE PROCEDURE CreateRickyUsers()
 BEGIN
     DECLARE i INT DEFAULT 1;
@@ -24,14 +24,14 @@ BEGIN
         SET i = i + 1;
     END WHILE;
 END //
+DELIMITER ;
 CALL CreateRickyUsers();
 DROP PROCEDURE CreateRickyUsers;
-DELIMITER ;
 
 
 -- 創建好友清單
-DELIMITER //
 DROP PROCEDURE IF EXISTS CreateFriendshipsForRicky001;
+DELIMITER //
 CREATE PROCEDURE CreateFriendshipsForRicky001()
 BEGIN
     DECLARE i INT DEFAULT 2;  -- 从 ricky002 开始
@@ -53,23 +53,23 @@ BEGIN
         SELECT `id` INTO friendUserID FROM `users` WHERE `username` = friendUsername;
 
         -- 插入 ricky001 -> 当前好友的关系
-        INSERT INTO `friends` (`id`, `p_user_id`, `p_user_name`, `f_user_id`, `f_user_name`, `message_id`, `status`, `mute`)
+        INSERT IGNORE INTO `friends` (`id`, `p_user_id`, `p_user_name`, `f_user_id`, `f_user_name`, `message_id`, `status`, `mute`)
         VALUES (UUID(), currentUserID, currentUserUsername, friendUserID, friendUsername, sharedMessageID, 'active', FALSE);
 
         -- 插入 当前好友 -> ricky001 的关系
-        INSERT INTO `friends` (`id`, `p_user_id`, `p_user_name`, `f_user_id`, `f_user_name`, `message_id`, `status`, `mute`)
+        INSERT IGNORE INTO `friends` (`id`, `p_user_id`, `p_user_name`, `f_user_id`, `f_user_name`, `message_id`, `status`, `mute`)
         VALUES (UUID(), friendUserID, friendUsername, currentUserID, currentUserUsername, sharedMessageID, 'active', FALSE);
 
         SET i = i + 1;
     END WHILE;
 END //
+DELIMITER ;
 CALL CreateFriendshipsForRicky001();
 DROP PROCEDURE CreateFriendshipsForRicky001;
-DELIMITER ;
 
 -- 創建群組名單:
-DELIMITER //
 DROP PROCEDURE IF EXISTS CreateRickyGroupAndMembers;
+DELIMITER //
 CREATE PROCEDURE CreateRickyGroupAndMembers()
 BEGIN
     DECLARE groupID VARCHAR(36);
@@ -77,31 +77,31 @@ BEGIN
     DECLARE i INT DEFAULT 2;
 
     -- 创建群组
-    INSERT INTO `groups` (`id`, `group_name`, `description`, `group_owner_id`)
-    SELECT UUID(), 'ricky_group', 'This is Ricky\'s Group', `id` FROM `users` WHERE `username` = 'ricky001';
+    INSERT IGNORE INTO `groups` (`id`, `group_name`, `description`, `group_owner_id`)
+    SELECT UUID(), 'ricky_group', 'This is Ricky Group', `id` FROM `users` WHERE `username` = 'ricky001';
     SET groupID = (SELECT id FROM `groups` WHERE `group_name` = 'ricky_group');
 
     -- 添加 ricky001 作为 owner
-    INSERT INTO `group_members` (`group_id`, `user_id`, `role`)
-    SELECT groupID, `id`, 'owner' FROM `users` WHERE `username` = 'ricky001';
+    INSERT IGNORE INTO `group_members` (`group_id`, `user_id`, `user_name`, `role`)
+    SELECT groupID, `id`, `username`, 'owner' FROM `users` WHERE `username` = 'ricky001';
 
     -- 添加 ricky002 到 ricky010 作为 admin
     WHILE i <= 10 DO
-        INSERT INTO `group_members` (`group_id`, `user_id`, `role`)
-        SELECT groupID, `id`, 'admin' FROM `users` WHERE `username` = CONCAT('ricky', LPAD(i, 3, '0'));
+        INSERT INTO `group_members` (`group_id`, `user_id`, `user_name`, `role`)
+        SELECT groupID, `id`, `username`, 'admin' FROM `users` WHERE `username` = CONCAT('ricky', LPAD(i, 3, '0'));
         SET i = i + 1;
     END WHILE;
 
     -- 添加 ricky011 到 ricky050 作为 member
     WHILE i <= 50 DO
-        INSERT INTO `group_members` (`group_id`, `user_id`, `role`)
-        SELECT groupID, `id`, 'member' FROM `users` WHERE `username` = CONCAT('ricky', LPAD(i, 3, '0'));
+        INSERT INTO `group_members` (`group_id`, `user_id`, `user_name`, `role`)
+        SELECT groupID, `id`, `username`, 'member' FROM `users` WHERE `username` = CONCAT('ricky', LPAD(i, 3, '0'));
         SET i = i + 1;
     END WHILE;
 END //
+DELIMITER ;
 CALL CreateRickyGroupAndMembers();
 DROP PROCEDURE CreateRickyGroupAndMembers;
-DELIMITER ;
 
 
 select * from `groups`;
