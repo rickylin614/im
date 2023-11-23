@@ -3,7 +3,7 @@ package service
 import (
 	"im/internal/models"
 	"im/internal/models/req"
-	"im/internal/pkg/consts"
+	"im/internal/pkg/consts/enums"
 	"im/internal/util/ctxs"
 
 	"github.com/gin-gonic/gin"
@@ -34,14 +34,14 @@ func (s friendService) Get(ctx *gin.Context, cond *req.FriendGet) (*models.Frien
 func (s friendService) GetList(ctx *gin.Context, cond *req.FriendGetList) (*models.PageResult[*models.Friend], error) {
 	db := s.in.DB.Session(ctx)
 	cond.PUserID = ctxs.GetUserInfo(ctx).ID
-	cond.Status = consts.FriendStatusActive
+	cond.Status = enums.FriendStatusActive
 	return s.in.Repository.FriendRepo.GetList(db, cond)
 }
 
 func (s friendService) GetBlackList(ctx *gin.Context, cond *req.FriendGetList) (*models.PageResult[*models.Friend], error) {
 	db := s.in.DB.Session(ctx)
 	cond.PUserID = ctxs.GetUserInfo(ctx).ID
-	cond.Status = consts.FriendStatusBlocked
+	cond.Status = enums.FriendStatusBlocked
 	return s.in.Repository.FriendRepo.GetList(db, cond)
 }
 

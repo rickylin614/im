@@ -86,4 +86,7 @@ func (r WebRouter) setAuthRouter(router *gin.RouterGroup) {
 	router.POST("/group-members", r.in.Handler.GroupMembersHandler.Create)
 	router.PUT("/group-members", r.in.Handler.GroupMembersHandler.Update)
 	router.DELETE("/group-members", r.in.Handler.GroupMembersHandler.Delete)
+
+	///group-invitation
+	router.POST("/group-invitation", r.in.Handler.GroupInvitationHandler.Create) // 邀請用戶進群組
 }

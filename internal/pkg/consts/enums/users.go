@@ -1,4 +1,4 @@
-package consts
+package enums
 
 // UserStatus 定義用戶狀態的枚舉或常量
 type UserStatus int

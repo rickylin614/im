@@ -27,8 +27,12 @@ type {{ .FileNameTitleLower }}Repository struct {
 
 func (r {{ .FileNameTitleLower }}Repository) Get(db *gorm.DB, cond *req.{{ .FileName }}Get) (*models.{{ .FileName }}, error) {
 	result := &models.{{ .FileName }}{}
-	if err := db.Find(result, cond).Error; err != nil {
-		return nil, err
+	db = db.Find(result, cond)
+	if db.Error != nil {
+		return nil, db.Error
+	}
+	if db.RowsAffected == 0 {
+		return nil, nil
 	}
 	return result, nil
 }

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"im/internal/pkg/consts"
+	"im/internal/pkg/consts/enums"
 	"im/internal/util/ctxs"
 	"im/internal/util/errs"
 
@@ -22,7 +22,7 @@ func (m authMiddleware) IsLogin(ctx *gin.Context) {
 	}
 
 	user, err := m.in.Service.UsersSrv.GetByToken(ctx, token)
-	if err != nil || user == nil || user.Status != consts.UserStatusActive {
+	if err != nil || user == nil || user.Status != enums.UserStatusActive {
 		ctxs.SetError(ctx, errs.RequestTokenError)
 		ctx.Abort()
 		return

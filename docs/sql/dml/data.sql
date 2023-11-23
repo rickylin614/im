@@ -19,7 +19,7 @@ BEGIN
         SET usernickname = CONCAT(LPAD(i, 3, '0'), '號匿名用戶');
 
         INSERT IGNORE INTO `users` (`id`, `username`, `email`, `password_hash`, `phone_number`, `nickname`, `status`)
-        VALUES (UUID(), userName, userEmail, '1e901a92345b5cff6018316d1cf669f7', phonenumber, usernickname, 1);
+        VALUES (UUID(), userName, userEmail, '1e901a92345b5cff6018316d1cf669f7', phonenumber, usernickname, 0);
 
         SET i = i + 1;
     END WHILE;

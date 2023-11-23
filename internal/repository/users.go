@@ -10,6 +10,7 @@ import (
 	"im/internal/models"
 	"im/internal/models/req"
 	"im/internal/pkg/consts"
+	"im/internal/pkg/consts/rediskey"
 	"im/internal/util/crypto"
 	"im/internal/util/errs"
 )
@@ -79,7 +80,7 @@ func (r usersRepository) Delete(db *gorm.DB, id string) (err error) {
 }
 
 func (r usersRepository) GetByToken(ctx context.Context, UserID, deviceID, reqToken string) (*models.JWTClaims, error) {
-	key := consts.LoginKey + UserID + ":" + deviceID
+	key := rediskey.LoginKey + UserID + ":" + deviceID
 	rget := r.in.Rdb.Get(ctx, key)
 	if rget.Err() != nil {
 		r.in.Logger.Error(ctx, rget.Err())
@@ -117,11 +118,11 @@ func (r usersRepository) GetByToken(ctx context.Context, UserID, deviceID, reqTo
 }
 
 func (r usersRepository) SetToken(ctx context.Context, UserID, deviceID, jwtData string) error {
-	key := consts.LoginKey + UserID + ":" + deviceID
+	key := rediskey.LoginKey + UserID + ":" + deviceID
 	return r.in.Rdb.Set(ctx, key, jwtData, consts.TOKEN_EXPIRED).Err()
 }
 
 func (r usersRepository) DelToken(ctx context.Context, UserID, deviceID string) error {
-	key := consts.LoginKey + UserID + ":" + deviceID
+	key := rediskey.LoginKey + UserID + ":" + deviceID
 	return r.in.Rdb.Del(ctx, key).Err()
 }

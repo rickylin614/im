@@ -2,7 +2,7 @@ package req
 
 import (
 	"im/internal/models"
-	"im/internal/pkg/consts"
+	"im/internal/pkg/consts/enums"
 
 	"gorm.io/gorm"
 )
@@ -13,13 +13,13 @@ type UsersLogin struct {
 }
 
 type UsersGet struct {
-	ID          string            `json:"-"`
-	Username    string            `json:"username"`
-	Nickname    string            `json:"nickname"`
-	Email       string            `json:"email" `
-	Password    string            `json:"password"`
-	PhoneNumber string            `json:"phone_number"`
-	Status      consts.UserStatus `json:"status"` // 用戶狀態
+	ID          string           `json:"-"`
+	Username    string           `json:"username"`
+	Nickname    string           `json:"nickname"`
+	Email       string           `json:"email" `
+	Password    string           `json:"password"`
+	PhoneNumber string           `json:"phone_number"`
+	Status      enums.UserStatus `json:"status"` // 用戶狀態
 }
 
 type UsersGetList struct {

@@ -3,6 +3,9 @@ package service
 import (
 	"im/internal/models"
 	"im/internal/models/req"
+	"im/internal/pkg/consts/enums"
+	"im/internal/util/ctxs"
+	"im/internal/util/errs"
 	"im/internal/util/uuid"
 
 	"github.com/gin-gonic/gin"
@@ -37,9 +40,45 @@ func (s groupInvitationService) GetList(ctx *gin.Context, cond *req.GroupInvitat
 
 func (s groupInvitationService) Create(ctx *gin.Context, cond *req.GroupInvitationCreate) (id any, err error) {
 	db := s.In.DB.Session(ctx)
-	insertData := &models.GroupInvitation{ID: uuid.New()}
-	if err := copier.Copy(insertData, cond); err != nil {
+	// 檢查是群組成員 TODO 創一層共用代碼
+	m, err := s.In.Repository.GroupMembersRepo.Get(db, &req.GroupMembersGet{
+		UserId: ctxs.GetUserInfo(ctx).ID,
+	})
+	if err != nil {
 		return nil, err
+	} else if m == nil {
+		return nil, errs.RequestInvalidPermission
+	}
+
+	// 對象已是群組成員
+	t, err := s.In.Repository.GroupMembersRepo.Get(db, &req.GroupMembersGet{
+		UserId: cond.InviteeId,
+	})
+	if err != nil {
+		return nil, err
+	} else if t != nil {
+		return nil, errs.GroupMemberExistError
+	}
+
+	// 檢查是否邀請過
+	i, err := s.In.Repository.GroupInvitationRepo.Get(db, &req.GroupInvitationGet{
+		GroupID:   cond.GroupId,
+		InviterID: ctxs.GetUserInfo(ctx).ID,
+		InviteeID: cond.InviteeId,
+	})
+	if err != nil {
+		return nil, err
+	} else if i != nil {
+		return nil, errs.RequestDuplicate
+	}
+
+	// 創建邀請
+	insertData := &models.GroupInvitation{
+		ID:               uuid.New(),
+		GroupID:          cond.GroupId,
+		InviterID:        ctxs.GetUserInfo(ctx).ID,
+		InviteeID:        cond.InviteeId,
+		InvitationStatus: enums.GroupInvitationStatusPending,
 	}
 	return s.In.Repository.GroupInvitationRepo.Create(db, insertData)
 }

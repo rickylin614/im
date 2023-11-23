@@ -27,8 +27,12 @@ type groupMembersRepository struct {
 // Get 確認成員資訊時使用
 func (r groupMembersRepository) Get(db *gorm.DB, cond *req.GroupMembersGet) (*models.GroupMembers, error) {
 	result := &models.GroupMembers{}
-	if err := db.Find(result, cond).Error; err != nil {
-		return nil, err
+	db = db.Find(result, cond)
+	if db.Error != nil {
+		return nil, db.Error
+	}
+	if db.RowsAffected == 0 {
+		return nil, nil
 	}
 	return result, nil
 }

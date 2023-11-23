@@ -3,16 +3,17 @@ package req
 import (
 	"gorm.io/gorm"
 
-	"im/internal/pkg/consts"
+	"im/internal/pkg/consts/enums"
 )
 
 type GroupMembersGet struct {
+	UserId string // 用戶ID
 }
 
 type GroupMembersGetList struct {
-	Id            string            `uri:"id"`               // 群組ID
-	Role          *consts.GroupRole `form:"role"`            // 角色
-	StatusInGroup *string           `form:"status_in_group"` // 群組內狀態
+	Id            string           `uri:"id"`               // 群組ID
+	Role          *enums.GroupRole `form:"role"`            // 角色
+	StatusInGroup *string          `form:"status_in_group"` // 群組內狀態
 }
 
 func (list GroupMembersGetList) Scope(db *gorm.DB) *gorm.DB {

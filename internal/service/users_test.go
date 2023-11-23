@@ -9,7 +9,7 @@ import (
 
 	"im/internal/models"
 	"im/internal/models/req"
-	"im/internal/pkg/consts"
+	"im/internal/pkg/consts/enums"
 	"im/internal/pkg/logger"
 	"im/internal/pkg/sqldb"
 	"im/internal/repository/mock_repository"
@@ -210,7 +210,7 @@ func (suite *UserServiceTestSuite) TestLoginUserStatusBlocked() {
 		Username: "blockeduser",
 		Password: "password123",
 	}
-	expectedUser := &models.Users{Username: "blockeduser", PasswordHash: crypto.Hash("password123"), Status: consts.UserStatusBlocked}
+	expectedUser := &models.Users{Username: "blockeduser", PasswordHash: crypto.Hash("password123"), Status: enums.UserStatusBlocked}
 
 	suite.Deps.UsersRepo.On("GetRouteCache", mock.Anything, mock.AnythingOfType("*req.UsersGet")).Return(expectedUser, nil).Once()
 	suite.Deps.LoginRecordRepo.On("Create", mock.Anything, mock.AnythingOfType("*models.LoginRecord")).Return(nil, nil).Once()

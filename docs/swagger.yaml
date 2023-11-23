@@ -1,6 +1,6 @@
 basePath: /im
 definitions:
-  consts.FriendReqStatus:
+  enums.FriendReqStatus:
     enum:
     - pending
     - accepted
@@ -10,7 +10,7 @@ definitions:
     - FriendReqStatusPending
     - FriendReqStatusAccepted
     - FriendReqStatusRejected
-  consts.FriendStatus:
+  enums.FriendStatus:
     enum:
     - active
     - blocked
@@ -18,7 +18,7 @@ definitions:
     x-enum-varnames:
     - FriendStatusActive
     - FriendStatusBlocked
-  consts.GroupRole:
+  enums.GroupRole:
     enum:
     - owner
     - admin
@@ -28,7 +28,7 @@ definitions:
     - GroupRoleOwner
     - GroupRoleAdmin
     - GroupRoleMember
-  consts.UserStatus:
+  enums.UserStatus:
     enum:
     - 0
     - 1
@@ -188,7 +188,7 @@ definitions:
         type: string
       request_status:
         allOf:
-        - $ref: '#/definitions/consts.FriendReqStatus'
+        - $ref: '#/definitions/enums.FriendReqStatus'
         enum:
         - accepted
         - rejected
@@ -201,9 +201,56 @@ definitions:
         description: 好友的用户ID
         type: string
       status:
-        $ref: '#/definitions/consts.FriendStatus'
+        $ref: '#/definitions/enums.FriendStatus'
     required:
     - f_user_id
+    type: object
+  req.GroupInvitationCreate:
+    properties:
+      groupId:
+        description: 群組ID
+        type: string
+      inviteeId:
+        description: 被邀請者ID
+        type: string
+    type: object
+  req.GroupInvitationDelete:
+    properties:
+      id:
+        type: string
+    type: object
+  req.GroupInvitationGet:
+    properties:
+      groupID:
+        description: 群组的唯一标识符
+        type: string
+      id:
+        description: 此邀請標示
+        type: string
+      invitationStatus:
+        description: 邀请的状态
+        type: string
+      inviteeID:
+        description: 被邀请者的唯一标识符
+        type: string
+      inviterID:
+        description: 邀请者的唯一标识符
+        type: string
+    type: object
+  req.GroupInvitationGetList:
+    properties:
+      index:
+        description: 頁碼
+        type: integer
+      order:
+        description: 排序
+        example: id asc
+        type: string
+      size:
+        description: 筆數
+        type: integer
+    type: object
+  req.GroupInvitationUpdate:
     type: object
   req.GroupMembersCreate:
     type: object
@@ -292,7 +339,7 @@ definitions:
         type: string
       status:
         allOf:
-        - $ref: '#/definitions/consts.UserStatus'
+        - $ref: '#/definitions/enums.UserStatus'
         description: 用戶狀態
       username:
         type: string
@@ -390,6 +437,32 @@ definitions:
       data:
         allOf:
         - $ref: '#/definitions/resp.FriendRequestsGetList'
+        description: 資料
+      msg:
+        description: 訊息
+        type: string
+    type: object
+  resp.APIResponse-resp_GroupInvitationGet:
+    properties:
+      code:
+        description: 回傳代碼
+        type: string
+      data:
+        allOf:
+        - $ref: '#/definitions/resp.GroupInvitationGet'
+        description: 資料
+      msg:
+        description: 訊息
+        type: string
+    type: object
+  resp.APIResponse-resp_GroupInvitationGetList:
+    properties:
+      code:
+        description: 回傳代碼
+        type: string
+      data:
+        allOf:
+        - $ref: '#/definitions/resp.GroupInvitationGetList'
         description: 資料
       msg:
         description: 訊息
@@ -534,7 +607,7 @@ definitions:
       p_user_name:
         type: string
       status:
-        $ref: '#/definitions/consts.FriendStatus'
+        $ref: '#/definitions/enums.FriendStatus'
     type: object
   resp.FriendGetList:
     properties:
@@ -556,7 +629,7 @@ definitions:
       receiverName:
         type: string
       requestStatus:
-        $ref: '#/definitions/consts.FriendReqStatus'
+        $ref: '#/definitions/enums.FriendReqStatus'
       senderID:
         type: string
       senderName:
@@ -567,6 +640,17 @@ definitions:
       data:
         items:
           $ref: '#/definitions/resp.FriendRequestsGet'
+        type: array
+      page:
+        $ref: '#/definitions/resp.PageResponse'
+    type: object
+  resp.GroupInvitationGet:
+    type: object
+  resp.GroupInvitationGetList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/resp.GroupInvitationGet'
         type: array
       page:
         $ref: '#/definitions/resp.PageResponse'
@@ -1011,6 +1095,88 @@ paths:
       summary: Update
       tags:
       - groups
+  /group-invitation:
+    delete:
+      parameters:
+      - description: param
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupInvitationDelete'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: Delete
+      tags:
+      - groupInvitation
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupInvitationGetList'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_GroupInvitationGetList'
+      summary: GetList
+      tags:
+      - groupInvitation
+    post:
+      parameters:
+      - description: param
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupInvitationCreate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: 新建邀請碼
+      tags:
+      - groupInvitation
+    put:
+      parameters:
+      - description: param
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupInvitationUpdate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-string'
+      summary: Update
+      tags:
+      - groupInvitation
+  /group-invitation/:id:
+    get:
+      parameters:
+      - description: param
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.GroupInvitationGet'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/resp.APIResponse-resp_GroupInvitationGet'
+      summary: Get
+      tags:
+      - groupInvitation
   /group-members:
     delete:
       parameters:

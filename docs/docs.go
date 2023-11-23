@@ -500,6 +500,135 @@ const docTemplate = `{
                 }
             }
         },
+        "/group-invitation": {
+            "get": {
+                "tags": [
+                    "groupInvitation"
+                ],
+                "summary": "GetList",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupInvitationGetList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-resp_GroupInvitationGetList"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "groupInvitation"
+                ],
+                "summary": "Update",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupInvitationUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "groupInvitation"
+                ],
+                "summary": "新建邀請碼",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupInvitationCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "groupInvitation"
+                ],
+                "summary": "Delete",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupInvitationDelete"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/group-invitation/:id": {
+            "get": {
+                "tags": [
+                    "groupInvitation"
+                ],
+                "summary": "Get",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupInvitationGet"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-resp_GroupInvitationGet"
+                        }
+                    }
+                }
+            }
+        },
         "/group-members": {
             "put": {
                 "tags": [
@@ -883,7 +1012,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "consts.FriendReqStatus": {
+        "enums.FriendReqStatus": {
             "type": "string",
             "enum": [
                 "pending",
@@ -896,7 +1025,7 @@ const docTemplate = `{
                 "FriendReqStatusRejected"
             ]
         },
-        "consts.FriendStatus": {
+        "enums.FriendStatus": {
             "type": "string",
             "enum": [
                 "active",
@@ -907,7 +1036,7 @@ const docTemplate = `{
                 "FriendStatusBlocked"
             ]
         },
-        "consts.GroupRole": {
+        "enums.GroupRole": {
             "type": "string",
             "enum": [
                 "owner",
@@ -920,7 +1049,7 @@ const docTemplate = `{
                 "GroupRoleMember"
             ]
         },
-        "consts.UserStatus": {
+        "enums.UserStatus": {
             "type": "integer",
             "enum": [
                 0,
@@ -1146,7 +1275,7 @@ const docTemplate = `{
                     ],
                     "allOf": [
                         {
-                            "$ref": "#/definitions/consts.FriendReqStatus"
+                            "$ref": "#/definitions/enums.FriendReqStatus"
                         }
                     ]
                 }
@@ -1163,9 +1292,76 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status": {
-                    "$ref": "#/definitions/consts.FriendStatus"
+                    "$ref": "#/definitions/enums.FriendStatus"
                 }
             }
+        },
+        "req.GroupInvitationCreate": {
+            "type": "object",
+            "properties": {
+                "groupId": {
+                    "description": "群組ID",
+                    "type": "string"
+                },
+                "inviteeId": {
+                    "description": "被邀請者ID",
+                    "type": "string"
+                }
+            }
+        },
+        "req.GroupInvitationDelete": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.GroupInvitationGet": {
+            "type": "object",
+            "properties": {
+                "groupID": {
+                    "description": "群组的唯一标识符",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "此邀請標示",
+                    "type": "string"
+                },
+                "invitationStatus": {
+                    "description": "邀请的状态",
+                    "type": "string"
+                },
+                "inviteeID": {
+                    "description": "被邀请者的唯一标识符",
+                    "type": "string"
+                },
+                "inviterID": {
+                    "description": "邀请者的唯一标识符",
+                    "type": "string"
+                }
+            }
+        },
+        "req.GroupInvitationGetList": {
+            "type": "object",
+            "properties": {
+                "index": {
+                    "description": "頁碼",
+                    "type": "integer"
+                },
+                "order": {
+                    "description": "排序",
+                    "type": "string",
+                    "example": "id asc"
+                },
+                "size": {
+                    "description": "筆數",
+                    "type": "integer"
+                }
+            }
+        },
+        "req.GroupInvitationUpdate": {
+            "type": "object"
         },
         "req.GroupMembersCreate": {
             "type": "object"
@@ -1294,7 +1490,7 @@ const docTemplate = `{
                     "description": "用戶狀態",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/consts.UserStatus"
+                            "$ref": "#/definitions/enums.UserStatus"
                         }
                     ]
                 },
@@ -1442,6 +1638,48 @@ const docTemplate = `{
                     "allOf": [
                         {
                             "$ref": "#/definitions/resp.FriendRequestsGetList"
+                        }
+                    ]
+                },
+                "msg": {
+                    "description": "訊息",
+                    "type": "string"
+                }
+            }
+        },
+        "resp.APIResponse-resp_GroupInvitationGet": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "回傳代碼",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.GroupInvitationGet"
+                        }
+                    ]
+                },
+                "msg": {
+                    "description": "訊息",
+                    "type": "string"
+                }
+            }
+        },
+        "resp.APIResponse-resp_GroupInvitationGetList": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "回傳代碼",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.GroupInvitationGetList"
                         }
                     ]
                 },
@@ -1668,7 +1906,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status": {
-                    "$ref": "#/definitions/consts.FriendStatus"
+                    "$ref": "#/definitions/enums.FriendStatus"
                 }
             }
         },
@@ -1702,7 +1940,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "requestStatus": {
-                    "$ref": "#/definitions/consts.FriendReqStatus"
+                    "$ref": "#/definitions/enums.FriendReqStatus"
                 },
                 "senderID": {
                     "type": "string"
@@ -1719,6 +1957,23 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/resp.FriendRequestsGet"
+                    }
+                },
+                "page": {
+                    "$ref": "#/definitions/resp.PageResponse"
+                }
+            }
+        },
+        "resp.GroupInvitationGet": {
+            "type": "object"
+        },
+        "resp.GroupInvitationGetList": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/resp.GroupInvitationGet"
                     }
                 },
                 "page": {

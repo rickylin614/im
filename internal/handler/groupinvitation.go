@@ -71,7 +71,7 @@ func (h groupInvitationHandler) GetList(ctx *gin.Context) {
 }
 
 // Create
-// @Summary Create
+// @Summary 新建邀請碼
 // @Tags groupInvitation
 // @Param request body request.GroupInvitationCreate true "param"
 // @Success 200 {object} response.APIResponse[string]

@@ -5,4 +5,5 @@ const (
 	ROUTE_TTL_KEY    = "routeTtl:"
 	RATE_LIMIT_KEY   = "ratelimit:"
 	GROUP_MEMBER_KEY = "group:member:"
+	LoginKey         = "user:device:"
 )
