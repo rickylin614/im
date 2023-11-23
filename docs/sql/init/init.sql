@@ -107,7 +107,7 @@ CREATE TABLE `group_invitations` (
     `group_id` VARCHAR(36) NOT NULL COMMENT '群組的唯一標識符',
     `inviter_id` VARCHAR(36) NOT NULL COMMENT '邀請者的唯一標識符',
     `invitee_id` VARCHAR(36) NOT NULL COMMENT '被邀請者的唯一標識符',
-    `invitation_status` ENUM('pending', 'accepted', 'rejected', 'canceled') NOT NULL COMMENT '邀請的狀態',
+    `invitation_status` VARCHAR(20) NOT NULL COMMENT '邀請的狀態',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '記錄創建邀請的時間戳',
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '記錄邀請最後更新的時間戳',
     UNIQUE KEY `group_invitee_unique` (`group_id`, `invitee_id`) COMMENT '確保每個群組對同一個被邀請者的唯一邀請'

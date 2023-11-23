@@ -22,7 +22,7 @@ type MockRepoSet struct {
 	FriendRequestsRepo *mock_repository.MockFriendRequestsRepository
 	GroupsRepo         *mock_repository.MockGroupsRepository
 	GroupMembersRepo   *mock_repository.MockGroupMembersRepository
-	RouteCacheRepo     *mock_repository.MockRouteCacheRepository
+	RouteCacheRepo     *mock_repository.MockCacheRepository
 }
 
 // NewMockDigIn 创建一个具有所有模拟依赖项的 DigIn 对象。
@@ -36,7 +36,7 @@ func NewMockDigIn(t *testing.T) (*dig.Container, *MockRepoSet, *mock.Mock) {
 		FriendRequestsRepo: new(mock_repository.MockFriendRequestsRepository),
 		GroupsRepo:         new(mock_repository.MockGroupsRepository),
 		GroupMembersRepo:   new(mock_repository.MockGroupMembersRepository),
-		RouteCacheRepo:     new(mock_repository.MockRouteCacheRepository),
+		RouteCacheRepo:     new(mock_repository.MockCacheRepository),
 	}
 
 	// 创建依赖注入容器。

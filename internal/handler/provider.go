@@ -13,29 +13,31 @@ import (
 // return: handler 所有
 func NewHandler(in digIn) *Handler {
 	return &Handler{in: in,
-		BaseHandler:           &baseHandler{in},
-		ExampleHandler:        &exampleHandler{in},
-		UsersHandler:          &usersHandler{in: in},
-		LoginRecordHandler:    &loginRecordHandler{in: in},
-		FriendHandler:         &friendHandler{in: in},
-		FriendRequestsHandler: &FriendRequestsHandler{in: in},
-		GroupsHandler:         &groupsHandler{in: in},
-		GroupMembersHandler:   &groupMembersHandler{in: in},
+		BaseHandler:            &baseHandler{in},
+		ExampleHandler:         &exampleHandler{in},
+		UsersHandler:           &usersHandler{in: in},
+		LoginRecordHandler:     &loginRecordHandler{in: in},
+		FriendHandler:          &friendHandler{in: in},
+		FriendRequestsHandler:  &FriendRequestsHandler{in: in},
+		GroupsHandler:          &groupsHandler{in: in},
+		GroupMembersHandler:    &groupMembersHandler{in: in},
+		GroupInvitationHandler: &groupInvitationHandler{in: in},
 	}
 }
 
 type Handler struct {
 	in digIn
 
-	Logger                logger.Logger
-	BaseHandler           *baseHandler
-	ExampleHandler        *exampleHandler
-	UsersHandler          *usersHandler
-	LoginRecordHandler    *loginRecordHandler
-	FriendHandler         *friendHandler
-	FriendRequestsHandler *FriendRequestsHandler
-	GroupsHandler         *groupsHandler
-	GroupMembersHandler   *groupMembersHandler
+	Logger                 logger.Logger
+	BaseHandler            *baseHandler
+	ExampleHandler         *exampleHandler
+	UsersHandler           *usersHandler
+	LoginRecordHandler     *loginRecordHandler
+	FriendHandler          *friendHandler
+	FriendRequestsHandler  *FriendRequestsHandler
+	GroupsHandler          *groupsHandler
+	GroupMembersHandler    *groupMembersHandler
+	GroupInvitationHandler *groupInvitationHandler
 }
 
 type digIn struct {

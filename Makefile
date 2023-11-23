@@ -25,3 +25,6 @@ nunu:
 run:
 	go run -tags go_json .\cmd\web\main.go
 
+.PHONY: gen
+gen:
+	go generate ./...

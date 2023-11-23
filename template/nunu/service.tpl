@@ -17,12 +17,12 @@ type I{{ .FileName }}Service interface {
 	Delete(ctx *gin.Context, cond *req.{{ .FileName }}Delete) (err error)
 }
 
-func New{{ .FileName }}Service(in digIn) I{{ .FileName }}Service {
+func New{{ .FileName }}Service(in DigIn) I{{ .FileName }}Service {
 	return {{ .FileNameTitleLower }}Service{In: in}
 }
 
 type {{ .FileNameTitleLower }}Service struct {
-	In digIn
+	In DigIn
 }
 
 func (s {{ .FileNameTitleLower }}Service) Get(ctx *gin.Context, cond *req.{{ .FileName }}Get) (*models.{{ .FileName }}, error) {

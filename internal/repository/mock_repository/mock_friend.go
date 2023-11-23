@@ -148,7 +148,7 @@ func (_m *MockFriendRepository) Get(db *gorm.DB, cond *req.FriendGet) (*models.F
 	return r0, r1
 }
 
-// MockFriendRepository_Get_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetRouteCache'
+// MockFriendRepository_Get_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Get'
 type MockFriendRepository_Get_Call struct {
 	*mock.Call
 }
@@ -157,7 +157,7 @@ type MockFriendRepository_Get_Call struct {
 //   - db *gorm.DB
 //   - cond *req.FriendGet
 func (_e *MockFriendRepository_Expecter) Get(db interface{}, cond interface{}) *MockFriendRepository_Get_Call {
-	return &MockFriendRepository_Get_Call{Call: _e.mock.On("GetRouteCache", db, cond)}
+	return &MockFriendRepository_Get_Call{Call: _e.mock.On("Get", db, cond)}
 }
 
 func (_c *MockFriendRepository_Get_Call) Run(run func(db *gorm.DB, cond *req.FriendGet)) *MockFriendRepository_Get_Call {

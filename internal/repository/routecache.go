@@ -12,7 +12,7 @@ import (
 	"im/internal/util/errs"
 )
 
-//go:generate mockery --name IRouteCacheRepository --structname MockRouteCacheRepository --filename mock_routecache.go --output mock_repository --outpkg mock_repository --with-expecter
+//go:generate mockery --name ICacheRepository --structname MockCacheRepository --filename mock_cache.go --output mock_repository --outpkg mock_repository --with-expecter
 type ICacheRepository interface {
 	GetRouteCache(ctx context.Context, cond *models.RouteCacheGet) (*models.RouteCache, error)
 	SetRouteCache(ctx context.Context, cond *models.RouteCacheSet) error
