@@ -39,5 +39,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: rickylin614/im:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/im:latest
 
