@@ -35,7 +35,7 @@ func NewConfig() *Config {
 
 	// 设置当配置文件改变时的回调函数
 	v.OnConfigChange(func(e fsnotify.Event) {
-		slog.Info("Config file changed: %s", e.Name)
+		slog.Info("Config file changed:" + e.Name)
 		if err := v.ReadInConfig(); err != nil {
 			slog.Error("Error reading config file:", err)
 		}

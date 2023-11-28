@@ -144,7 +144,7 @@ func composeLoginRecord(ctx *gin.Context, user *models.Users, loginStatus enums.
 }
 
 func (s UsersService) Logout(ctx *gin.Context, jwtToken string) (err error) {
-	token, err := jwt.ParseWithClaims(jwtToken, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, _ := jwt.ParseWithClaims(jwtToken, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// 确保token的签名算法是我们预期的
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -152,13 +152,8 @@ func (s UsersService) Logout(ctx *gin.Context, jwtToken string) (err error) {
 		return crypto.GetRsaPublicKey(), nil
 	})
 
-	if err != nil {
-		s.In.Logger.Error(ctx, err)
-		return errs.RequestTokenError
-	}
-
 	claims, ok := token.Claims.(*models.JWTClaims)
-	if !ok || !token.Valid {
+	if !ok {
 		return errs.RequestTokenError
 	}
 
