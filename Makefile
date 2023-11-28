@@ -25,6 +25,14 @@ nunu:
 run:
 	go run -tags go_json .\cmd\web\main.go
 
+.PHONY: up
+up:
+	docker-compose -f ./deployments/local/docker-compose.yaml up -d
+
+.PHONY: down
+down:
+	docker-compose -f ./deployments/local/docker-compose.yaml down
+
 .PHONY: gen
 gen:
 	go generate ./...

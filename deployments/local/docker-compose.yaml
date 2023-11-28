@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  webapp:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    environment:
+      - GO_ENV=development
+      - MYSQL_MASTER_HOST=${MYSQL_MASTER_HOST}
+      - MYSQL_SLAVE_HOST=${MYSQL_SLAVE_HOST}
+      - REDIS_HOST=${REDIS_HOST}
+    volumes:
+      - ../../:/app
+      - ../../config:/root/config

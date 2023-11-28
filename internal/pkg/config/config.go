@@ -29,6 +29,9 @@ func NewConfig() *Config {
 	if err := v.UnmarshalKey("config", conf); err != nil {
 		panic(err)
 	}
+	if err := updateConfigFromEnv(conf); err != nil {
+		slog.Error("Error updateConfigFromEnv:", err)
+	}
 
 	// 设置当配置文件改变时的回调函数
 	v.OnConfigChange(func(e fsnotify.Event) {
@@ -38,6 +41,9 @@ func NewConfig() *Config {
 		}
 		if err := v.UnmarshalKey("config", conf); err != nil {
 			slog.Error("Error unmarshalling config:", err)
+		}
+		if err := updateConfigFromEnv(conf); err != nil {
+			slog.Error("Error updateConfigFromEnv:", err)
 		}
 	})
 

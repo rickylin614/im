@@ -10,12 +10,12 @@ services:
       - --lower_case_table_names=1
       - --skip-log-bin # Added option to disable binlog
     volumes:
-      # - ${DATABASE_MYSQL_INIT_PATH}:/docker-entrypoint-initdb.d
+      # - ${DATABASE_MYSQL_INIT_PATH}:/build-entrypoint-initdb.d
       - ${DATABASE_MYSQL_STORE_PATH}:/var/lib/mysql
       # - ${DATABASE_MYSQL_INIT_SQL_PATH}:/init-sql # 如果有init sql 放這裡      
     ports:
       - "3306:3306"
-    tty: false # docker run -t
+    tty: false # build run -t
     restart: always        
     environment:
       TZ: ${TIME_ZONE}

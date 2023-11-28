@@ -22,8 +22,8 @@ type GinConfig struct {
 }
 
 type MySQLConfig struct {
-	Master         string `mapstructure:"master"`
-	Slave          string `mapstructure:"slave"`
+	Master         string `mapstructure:"master" env:"MYSQL_MASTER_HOST"`
+	Slave          string `mapstructure:"slave" env:"MYSQL_SLAVE_HOST"`
 	Username       string `mapstructure:"username"`
 	Password       string `mapstructure:"password"`
 	Database       string `mapstructure:"database"`
@@ -34,7 +34,7 @@ type MySQLConfig struct {
 }
 
 type RedisConfig struct {
-	Address        string `mapstructure:"address"`
+	Address        string `mapstructure:"address" env:"REDIS_HOST"`
 	Password       string `mapstructure:"password"`
 	MaxIdle        int    `mapstructure:"max_idle"`
 	MaxActive      int    `mapstructure:"max_active"`
