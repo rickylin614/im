@@ -16,7 +16,12 @@ services:
     ports:
       - "3306:3306"
     tty: false # docker run -t
-    restart: always        
+    restart: always
+    deploy:
+      resources:
+        limits:
+          # cpus: '0.001'
+          memory: 500M        
     environment:
       TZ: ${TIME_ZONE}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}

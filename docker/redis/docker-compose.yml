@@ -5,4 +5,10 @@ services:
     ports: 
         - "6379:6379"
     restart: always
+    deploy:
+      resources:
+        limits:
+          # cpus: '0.001'
+          memory: 500M   
     container_name: golang-redis-local
+  

@@ -1,8 +1,10 @@
-version: '3'
+version: '3.7'
 services: 
   mongo:
-    image: mongo:4.4
-    restart: always
+    image: mongo:7.0.4
+    restart: "no"
+    # command: ["--quiet"] # 減少日誌記錄
+    command: ["--logpath", "/dev/null"] # 禁止日誌記錄
     ports:
       - 27017:27017
     volumes:
@@ -12,16 +14,21 @@ services:
       resources:
         limits:
           # cpus: '0.001'
-          memory: 1G
+          memory: 500M
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: central-proxy
+      MONGO_INITDB_DATABASE: demo
   mongo-express:
     image: mongo-express
     restart: always
     ports:
       - 8081:8081
+    deploy:
+      resources:
+        limits:
+          # cpus: '0.001'
+          memory: 500M
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
