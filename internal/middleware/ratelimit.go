@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"im/internal/pkg/consts"
+	"im/internal/pkg/consts/rediskey"
 	"im/internal/util/ctxs"
 	"im/internal/util/errs"
 
@@ -42,7 +42,7 @@ func (m *RateLimitMiddleware) RateLimitMiddleware() gin.HandlerFunc {
 	}
 
 	rateLimitMiddleware := func(ctx *gin.Context) {
-		key := consts.RATE_LIMIT_KEY + ctx.ClientIP()
+		key := rediskey.RATE_LIMIT_KEY + ctx.ClientIP()
 		// quantity 表示消耗配額, 如果限制每分鐘100次。消耗配額填50，則每分鐘只能通過該請求2次
 		quantity := 1
 		isLimit, _, err := rateLimiter.RateLimitCtx(ctx, key, quantity)

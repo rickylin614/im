@@ -1,12 +1,13 @@
 package service_test
 
 import (
+	"testing"
+
 	"im/internal/pkg/config"
 	"im/internal/pkg/logger"
 	"im/internal/pkg/sqldb"
 	"im/internal/repository"
 	"im/internal/repository/mock_repository"
-	"testing"
 
 	"github.com/stretchr/testify/mock"
 	"go.uber.org/dig"
@@ -21,7 +22,7 @@ type MockRepoSet struct {
 	FriendRequestsRepo *mock_repository.MockFriendRequestsRepository
 	GroupsRepo         *mock_repository.MockGroupsRepository
 	GroupMembersRepo   *mock_repository.MockGroupMembersRepository
-	RouteCacheRepo     *mock_repository.MockRouteCacheRepository
+	RouteCacheRepo     *mock_repository.MockCacheRepository
 }
 
 // NewMockDigIn 创建一个具有所有模拟依赖项的 DigIn 对象。
@@ -35,7 +36,7 @@ func NewMockDigIn(t *testing.T) (*dig.Container, *MockRepoSet, *mock.Mock) {
 		FriendRequestsRepo: new(mock_repository.MockFriendRequestsRepository),
 		GroupsRepo:         new(mock_repository.MockGroupsRepository),
 		GroupMembersRepo:   new(mock_repository.MockGroupMembersRepository),
-		RouteCacheRepo:     new(mock_repository.MockRouteCacheRepository),
+		RouteCacheRepo:     new(mock_repository.MockCacheRepository),
 	}
 
 	// 创建依赖注入容器。
@@ -51,7 +52,7 @@ func NewMockDigIn(t *testing.T) (*dig.Container, *MockRepoSet, *mock.Mock) {
 			FriendRequestsRepo: mockRepo.FriendRequestsRepo, // 添加模拟的FriendRequests仓库
 			GroupsRepo:         mockRepo.GroupsRepo,         // 添加模拟的Groups仓库
 			GroupMembersRepo:   mockRepo.GroupMembersRepo,   // 添加模拟的GroupMembers仓库
-			RouteCacheRepo:     mockRepo.RouteCacheRepo,     // 添加模拟的RouteCache仓库
+			CacheRepo:          mockRepo.RouteCacheRepo,     // 添加模拟的RouteCache仓库
 		}
 	})
 

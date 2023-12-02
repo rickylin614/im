@@ -16,7 +16,7 @@ type friendHandler struct {
 // GetFriends
 // @Summary 獲取用戶的好友列表
 // @Tags friend
-// @Param body body request.FriendGetList true "param"
+// @Param request body request.FriendGetList true "param"
 // @Success 200 {object} response.APIResponse[response.FriendGetList]
 // @Router /friend [get]
 func (h friendHandler) GetFriends(ctx *gin.Context) {
@@ -41,7 +41,7 @@ func (h friendHandler) GetFriends(ctx *gin.Context) {
 // UpdateFriendStatus
 // @Summary 更新與指定用戶的好友關係（接受/拒絕/阻止）
 // @Tags friend
-// @Param body body request.FriendUpdate true "param"
+// @Param request body request.FriendUpdate true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /friend [put]
 func (h friendHandler) UpdateFriendStatus(ctx *gin.Context) {
@@ -62,7 +62,7 @@ func (h friendHandler) UpdateFriendStatus(ctx *gin.Context) {
 // DeleteFriend
 // @Summary 刪除與指定用戶的好友關係
 // @Tags friend
-// @Param body body request.FriendDelete true "param"
+// @Param request body request.FriendDelete true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /friend [delete]
 func (h friendHandler) DeleteFriend(ctx *gin.Context) {
@@ -82,7 +82,7 @@ func (h friendHandler) DeleteFriend(ctx *gin.Context) {
 // GetBlockedFriends
 // @Summary 獲取指定用戶ID的已封鎖好友列表
 // @Tags friend
-// @Param body body request.FriendGetList true "param"
+// @Param request body request.FriendGetList true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /friend/blocked [get]
 func (h friendHandler) GetBlockedFriends(ctx *gin.Context) {
@@ -107,7 +107,7 @@ func (h friendHandler) GetBlockedFriends(ctx *gin.Context) {
 // GetMutualFriends
 // @Summary 獲取指定用戶ID與另一指定用戶ID的共同好友列表
 // @Tags friend
-// @Param body body request.FriendMutualGet true "param"
+// @Param request body request.FriendMutualGet true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /friend/mutual [get]
 func (h friendHandler) GetMutualFriends(ctx *gin.Context) {

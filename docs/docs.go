@@ -28,7 +28,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -53,7 +53,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -78,7 +78,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -103,7 +103,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -130,7 +130,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -157,7 +157,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -182,7 +182,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -207,7 +207,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -234,7 +234,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -259,7 +259,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -302,7 +302,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -353,7 +353,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -380,7 +380,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -407,7 +407,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -432,7 +432,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -457,7 +457,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -482,7 +482,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -500,47 +500,20 @@ const docTemplate = `{
                 }
             }
         },
-        "/group/:id": {
+        "/group-invitation": {
             "get": {
                 "tags": [
-                    "groups"
-                ],
-                "summary": "Get",
-                "parameters": [
-                    {
-                        "description": "param",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.GroupsGet"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-resp_GroupsGet"
-                        }
-                    }
-                }
-            }
-        },
-        "/groupMembers": {
-            "get": {
-                "tags": [
-                    "groupMembers"
+                    "groupInvitation"
                 ],
                 "summary": "GetList",
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/req.GroupMembersGetList"
+                            "$ref": "#/definitions/req.GroupInvitationGetList"
                         }
                     }
                 ],
@@ -548,11 +521,115 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-resp_GroupMembersGetList"
+                            "$ref": "#/definitions/resp.APIResponse-resp_GroupInvitationGetList"
                         }
                     }
                 }
             },
+            "put": {
+                "tags": [
+                    "groupInvitation"
+                ],
+                "summary": "Update",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupInvitationUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "groupInvitation"
+                ],
+                "summary": "新建邀請碼",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupInvitationCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "groupInvitation"
+                ],
+                "summary": "Delete",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupInvitationDelete"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/group-invitation/:id": {
+            "get": {
+                "tags": [
+                    "groupInvitation"
+                ],
+                "summary": "Get",
+                "parameters": [
+                    {
+                        "description": "param",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.GroupInvitationGet"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-resp_GroupInvitationGet"
+                        }
+                    }
+                }
+            }
+        },
+        "/group-members": {
             "put": {
                 "tags": [
                     "groupMembers"
@@ -561,7 +638,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -586,7 +663,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -611,7 +688,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -629,20 +706,66 @@ const docTemplate = `{
                 }
             }
         },
-        "/groupMembers/:id": {
+        "/group-members/:id": {
             "get": {
                 "tags": [
                     "groupMembers"
+                ],
+                "summary": "GetList",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "群組ID",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "owner",
+                            "admin",
+                            "member"
+                        ],
+                        "type": "string",
+                        "x-enum-varnames": [
+                            "GroupRoleOwner",
+                            "GroupRoleAdmin",
+                            "GroupRoleMember"
+                        ],
+                        "description": "角色",
+                        "name": "role",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "群組內狀態",
+                        "name": "status_in_group",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/resp.APIResponse-resp_GroupMembersGetList"
+                        }
+                    }
+                }
+            }
+        },
+        "/group/:id": {
+            "get": {
+                "tags": [
+                    "groups"
                 ],
                 "summary": "Get",
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/req.GroupMembersGet"
+                            "$ref": "#/definitions/req.GroupsGet"
                         }
                     }
                 ],
@@ -650,7 +773,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/resp.APIResponse-resp_GroupMembersGet"
+                            "$ref": "#/definitions/resp.APIResponse-resp_GroupsGet"
                         }
                     }
                 }
@@ -665,7 +788,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -724,7 +847,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -751,7 +874,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -778,7 +901,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -826,7 +949,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -853,7 +976,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "param",
-                        "name": "body",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -889,22 +1012,59 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "consts.FriendReqStatus": {
+        "enums.FriendReqStatus": {
             "type": "string",
             "enum": [
-                "pending"
+                "pending",
+                "accepted",
+                "rejected"
             ],
             "x-enum-varnames": [
-                "FriendReqStatusPending"
+                "FriendReqStatusPending",
+                "FriendReqStatusAccepted",
+                "FriendReqStatusRejected"
             ]
         },
-        "consts.FriendStatus": {
+        "enums.FriendStatus": {
             "type": "string",
             "enum": [
-                "active"
+                "active",
+                "blocked"
             ],
             "x-enum-varnames": [
-                "FriendStatusActive"
+                "FriendStatusActive",
+                "FriendStatusBlocked"
+            ]
+        },
+        "enums.GroupRole": {
+            "type": "string",
+            "enum": [
+                "owner",
+                "admin",
+                "member"
+            ],
+            "x-enum-varnames": [
+                "GroupRoleOwner",
+                "GroupRoleAdmin",
+                "GroupRoleMember"
+            ]
+        },
+        "enums.UserStatus": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-comments": {
+                "UserStatusActive": "正常狀態",
+                "UserStatusBlocked": "被封鎖",
+                "UserStatusInactive": "無效或未激活"
+            },
+            "x-enum-varnames": [
+                "UserStatusActive",
+                "UserStatusBlocked",
+                "UserStatusInactive"
             ]
         },
         "req.ExampleCreate": {
@@ -1109,10 +1269,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "request_status": {
-                    "type": "string",
                     "enum": [
                         "accepted",
                         "rejected"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.FriendReqStatus"
+                        }
                     ]
                 }
             }
@@ -1120,8 +1284,7 @@ const docTemplate = `{
         "req.FriendUpdate": {
             "type": "object",
             "required": [
-                "f_user_id",
-                "status"
+                "f_user_id"
             ],
             "properties": {
                 "f_user_id": {
@@ -1129,22 +1292,24 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status": {
-                    "enum": [
-                        "active",
-                        "blocked"
-                    ],
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/consts.FriendStatus"
-                        }
-                    ]
+                    "$ref": "#/definitions/enums.FriendStatus"
                 }
             }
         },
-        "req.GroupMembersCreate": {
-            "type": "object"
+        "req.GroupInvitationCreate": {
+            "type": "object",
+            "properties": {
+                "groupId": {
+                    "description": "群組ID",
+                    "type": "string"
+                },
+                "inviteeId": {
+                    "description": "被邀請者ID",
+                    "type": "string"
+                }
+            }
         },
-        "req.GroupMembersDelete": {
+        "req.GroupInvitationDelete": {
             "type": "object",
             "properties": {
                 "id": {
@@ -1152,10 +1317,32 @@ const docTemplate = `{
                 }
             }
         },
-        "req.GroupMembersGet": {
-            "type": "object"
+        "req.GroupInvitationGet": {
+            "type": "object",
+            "properties": {
+                "groupID": {
+                    "description": "群组的唯一标识符",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "此邀請標示",
+                    "type": "string"
+                },
+                "invitationStatus": {
+                    "description": "邀请的状态",
+                    "type": "string"
+                },
+                "inviteeID": {
+                    "description": "被邀请者的唯一标识符",
+                    "type": "string"
+                },
+                "inviterID": {
+                    "description": "邀请者的唯一标识符",
+                    "type": "string"
+                }
+            }
         },
-        "req.GroupMembersGetList": {
+        "req.GroupInvitationGetList": {
             "type": "object",
             "properties": {
                 "index": {
@@ -1170,6 +1357,20 @@ const docTemplate = `{
                 "size": {
                     "description": "筆數",
                     "type": "integer"
+                }
+            }
+        },
+        "req.GroupInvitationUpdate": {
+            "type": "object"
+        },
+        "req.GroupMembersCreate": {
+            "type": "object"
+        },
+        "req.GroupMembersDelete": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
                 }
             }
         },
@@ -1284,6 +1485,14 @@ const docTemplate = `{
                 },
                 "phone_number": {
                     "type": "string"
+                },
+                "status": {
+                    "description": "用戶狀態",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.UserStatus"
+                        }
+                    ]
                 },
                 "username": {
                     "type": "string"
@@ -1438,7 +1647,7 @@ const docTemplate = `{
                 }
             }
         },
-        "resp.APIResponse-resp_GroupMembersGet": {
+        "resp.APIResponse-resp_GroupInvitationGet": {
             "type": "object",
             "properties": {
                 "code": {
@@ -1449,7 +1658,28 @@ const docTemplate = `{
                     "description": "資料",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/resp.GroupMembersGet"
+                            "$ref": "#/definitions/resp.GroupInvitationGet"
+                        }
+                    ]
+                },
+                "msg": {
+                    "description": "訊息",
+                    "type": "string"
+                }
+            }
+        },
+        "resp.APIResponse-resp_GroupInvitationGetList": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "回傳代碼",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "資料",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/resp.GroupInvitationGetList"
                         }
                     ]
                 },
@@ -1676,7 +1906,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status": {
-                    "$ref": "#/definitions/consts.FriendStatus"
+                    "$ref": "#/definitions/enums.FriendStatus"
                 }
             }
         },
@@ -1710,7 +1940,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "requestStatus": {
-                    "$ref": "#/definitions/consts.FriendReqStatus"
+                    "$ref": "#/definitions/enums.FriendReqStatus"
                 },
                 "senderID": {
                     "type": "string"
@@ -1734,8 +1964,66 @@ const docTemplate = `{
                 }
             }
         },
-        "resp.GroupMembersGet": {
+        "resp.GroupInvitationGet": {
             "type": "object"
+        },
+        "resp.GroupInvitationGetList": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/resp.GroupInvitationGet"
+                    }
+                },
+                "page": {
+                    "$ref": "#/definitions/resp.PageResponse"
+                }
+            }
+        },
+        "resp.GroupMembersGet": {
+            "type": "object",
+            "properties": {
+                "custom_permissions": {
+                    "type": "string"
+                },
+                "group_id": {
+                    "type": "string"
+                },
+                "invited_by_code": {
+                    "type": "string"
+                },
+                "invited_by_user_id": {
+                    "type": "string"
+                },
+                "joined_at": {
+                    "type": "string"
+                },
+                "last_seen": {
+                    "type": "string"
+                },
+                "message_read_up_to": {
+                    "type": "integer"
+                },
+                "mute_notifications": {
+                    "type": "boolean"
+                },
+                "nickname_in_group": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "status_in_group": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
+                }
+            }
         },
         "resp.GroupMembersGetList": {
             "type": "object",

@@ -3,7 +3,7 @@ package service
 import (
 	"im/internal/models"
 	"im/internal/models/req"
-	"im/internal/pkg/consts"
+	"im/internal/pkg/consts/enums"
 	"im/internal/util/ctxs"
 	"im/internal/util/errs"
 	"im/internal/util/uuid"
@@ -68,9 +68,9 @@ func (s FriendRequestservice) Create(ctx *gin.Context, cond *req.FriendRequestsC
 	fs, err := s.in.Repository.FriendRequestsRepo.Get(db, &req.FriendRequestsGet{
 		SenderID:   loginID,
 		ReceiverID: u.ID,
-		RequestStatusConds: []consts.FriendReqStatus{
-			consts.FriendReqStatusPending,
-			consts.FriendReqStatusRejected,
+		RequestStatusConds: []enums.FriendReqStatus{
+			enums.FriendReqStatusPending,
+			enums.FriendReqStatusRejected,
 		},
 	})
 	if err != nil {
@@ -84,8 +84,8 @@ func (s FriendRequestservice) Create(ctx *gin.Context, cond *req.FriendRequestsC
 	fs2, err := s.in.Repository.FriendRequestsRepo.Get(db, &req.FriendRequestsGet{
 		SenderID:   u.ID,
 		ReceiverID: loginID,
-		RequestStatusConds: []consts.FriendReqStatus{
-			consts.FriendReqStatusPending,
+		RequestStatusConds: []enums.FriendReqStatus{
+			enums.FriendReqStatusPending,
 		},
 	})
 	if err != nil {
@@ -110,7 +110,7 @@ func (s FriendRequestservice) Create(ctx *gin.Context, cond *req.FriendRequestsC
 		SenderName:    ctxs.GetUserInfo(ctx).Username,
 		ReceiverID:    u.ID,
 		ReceiverName:  u.Username,
-		RequestStatus: consts.FriendReqStatusPending,
+		RequestStatus: enums.FriendReqStatusPending,
 	}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
@@ -125,8 +125,8 @@ func (s FriendRequestservice) Update(ctx *gin.Context, cond *req.FriendRequestsU
 	fr, err := s.in.Repository.FriendRequestsRepo.Get(db, &req.FriendRequestsGet{
 		ID:         cond.ID,
 		ReceiverID: ctxs.GetUserInfo(ctx).ID, // 必須是自己的ID
-		RequestStatusConds: []consts.FriendReqStatus{
-			consts.FriendReqStatusPending,
+		RequestStatusConds: []enums.FriendReqStatus{
+			enums.FriendReqStatusPending,
 		},
 	})
 	if err != nil {
@@ -141,12 +141,12 @@ func (s FriendRequestservice) Update(ctx *gin.Context, cond *req.FriendRequestsU
 
 	// 確認請求種類
 	switch cond.RequestStatus {
-	case consts.FriendReqStatusAccepted: // 接受
+	case enums.FriendReqStatusAccepted: // 接受
 		err = s.createFriend(ctx, db, fr)
 		if err != nil {
 			return err
 		}
-	case consts.FriendReqStatusRejected: // 拒絕
+	case enums.FriendReqStatusRejected: // 拒絕
 		break
 	default:
 		return errs.CommonUnknownError
@@ -154,7 +154,7 @@ func (s FriendRequestservice) Update(ctx *gin.Context, cond *req.FriendRequestsU
 
 	err = s.in.Repository.FriendRequestsRepo.Update(db, &models.FriendRequests{
 		ID:            cond.ID,
-		RequestStatus: consts.FriendReqStatus(cond.RequestStatus),
+		RequestStatus: enums.FriendReqStatus(cond.RequestStatus),
 	})
 	if err != nil {
 		return err
@@ -179,7 +179,7 @@ func (s FriendRequestservice) createFriend(ctx *gin.Context, db *gorm.DB, fr *mo
 		PUserName: fr.SenderName,
 		FUserName: fr.ReceiverName,
 		MessageId: msgId,
-		Status:    consts.FriendStatusActive, Mute: false,
+		Status:    enums.FriendStatusActive, Mute: false,
 	})
 	if err != nil {
 		return err
@@ -191,7 +191,7 @@ func (s FriendRequestservice) createFriend(ctx *gin.Context, db *gorm.DB, fr *mo
 		PUserName: fr.ReceiverName,
 		FUserName: fr.SenderName,
 		MessageId: msgId,
-		Status:    consts.FriendStatusActive, Mute: false,
+		Status:    enums.FriendStatusActive, Mute: false,
 	})
 	if err != nil {
 		return err

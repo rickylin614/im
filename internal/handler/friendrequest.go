@@ -16,7 +16,7 @@ type FriendRequestsHandler struct {
 // GetList
 // @Summary 好友請求列表
 // @Tags FriendRequests
-// @Param body body request.FriendRequestsGetList true "param"
+// @Param request body request.FriendRequestsGetList true "param"
 // @Success 200 {object} response.APIResponse[response.FriendRequestsGetList]
 // @Router /friend-requests [get]
 func (h FriendRequestsHandler) GetList(ctx *gin.Context) {
@@ -41,7 +41,7 @@ func (h FriendRequestsHandler) GetList(ctx *gin.Context) {
 // Create
 // @Summary 向指定用戶ID發送好友請求
 // @Tags FriendRequests
-// @Param body body request.FriendRequestsCreate true "param"
+// @Param request body request.FriendRequestsCreate true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Failure 400 {object} response.APIResponse[string] "无效的用户"
 // @Failure 401 {object} response.APIResponse[string] "Unauthorized"
@@ -65,7 +65,7 @@ func (h FriendRequestsHandler) Create(ctx *gin.Context) {
 // Update
 // @Summary 接受或拒絕來自id的好友請求
 // @Tags FriendRequests
-// @Param body body request.FriendRequestsUpdate true "param"
+// @Param request body request.FriendRequestsUpdate true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Failure 400 {object} response.APIResponse[string] "无效的ID"
 // @Failure 401 {object} response.APIResponse[string] "Unauthorized"

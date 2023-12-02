@@ -86,10 +86,19 @@ CREATE TABLE `groups` (
 CREATE TABLE `group_members` (
     `group_id` VARCHAR(36) NOT NULL COMMENT '唯一标识群组的ID',
     `user_id` VARCHAR(36) NOT NULL COMMENT '唯一标识用户的ID',
+    `user_name` VARCHAR(36) NOT NULL COMMENT '唯一标识用户的Name',
     `role` VARCHAR(10) NOT NULL COMMENT '成员的角色,可以是owner、admin或member',
     `joined_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '成员加入群组的时间',
+    `nickname_in_group` VARCHAR(50) COMMENT '成员在该群组中的昵称或显示名称',
+    `last_seen` TIMESTAMP COMMENT '记录成员最后一次在群组中活动的时间',
+    `mute_notifications` TINYINT DEFAULT FALSE COMMENT '标记成员是否静音了群组通知',
+    `custom_permissions` VARCHAR(255) COMMENT '特定成员的自定义权限设置',
+    `message_read_up_to` BIGINT COMMENT '标记成员已读消息的最后位置',
+    `status_in_group` VARCHAR(20) COMMENT '成员在群组中的状态，如活跃、闲置或离线等',
+    `invited_by_user_id` VARCHAR(36) COMMENT '记录哪个用户邀请该成员加入群组',
     PRIMARY KEY (`group_id`, `user_id`)
-) COMMENT='儲存群組成員資料和他們的角色，包括加入群組的時間';
+) COMMENT='储存群组成员资料和他们的角色，包括加入群组的时间以及其他信息';
+
 
 
 -- 7. Group_invitations table
@@ -98,7 +107,7 @@ CREATE TABLE `group_invitations` (
     `group_id` VARCHAR(36) NOT NULL COMMENT '群組的唯一標識符',
     `inviter_id` VARCHAR(36) NOT NULL COMMENT '邀請者的唯一標識符',
     `invitee_id` VARCHAR(36) NOT NULL COMMENT '被邀請者的唯一標識符',
-    `invitation_status` ENUM('pending', 'accepted', 'rejected', 'canceled') NOT NULL COMMENT '邀請的狀態',
+    `invitation_status` VARCHAR(20) NOT NULL COMMENT '邀請的狀態',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '記錄創建邀請的時間戳',
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '記錄邀請最後更新的時間戳',
     UNIQUE KEY `group_invitee_unique` (`group_id`, `invitee_id`) COMMENT '確保每個群組對同一個被邀請者的唯一邀請'

@@ -16,7 +16,7 @@ type groupsHandler struct {
 // Get
 // @Summary Get
 // @Tags groups
-// @Param body body request.GroupsGet true "param"
+// @Param request body request.GroupsGet true "param"
 // @Success 200 {object} response.APIResponse[response.GroupsGet]
 // @Router /group/:id [get]
 func (h groupsHandler) Get(ctx *gin.Context) {
@@ -44,7 +44,7 @@ func (h groupsHandler) Get(ctx *gin.Context) {
 // GetList
 // @Summary GetList
 // @Tags groups
-// @Param body body request.GroupsGetList true "param"
+// @Param request body request.GroupsGetList true "param"
 // @Success 200 {object} response.APIResponse[response.GroupsGetList]
 // @Router /group [get]
 func (h groupsHandler) GetList(ctx *gin.Context) {
@@ -69,7 +69,7 @@ func (h groupsHandler) GetList(ctx *gin.Context) {
 // Create
 // @Summary 創建群組
 // @Tags groups
-// @Param body body request.GroupsCreate true "param"
+// @Param request body request.GroupsCreate true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /group [post]
 func (h groupsHandler) Create(ctx *gin.Context) {
@@ -89,7 +89,7 @@ func (h groupsHandler) Create(ctx *gin.Context) {
 // Update
 // @Summary Update
 // @Tags groups
-// @Param body body request.GroupsUpdate true "param"
+// @Param request body request.GroupsUpdate true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /group [put]
 func (h groupsHandler) Update(ctx *gin.Context) {
@@ -110,7 +110,7 @@ func (h groupsHandler) Update(ctx *gin.Context) {
 // Delete
 // @Summary Delete
 // @Tags groups
-// @Param body body request.GroupsDelete true "param"
+// @Param request body request.GroupsDelete true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /group [delete]
 func (h groupsHandler) Delete(ctx *gin.Context) {

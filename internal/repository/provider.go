@@ -12,28 +12,30 @@ import (
 
 func NewRepository(in digIn) *Repository {
 	return &Repository{in: in,
-		ExampleRepo:        NewExampleRepository(in),
-		UsersRepo:          NewUsersRepository(in),
-		LoginRecordRepo:    NewLoginRecordRepository(in),
-		FriendRepo:         NewFriendRepository(in),
-		FriendRequestsRepo: NewFriendRequestsRepository(in),
-		GroupsRepo:         NewGroupsRepository(in),
-		GroupMembersRepo:   NewGroupMembersRepository(in),
-		RouteCacheRepo:     NewRouteCacheRepository(in),
+		ExampleRepo:         NewExampleRepository(in),
+		UsersRepo:           NewUsersRepository(in),
+		LoginRecordRepo:     NewLoginRecordRepository(in),
+		FriendRepo:          NewFriendRepository(in),
+		FriendRequestsRepo:  NewFriendRequestsRepository(in),
+		GroupsRepo:          NewGroupsRepository(in),
+		GroupMembersRepo:    NewGroupMembersRepository(in),
+		CacheRepo:           NewCacheRepository(in),
+		GroupInvitationRepo: NewGroupInvitationRepository(in),
 	}
 }
 
 type Repository struct {
 	in digIn
 
-	ExampleRepo        IExampleRepository
-	UsersRepo          IUsersRepository
-	LoginRecordRepo    ILoginRecordRepository
-	FriendRepo         IFriendRepository
-	FriendRequestsRepo IFriendRequestsRepository
-	GroupsRepo         IGroupsRepository
-	GroupMembersRepo   IGroupMembersRepository
-	RouteCacheRepo     IRouteCacheRepository
+	ExampleRepo         IExampleRepository
+	UsersRepo           IUsersRepository
+	LoginRecordRepo     ILoginRecordRepository
+	FriendRepo          IFriendRepository
+	FriendRequestsRepo  IFriendRequestsRepository
+	GroupsRepo          IGroupsRepository
+	GroupMembersRepo    IGroupMembersRepository
+	CacheRepo           ICacheRepository
+	GroupInvitationRepo IGroupInvitationRepository
 }
 
 // digIn repository require indendency

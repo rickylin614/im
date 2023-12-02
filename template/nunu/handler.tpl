@@ -16,7 +16,7 @@ type {{ .FileNameTitleLower }}Handler struct {
 // Get
 // @Summary Get
 // @Tags {{ .FileNameTitleLower }}
-// @Param body body request.{{ .FileName }}Get true "param"
+// @Param request body request.{{ .FileName }}Get true "param"
 // @Success 200 {object} response.APIResponse[response.{{ .FileName }}Get]
 // @Router /{{ .FileNameKebabCase }}/:id [get]
 func (h {{ .FileNameTitleLower }}Handler) Get(ctx *gin.Context) {
@@ -48,7 +48,7 @@ func (h {{ .FileNameTitleLower }}Handler) Get(ctx *gin.Context) {
 // GetList
 // @Summary GetList
 // @Tags {{ .FileNameTitleLower }}
-// @Param body body request.{{ .FileName }}GetList true "param"
+// @Param request body request.{{ .FileName }}GetList true "param"
 // @Success 200 {object} response.APIResponse[response.{{ .FileName }}GetList]
 // @Router /{{ .FileNameKebabCase }} [get]
 func (h {{ .FileNameTitleLower }}Handler) GetList(ctx *gin.Context) {
@@ -73,7 +73,7 @@ func (h {{ .FileNameTitleLower }}Handler) GetList(ctx *gin.Context) {
 // Create
 // @Summary Create
 // @Tags {{ .FileNameTitleLower }}
-// @Param body body request.{{ .FileName }}Create true "param"
+// @Param request body request.{{ .FileName }}Create true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /{{ .FileNameKebabCase }} [post]
 func (h {{ .FileNameTitleLower }}Handler) Create(ctx *gin.Context) {
@@ -93,7 +93,7 @@ func (h {{ .FileNameTitleLower }}Handler) Create(ctx *gin.Context) {
 // Update
 // @Summary Update
 // @Tags {{ .FileNameTitleLower }}
-// @Param body body request.{{ .FileName }}Update true "param"
+// @Param request body request.{{ .FileName }}Update true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /{{ .FileNameKebabCase }} [put]
 func (h {{ .FileNameTitleLower }}Handler) Update(ctx *gin.Context) {
@@ -114,7 +114,7 @@ func (h {{ .FileNameTitleLower }}Handler) Update(ctx *gin.Context) {
 // Delete
 // @Summary Delete
 // @Tags {{ .FileNameTitleLower }}
-// @Param body body request.{{ .FileName }}Delete true "param"
+// @Param request body request.{{ .FileName }}Delete true "param"
 // @Success 200 {object} response.APIResponse[string]
 // @Router /{{ .FileNameKebabCase }} [delete]
 func (h {{ .FileNameTitleLower }}Handler) Delete(ctx *gin.Context) {

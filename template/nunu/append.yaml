@@ -9,7 +9,7 @@ files:
     regex: "type Service struct \\{.*?\\}"
     template: "\\n\\t{{ .FileName }}Srv  I{{ .FileName }}Service"
   - path: "internal/service/provider.go"
-    regex: "func NewService\\(in digIn\\) .*?Service \\{.*?\\\t}"
+    regex: "func NewService\\(in DigIn\\) .*?Service \\{.*?\\\t}"
     template: "\\n\\t\\t{{ .FileName }}Srv:  New{{ .FileName }}Service(in),"
   - path: "internal/repository/provider.go"
     regex: "type Repository struct \\{.*?\\}"

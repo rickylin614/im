@@ -6,15 +6,17 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 
 	"im/internal/models"
 	"im/internal/models/req"
 	"im/internal/pkg/consts"
-	"im/internal/pkg/logger"
-	"im/internal/pkg/sqldb"
-	"im/internal/repository/mock_repository"
+	"im/internal/pkg/consts/enums"
 	"im/internal/service"
 	"im/internal/util/crypto"
+	"im/internal/util/ctxs"
 	"im/internal/util/errs"
 	"im/internal/util/uuid"
 
@@ -23,27 +25,20 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-// Mock dependencies
-type mockDeps struct {
-	UsersRepo *mock_repository.MockUsersRepository
-	Logger    *logger.MockLogger
-	DB        sqldb.Client
-}
-
 // Setup for your tests
 func setupTest(t *testing.T) (service.IUsersService, *MockRepoSet, *mock.Mock) {
 	container, mockRepoSet, mock := NewMockDigIn(t)
 
-	var dIn service.DigIn
+	var din service.DigIn
 	err := container.Invoke(func(di service.DigIn) {
-		dIn = di
+		din = di
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Create the UsersService with the mock dependencies
-	usersService := service.NewUsersService(dIn)
+	usersService := service.NewUsersService(din)
 
 	// Return both the service and the mock dependencies
 	return usersService, mockRepoSet, mock
@@ -210,7 +205,7 @@ func (suite *UserServiceTestSuite) TestLoginUserStatusBlocked() {
 		Username: "blockeduser",
 		Password: "password123",
 	}
-	expectedUser := &models.Users{Username: "blockeduser", PasswordHash: crypto.Hash("password123"), Status: consts.UserStatusBlocked}
+	expectedUser := &models.Users{Username: "blockeduser", PasswordHash: crypto.Hash("password123"), Status: enums.UserStatusBlocked}
 
 	suite.Deps.UsersRepo.On("Get", mock.Anything, mock.AnythingOfType("*req.UsersGet")).Return(expectedUser, nil).Once()
 	suite.Deps.LoginRecordRepo.On("Create", mock.Anything, mock.AnythingOfType("*models.LoginRecord")).Return(nil, nil).Once()
@@ -251,15 +246,25 @@ func (suite *UserServiceTestSuite) TestLogout() {
 
 func (suite *UserServiceTestSuite) TestGetByToken() {
 	ctx := &gin.Context{Request: &http.Request{}}
-	token := "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiJEZWZhdWx0IiwidG9rZW4iOiIiLCJ1c2VyIjp7ImkiOiIiLCJ1IjoiZXhpc3Rpbmd1c2VyIiwibiI6IiIsInAiOiJiM2IwNTY4MGI3ZDZhMDBmZjIzMTU5YzBlZTE1NWQ5YyIsImUiOiIiLCJwaCI6IiIsImN0IjoiMDAwMS0wMS0wMVQwMDowMDowMFoiLCJ1dCI6IjAwMDEtMDEtMDFUMDA6MDA6MDBaIiwicyI6MH0sImV4cCI6MTY5OTIwNDMzNCwianRpIjoiMDE4YmEwMGEtYTY3MS03MDNhLTliZDUtNThjMWRmNzQyNmJmIn0.SIIKD5LeijYEcn_tuu6Vpz33KpHqveSE_gHe_tza72hsgNXLfUekC9k8e1Qu3xGjR40_sSmiX6ePUTJ8CTtFHACE4Nz0TxW-Jx03WbhN5B3WyVL9lP3rkEyWlRwMgWPzSfk9nf0GbbDrjxnMX1obnkxjDzpG8QSC2WOR0p41JEA"
-	expectedJwtToken := &models.JWTClaims{}
-	expectedJwtToken.User = &models.Users{ID: "", Username: "existinguser", PasswordHash: "b3b05680b7d6a00ff23159c0ee155d9c"}
+	expectedUser := &models.Users{ID: "1", Username: "existinguser", PasswordHash: "b3b05680b7d6a00ff23159c0ee155d9c"}
+	jwtTokenUuid := uuid.New()
+	expectedJwtTokenClaims := &models.JWTClaims{
+		User:     expectedUser,
+		DeviceID: ctxs.GetDeviceID(ctx),
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    expectedUser.ID,
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(consts.TOKEN_EXPIRED)), // 假設token有效期為24小時
+			ID:        jwtTokenUuid,
+		},
+	}
+	jwfClaims := jwt.NewWithClaims(jwt.SigningMethodRS256, expectedJwtTokenClaims)
+	token, _ := jwfClaims.SignedString(crypto.GetRsaPrivateKey())
 
-	suite.Deps.UsersRepo.On("GetByToken", ctx, mock.Anything, mock.Anything, mock.Anything).Return(expectedJwtToken, nil)
+	suite.Deps.UsersRepo.On("GetByToken", ctx, mock.Anything, mock.Anything, mock.Anything).Return(expectedJwtTokenClaims, nil)
 	user, err := suite.UsersService.GetByToken(ctx, token)
 
 	suite.NoError(err)
-	suite.Equal(expectedJwtToken.User, user)
+	suite.Equal(expectedJwtTokenClaims.User, user)
 }
 
 // This is the entry point for testing

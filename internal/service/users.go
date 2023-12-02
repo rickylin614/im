@@ -8,13 +8,13 @@ import (
 	"im/internal/models"
 	"im/internal/models/req"
 	"im/internal/pkg/consts"
+	"im/internal/pkg/consts/enums"
 	"im/internal/util/crypto"
 	"im/internal/util/ctxs"
 	"im/internal/util/errs"
 	"im/internal/util/uuid"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/goccy/go-json"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jinzhu/copier"
 )
@@ -50,7 +50,7 @@ func (s UsersService) GetList(ctx *gin.Context, cond *req.UsersGetList) (*models
 
 func (s UsersService) Create(ctx *gin.Context, cond *req.UsersCreate) (id any, err error) {
 	db := s.In.DB.Session(ctx)
-	insertData := &models.Users{ID: uuid.New(), PasswordHash: crypto.Hash(cond.Password), Status: consts.UserStatusActive}
+	insertData := &models.Users{ID: uuid.New(), PasswordHash: crypto.Hash(cond.Password), Status: enums.UserStatusActive}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}
@@ -83,20 +83,20 @@ func (s UsersService) Login(ctx *gin.Context, cond *req.UsersLogin) (token strin
 
 	// 驗證密碼
 	if user.PasswordHash != crypto.Hash(cond.Password) {
-		loginRecord := composeLoginRecord(ctx, user, consts.LoginStateFailed)
+		loginRecord := composeLoginRecord(ctx, user, enums.LoginStateFailed)
 		go s.loginRecord(loginRecord)
 		return "", errs.LoginCommonError
 	}
 
 	// 驗證用戶狀態
-	if user.Status != consts.UserStatusActive {
-		loginRecord := composeLoginRecord(ctx, user, consts.LoginStateBlocked)
+	if user.Status != enums.UserStatusActive {
+		loginRecord := composeLoginRecord(ctx, user, enums.LoginStateBlocked)
 		go s.loginRecord(loginRecord)
 		return "", errs.LoginLockedError
 	}
 
 	// 登入成功
-	loginRecord := composeLoginRecord(ctx, user, consts.LoginStateSuccess)
+	loginRecord := composeLoginRecord(ctx, user, enums.LoginStateSuccess)
 	go s.loginRecord(loginRecord)
 
 	// 產token並返回
@@ -132,7 +132,7 @@ func (s UsersService) loginRecord(loginRecord *models.LoginRecord) {
 	}
 }
 
-func composeLoginRecord(ctx *gin.Context, user *models.Users, loginStatus consts.LoginState) *models.LoginRecord {
+func composeLoginRecord(ctx *gin.Context, user *models.Users, loginStatus enums.LoginState) *models.LoginRecord {
 	return &models.LoginRecord{
 		Name:       user.Nickname,
 		UserID:     user.ID,
@@ -144,7 +144,7 @@ func composeLoginRecord(ctx *gin.Context, user *models.Users, loginStatus consts
 }
 
 func (s UsersService) Logout(ctx *gin.Context, jwtToken string) (err error) {
-	token, err := jwt.ParseWithClaims(jwtToken, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, _ := jwt.ParseWithClaims(jwtToken, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// 确保token的签名算法是我们预期的
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -152,13 +152,8 @@ func (s UsersService) Logout(ctx *gin.Context, jwtToken string) (err error) {
 		return crypto.GetRsaPublicKey(), nil
 	})
 
-	if err != nil {
-		s.In.Logger.Error(ctx, err)
-		return errs.RequestTokenError
-	}
-
 	claims, ok := token.Claims.(*models.JWTClaims)
-	if !ok || !token.Valid {
+	if !ok {
 		return errs.RequestTokenError
 	}
 

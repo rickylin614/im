@@ -2,7 +2,7 @@ package req
 
 import (
 	"im/internal/models"
-	"im/internal/pkg/consts"
+	"im/internal/pkg/consts/enums"
 
 	"time"
 
@@ -10,13 +10,13 @@ import (
 )
 
 type FriendRequestsGet struct {
-	ID                 string                   `gorm:"column:id"`
-	SenderID           string                   `gorm:"column:sender_id"`
-	ReceiverID         string                   `gorm:"column:receiver_id"`
-	RequestStatus      consts.FriendReqStatus   `gorm:"column:request_status"`
-	RequestStatusConds []consts.FriendReqStatus `gorm:"-"`
-	CreatedAt          time.Time                `gorm:"column:created_at"`
-	UpdatedAt          time.Time                `gorm:"column:updated_at"`
+	ID                 string                  `gorm:"column:id"`
+	SenderID           string                  `gorm:"column:sender_id"`
+	ReceiverID         string                  `gorm:"column:receiver_id"`
+	RequestStatus      enums.FriendReqStatus   `gorm:"column:request_status"`
+	RequestStatusConds []enums.FriendReqStatus `gorm:"-"`
+	CreatedAt          time.Time               `gorm:"column:created_at"`
+	UpdatedAt          time.Time               `gorm:"column:updated_at"`
 }
 
 func (f FriendRequestsGet) Scope(db *gorm.DB) *gorm.DB {
@@ -46,8 +46,8 @@ type FriendRequestsCreate struct {
 }
 
 type FriendRequestsUpdate struct {
-	ID            string `json:"id"` // 請求單ID
-	RequestStatus string `json:"request_status" binding:"required,oneof=accepted rejected" enums:"accepted,rejected"`
+	ID            string                `json:"id"` // 請求單ID
+	RequestStatus enums.FriendReqStatus `json:"request_status" binding:"required,oneof=accepted rejected" enums:"accepted,rejected"`
 }
 
 type FriendRequestsDelete struct {

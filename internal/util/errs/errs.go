@@ -28,7 +28,8 @@ var (
 	RequestRawSQLNotFound         = requestGroup.Add("找不到执行档", http.StatusNotFound)             // 找不到执行档 (HTTP 404)
 	RequestDuplicate              = requestGroup.Add("请求重复", http.StatusConflict)               // 请求重复 (HTTP 409)
 	RequestInvalidUser            = requestGroup.Add("无效的用户", http.StatusBadRequest)            // 无效的用户 (HTTP 400)
-	RequestInvalidID              = requestGroup.Add("无效的ID", http.StatusBadRequest)            // 无效的用户 (HTTP 400)
+	RequestInvalidID              = requestGroup.Add("无效的ID", http.StatusBadRequest)            // 无效的ID (HTTP 400)
+	RequestInvalidPermission      = requestGroup.Add("权限不足", http.StatusBadRequest)             // 权限不足 (HTTP 400)
 )
 
 var (
@@ -36,6 +37,11 @@ var (
 	RequestTokenError = loginGroup.Add("登入失效，請重新登入", http.StatusUnauthorized)  // 登入失效，請重新登入 (HTTP 401)
 	LoginCommonError  = loginGroup.Add("使用者名稱或密碼無效", http.StatusUnauthorized)  // 使用者名稱或密碼無效 (HTTP 401)
 	LoginLockedError  = loginGroup.Add("使用者已被封鎖，請聯繫管理員", http.StatusForbidden) // 使用者已被封鎖，請聯繫管理員 (HTTP 403)
+)
+
+var (
+	GroupGroup            = Codes.Group("03")                                 // 登入相關
+	GroupMemberExistError = loginGroup.Add("對象已是群組成員", http.StatusBadRequest) // 對象已是群組成員 (HTTP 400)
 )
 
 var (
