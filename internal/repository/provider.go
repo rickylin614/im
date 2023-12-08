@@ -6,6 +6,7 @@ import (
 	"im/internal/pkg/sqldb"
 
 	"github.com/coocood/freecache"
+	"github.com/dtm-labs/rockscache"
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/dig"
 )
@@ -42,9 +43,10 @@ type Repository struct {
 type digIn struct {
 	dig.In
 
-	Logger logger.Logger
-	Db     sqldb.Client
-	Rdb    redis.UniversalClient
-	Cache  *freecache.Cache
-	Config *config.Config
+	Logger   logger.Logger
+	Db       sqldb.Client
+	Rdb      redis.UniversalClient
+	Cache    *freecache.Cache
+	Config   *config.Config
+	rcClient *rockscache.Client
 }

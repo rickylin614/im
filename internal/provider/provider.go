@@ -11,6 +11,7 @@ import (
 	"im/internal/pkg/localcache"
 	"im/internal/pkg/logger"
 	"im/internal/pkg/mongo"
+	"im/internal/pkg/rcache"
 	"im/internal/pkg/redis"
 	"im/internal/pkg/sqldb"
 	"im/internal/repository"
@@ -44,6 +45,9 @@ func New() *dig.Container {
 			panic(err)
 		}
 		if err := container.Provide(redis.NewRedis); err != nil {
+			panic(err)
+		}
+		if err := container.Provide(rcache.NewRocksCache); err != nil {
 			panic(err)
 		}
 		if err := container.Provide(mongo.NewMongoDB); err != nil {

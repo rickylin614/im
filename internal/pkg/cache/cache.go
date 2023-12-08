@@ -3,10 +3,12 @@ package cache
 import (
 	"context"
 	"errors"
+	"im/internal/util/errs"
 	"log/slog"
 	"time"
 
 	"github.com/coocood/freecache"
+	"github.com/dtm-labs/rockscache"
 	"github.com/goccy/go-json"
 	"github.com/redis/go-redis/v9"
 	"golang.org/x/sync/singleflight"
@@ -22,7 +24,7 @@ func GetCache[T any](ctx context.Context,
 ) (result T, err error) {
 	cacheData, err := c.Get([]byte(key))
 	if err == nil {
-		if err := json.Unmarshal(cacheData, result); err != nil {
+		if err := json.Unmarshal(cacheData, &result); err != nil {
 			return result, nil
 		}
 	}
@@ -66,5 +68,49 @@ func GetCache[T any](ctx context.Context,
 	if v, ok := data.(T); ok {
 		result = v
 	}
+	return
+}
+
+func GetCache2[T any](ctx context.Context,
+	c *freecache.Cache,
+	rcClient *rockscache.Client,
+	key string,
+	fn func() (T, error),
+	ttl time.Duration,
+) (result T, err error) {
+	cacheData, err := c.Get([]byte(key))
+	if err == nil {
+		if err := json.Unmarshal(cacheData, &result); err != nil {
+			return result, nil
+		}
+	}
+	writer := false
+
+	v, err := rcClient.Fetch2(ctx, key, ttl, func() (string, error) {
+		result, err = fn()
+		if err != nil {
+			return "", err
+		}
+		bs, err := json.Marshal(result)
+		if err != nil {
+			return "", err
+		}
+
+		return string(bs), err
+	})
+
+	if err != nil {
+		return
+	}
+	if writer {
+		return
+	}
+
+	if v == "" {
+		err = errs.RequestNoData
+		return
+	}
+
+	err = json.Unmarshal([]byte(v), &result)
 	return
 }
