@@ -17,7 +17,6 @@ graph LR
     Web -->|Message| Queue[Message Queue]
     Queue -->|Notification| WebSocket
     WebSocket -->|Ws Signaling| Flutter
-    Flutter -->|WebRTC Signaling| WebSocket
 ```
 
 ## 程序業務
