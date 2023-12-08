@@ -65,35 +65,15 @@ graph LR
 
 ```mermaid
 graph LR
-
-A[接收Request]
-B[檢查Token頭部]
-C[Token頭部不存在?]
-D[回傳RequestTokenError]
-E[通過UsersService取得Token資料]
-F[檢查錯誤或使用者狀態]
-G[設置使用者資訊並進行下一步]
-
-H1["解析JWTToken(續)"]
-H2["解析JWTToken(續)"]
-I[檢查Token有效性]
-J[取得Token內容]
-K[回傳使用者資訊]
-
-L[從Redis取得Token<br>解析Redis內的JWTToken]
-N[檢查Token內容<br>確認Token與請求的Token一致]
-P[延長Token時效<br>回傳Token內容]
-
-A --> B --> C
-C -->|否| E
-C -->|是| D
-E --> F
-F -->|成功| G
-F -->|失敗| D
-E --> H2
-
-H1 --> I --> J --> K
-J --> L --> N --> P
+    A[開始: IsLogin 中間件] --> B{檢查令牌是否存在}
+    B -- 不存在 --> C[返回令牌錯誤，中止]
+    B -- 存在 --> D[驗證令牌有效性]
+    D -- 驗證失敗 --> C
+    D -- 驗證成功 --> E[獲取用戶信息]
+    E --> F{用戶信息是否有效}
+    F -- 無效 --> C
+    F -- 有效 --> G[設置用戶信息，繼續流程]
+    G --> H[流程結束]
 ```
 
 ## API List
