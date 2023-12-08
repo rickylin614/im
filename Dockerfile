@@ -14,6 +14,8 @@ COPY ./internal ./internal
 # 构建可执行文件
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -tags go_json -o main ./cmd/web/main.go
 
+#------------------------------------------------------------------------------------------------
+
 # 第二阶段：创建运行镜像
 # 使用轻量级的 alpine 镜像
 FROM alpine:latest

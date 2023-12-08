@@ -5,7 +5,7 @@ instant message project
 
 ## 預計架構
 
-- 實現下方WebRTC, Web, WebSocket端a
+- 實現下方WebRTC, Web, WebSocket端
 
 ```mermaid
 graph LR
@@ -19,11 +19,97 @@ graph LR
     WebSocket -->|Ws Signaling| Flutter
 ```
 
+## 專案結構
+
+```
+├─ api - 可能包含API相關的代碼。
+├─ build - 與構建過程相關的配置和腳本。
+│  ├─ mysql - MySQL的構建文件和配置。
+│  └─ redis - Redis的構建文件和配置。
+├─ cmd - 應用程式的入口點。
+│  └─ web - Web應用程式或服務啟動代碼。
+├─ config - 包含配置文件。
+├─ deployments - 部署相關的配置和腳本。
+│  └─ local - 本地部署配置。
+├─ docs - 專案文檔。
+│  ├─ bi - 商業智能文檔。
+│  ├─ md - Markdown文件。
+│  └─ sql - 與SQL相關的文檔。
+│     ├─ dml - Data Manipulation Language文檔。
+│     └─ init - 初始化SQL腳本。
+├─ internal - 專案核心代碼，不對外暴露。
+│  ├─ handler - HTTP請求處理器。
+│  ├─ middleware - 中間件代碼。
+│  ├─ models - 模型定義。
+│  │  ├─ req - 請求結構。
+│  │  └─ resp - 響應結構。
+│  ├─ pkg - 共用套件或庫。
+│  │  ├─ cache - 緩存相關功能。
+│  │  ├─ config - 配置處理功能。
+│  │  ├─ consts - 常量和枚舉。
+│  │  │  ├─ enums - 枚舉類型。
+│  │  │  └─ rediskey - Redis鍵的定義。
+│  │  ├─ localcache - 本地緩存功能。
+│  │  ├─ logger - 日誌記錄功能。
+│  │  ├─ mongo - MongoDB的相關操作。
+│  │  ├─ ratelimit - 速率限制功能。
+│  │  ├─ rcache - 遠程緩存功能。
+│  │  ├─ redis - Redis的相關操作。
+│  │  └─ sqldb - SQL數據庫的相關操作。
+│  ├─ provider - 提供者模式代碼。
+│  ├─ repository - 資料存取層代碼。
+│  │  ├─ mock_repository - 模擬存儲庫。
+│  │  └─ sql - SQL存取代碼。
+│  ├─ router - 路由設定。
+│  ├─ server - 伺服器設定和啟動代碼。
+│  ├─ service - 業務邏輯層。
+│  └─ util - 工具類和助手函數。
+│     ├─ crypto - 加密和解密工具。
+│     ├─ ctxs - 上下文處理工具。
+│     ├─ errs - 錯誤處理和定義。
+│     ├─ network - 網絡相關工具。
+│     ├─ stringutil - 字串處理工具。
+│     └─ uuid - UUID生成工具。
+├─ scripts - 開發、構建、部署腳本。
+└─ template - 模板文件。
+   └─ nunu - 特定的模板或模板集。
+```
+
+## 引用套件
+
+1. github.com/DATA-DOG/go-sqlmock v1.5.0: 用於在測試中模擬SQL數據庫的庫，不需要實際的數據庫連接。
+1. github.com/coocood/freecache v1.2.4: 高性能的內存緩存庫。
+1. github.com/dtm-labs/rockscache v0.1.1: 一個分佈式緩存解決方案。
+1. github.com/fsnotify/fsnotify v1.7.0: 用於監控文件系統通知的庫。
+1. github.com/gin-contrib/cors v1.4.0: 用於Gin框架的跨源資源共享(CORS)中間件。
+1. github.com/gin-contrib/pprof v1.4.0: Gin框架的pprof(性能分析)中間件。
+1. github.com/gin-gonic/gin v1.9.1: 一個高性能的HTTP web框架。
+1. github.com/go-co-op/gocron v1.35.2: 用於Go的簡單、流暢的定時任務庫。
+1. github.com/go-playground/validator/v10 v10.16.0: 用於結構和字段驗證的庫。
+1. github.com/go-redsync/redsync/v4 v4.10.0: 提供分佈式系統中的分佈式鎖定機制。
+1. github.com/go-sql-driver/mysql v1.7.1: MySQL數據庫的驅動程序。
+1. github.com/goccy/go-json v0.10.2: 用於JSON的高效解析和序列化庫。
+1. github.com/gofrs/uuid v4.4.0+incompatible: 用於生成和處理UUID的庫。
+1. github.com/golang-jwt/jwt/v5 v5.0.0: 用於處理JSON Web Tokens (JWT)的庫。
+1. github.com/jinzhu/copier v0.4.0: 用於在Go結構體之間進行深拷貝的庫。
+1. github.com/prometheus/client_golang v1.17.0: Prometheus的Go客戶端庫，用於監控和度量。
+1. github.com/redis/go-redis/v9 v9.2.1: Redis的Go客戶端庫。
+1. github.com/samber/slog-zap/v2 v2.1.0: Zap日誌庫的結構化日誌接口。
+1. github.com/spf13/viper v1.17.0: 用於處理應用配置的庫。
+1. github.com/stretchr/testify v1.8.4: 用於撰寫測試的庫，提供了許多有用的斷言和輔助方法。
+1. github.com/swaggo/swag v1.16.2: 自動生成Swagger 2.0文檔的庫。
+1. github.com/throttled/throttled/v2 v2.12.0: 提供速率限制和限流功能的庫。
+1. go.mongodb.org/mongo-driver v1.12.1: MongoDB的Go驅動。
+1. go.uber.org/dig v1.17.1: 用於依賴注入的庫。
+1. go.uber.org/zap v1.26.0: 一個快速、結構化、級別化的日誌框架。
+1. golang.org/x/sync v0.5.0: 提供額外的同步原語，如semaphore、singleflight、errgroup。
+1. gorm.io/driver/mysql v1.5.2: GORM框架的MySQL驅動。
+1. gorm.io/gorm v1.25.5: GORM是一個功能強大的ORM庫。
+1. gorm.io/plugin/dbresolver v1.4.7: GORM的數據庫解析器插件，用於讀寫分離和多數據庫路由。
+
 ## 程序業務
 
 ### 中間件
-
-
 
 #### RouteCache 
 
@@ -76,110 +162,22 @@ graph TD
     
 ```
 
-## API List
-
-### User
-
-1. `POST` `/im/users/register`: 註冊新用戶。
-1. `POST` `/im/users/login`: 用戶登錄並返回授權令牌。
-1. `GET` `/im/users/logout`: 用戶登出。
-1. `GET` `/im/users/{id}`: 獲取指定ID的用戶詳細信息。
-1. `PUT` `/im/users/{id}`: 更新指定ID的用戶信息。
-1. `DELETE` `/im/users/{id}`: 刪除指定ID的用戶。
-1. `GET` `/im/users/search?query={query}`: 根據查詢條件搜索用戶。
-1. `GET` `/im/users/{id}/online-status`：獲取指定用戶ID的在線狀態。
-1. `PUT` `/im/users/{id}/online-status`：更新指定用戶ID的在線狀態（例如，上線、離線、隱身等）。
-
-### Friends
-
-1. `GET` `/im/users/friends`: 獲取用戶的好友列表。
-1. `POST` `/im/users/friends`: 向指定用戶發送好友請求。
-1. `PUT` `/im/users/friends`: 更新與指定用戶的好友關係（接受/拒絕/阻止）。
-1. `DELETE` `/im/users/friends`: 刪除與指定用戶的好友關係。
-1. `GET` `/im/users/friend-requests`：獲取指定用戶ID收到的好友請求列表。
-1. `POST` `/im/users/friend-requests`：讓指定的requester-id向指定用戶ID發送好友請求。
-1. `PUT` `/im/users/friend-requests`：指定用戶ID接受或拒絕來自requester-id的好友請求。
-1. `GET` `/im/users/blocked-friends`：獲取指定用戶ID的已封鎖好友列表。
-1. `PUT` `/im/users/blocked-friends`：指定用戶ID封鎖或取消封鎖指定好友ID。
-1. `GET` `/im/users/mutual-friends`：獲取指定用戶ID與另一指定用戶ID的共同好友列表。
-
-### Group
-1. `GET` `/im/users/{id}/groups`: 獲取用戶所屬的群組列表。
-1. `POST` `/im/groups`：創建新群組。
-1. `GET` `/im/groups/{id}`：根據群組ID獲取群組資訊。
-1. `PUT` `/im/groups/{id}`：更新指定群組ID的群組資訊。
-1. `DELETE` `/im/groups/{id}`：刪除指定群組ID的群組。
-1. `GET` `/im/groups/{id}/members`：獲取指定群組ID的成員列表。
-1. `POST` `/im/groups/{id}/members/{user-id}`：將指定用戶ID添加到指定群組ID。
-1. `DELETE` `/im/groups/{id}/members/{user-id}`：將指定用戶ID從指定群組ID中移除。
-1. `GET` `/im/groups/{id}/invitations`：獲取指定群組ID的未處理邀請列表。
-1. `POST` `/im/groups/{id}/invitations/{user-id}`：向指定用戶ID發送指定群組ID的邀請。
-1. `PUT` `/im/groups/{id}/invitations/{user-id}`：指定用戶ID接受或拒絕來自指定群組ID的邀請。
-1. `DELETE` `/im/groups/{id}/invitations/{user-id}`：刪除來自指定群組ID的邀請。
-1. `GET` `/im/groups/{id}/requests`：獲取指定群組ID的加入請求列表。
-1. `POST` `/im/groups/{id}/requests/{user-id}`：指定用戶ID向指定群組ID發送加入請求。
-1. `PUT` `/im/groups/{id}/requests/{user-id}`：指定群組ID接受或拒絕來自指定用戶ID的加入請求。
-1. `DELETE` `/im/groups/{id}/requests/{user-id}`：刪除來自指定用戶ID的加入請求。
-1. `GET` `/im/groups/search?query={search-query}`：根據搜索條件（例如群組名稱）查找群組。
-1. `POST` `/im/private-messages/{message-id}/reactions`：為指定私人訊息ID添加表情符號或反應。
-1. `DELETE` `/im/private-messages/{message-id}/reactions/{reaction-id}`：刪除指定私人訊息ID的表情符號或反應。
-
-### Group Message
-
-1. `GET` `/im/users/{id}/group-messages`：獲取指定用戶ID的所有私人訊息列表。
-1. `GET` `/im/groups/{id}/messages`：獲取指定群組ID的所有訊息列表。
-1. `POST` `/im/groups/{id}/messages`：向指定群組ID發送訊息。
-1. `PUT` `/im/group-messages/{message-id}`：更新指定群組訊息ID的訊息內容（例如，標記為已讀）。
-1. `DELETE` `/im/group-messages/{message-id}`：刪除指定群組訊息ID的訊息。
-1. `GET` `/im/group-messages/{message-id}`：根據群組訊息ID獲取訊息詳情。
-1. `POST` `/im/group-messages/{message-id}/reactions`：為指定群組訊息ID添加表情符號或反應。
-1. `DELETE` `/im/group-messages/{message-id}/reactions/{reaction-id}`：刪除指定群組訊息ID的表情符號或反應。
-
-## note
-
-- 後台與前台API共用, 中間件檢測API權限(如A的好友列表只能由A確認)
 
 
-## project structure
-
-```
-├─api
-├─cmd
-├─deployments
-├─docs
-│  └─sql
-│      └─init
-├─internal
-│  ├─consts
-│  ├─handler
-│  ├─models
-│  ├─repo
-│  └─service
-├─pkg
-│  ├─config
-│  ├─helper
-│  ├─https
-│  └─log
-└─scripts
-```
 
 ## 套件安裝
 
-- 快速產生套件
-
 ```shell
+# 使用模板生成代碼
 go install github.com/rickylin614/nunu@v1.0.4
-
+# 生成測試代碼
 go install github.com/vektra/mockery/v2@v2.36.0
-
+# 生成文件
 go install github.com/swaggo/swag/cmd/swag@v1.16.1
 ```
 
--- v2.36.0
-
-## 執行時標籤
+## 執行標籤
 
 - 使gin的json編碼使用非基礎套件:
   - tags加上`go_json`, 會使用`github.com/goccy/go-json`
 
-- singleflight 避免緩存擊穿
