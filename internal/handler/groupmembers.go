@@ -17,7 +17,7 @@ type groupMembersHandler struct {
 // @Summary GetList
 // @Tags groupMembers
 // @Param request query request.GroupMembersGetList true "param"
-// @Success 200 {object} response.APIResponse[response.GroupMembersGetList]
+// @Success 200 {object} response.APIResponse[response.GroupMembersGetList.Data]
 // @Router /group-members/:id [get]
 func (h groupMembersHandler) GetList(ctx *gin.Context) {
 	req := &request.GroupMembersGetList{}
@@ -30,12 +30,12 @@ func (h groupMembersHandler) GetList(ctx *gin.Context) {
 		ctxs.SetError(ctx, err)
 		return
 	}
-	result := &response.GroupMembersGetList{}
-	if err := copier.Copy(result, data); err != nil {
+	result := &response.GroupMembersGetList{Data: make([]response.GroupMembersGet, 0)}
+	if err := copier.Copy(result.Data, data); err != nil {
 		ctxs.SetError(ctx, err)
 		return
 	}
-	ctxs.SetResp(ctx, result)
+	ctxs.SetResp(ctx, result.Data)
 }
 
 // Create

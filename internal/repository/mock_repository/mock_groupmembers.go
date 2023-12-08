@@ -3,10 +3,13 @@
 package mock_repository
 
 import (
-	models "im/internal/models"
+	context "context"
+
+	gorm "gorm.io/gorm"
 
 	mock "github.com/stretchr/testify/mock"
-	gorm "gorm.io/gorm"
+
+	models "im/internal/models"
 
 	req "im/internal/models/req"
 )
@@ -228,6 +231,62 @@ func (_c *MockGroupMembersRepository_GetList_Call) Return(_a0 *models.PageResult
 }
 
 func (_c *MockGroupMembersRepository_GetList_Call) RunAndReturn(run func(*gorm.DB, *req.GroupMembersGetList) (*models.PageResult[*models.GroupMembers], error)) *MockGroupMembersRepository_GetList_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetListById provides a mock function with given fields: ctx, db, cond
+func (_m *MockGroupMembersRepository) GetListById(ctx context.Context, db *gorm.DB, cond *req.GroupMembersGetList) ([]*models.GroupMembers, error) {
+	ret := _m.Called(ctx, db, cond)
+
+	var r0 []*models.GroupMembers
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, *gorm.DB, *req.GroupMembersGetList) ([]*models.GroupMembers, error)); ok {
+		return rf(ctx, db, cond)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, *gorm.DB, *req.GroupMembersGetList) []*models.GroupMembers); ok {
+		r0 = rf(ctx, db, cond)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*models.GroupMembers)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, *gorm.DB, *req.GroupMembersGetList) error); ok {
+		r1 = rf(ctx, db, cond)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGroupMembersRepository_GetListById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetListById'
+type MockGroupMembersRepository_GetListById_Call struct {
+	*mock.Call
+}
+
+// GetListById is a helper method to define mock.On call
+//   - ctx context.Context
+//   - db *gorm.DB
+//   - cond *req.GroupMembersGetList
+func (_e *MockGroupMembersRepository_Expecter) GetListById(ctx interface{}, db interface{}, cond interface{}) *MockGroupMembersRepository_GetListById_Call {
+	return &MockGroupMembersRepository_GetListById_Call{Call: _e.mock.On("GetListById", ctx, db, cond)}
+}
+
+func (_c *MockGroupMembersRepository_GetListById_Call) Run(run func(ctx context.Context, db *gorm.DB, cond *req.GroupMembersGetList)) *MockGroupMembersRepository_GetListById_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*gorm.DB), args[2].(*req.GroupMembersGetList))
+	})
+	return _c
+}
+
+func (_c *MockGroupMembersRepository_GetListById_Call) Return(_a0 []*models.GroupMembers, _a1 error) *MockGroupMembersRepository_GetListById_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGroupMembersRepository_GetListById_Call) RunAndReturn(run func(context.Context, *gorm.DB, *req.GroupMembersGetList) ([]*models.GroupMembers, error)) *MockGroupMembersRepository_GetListById_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -1,9 +1,14 @@
 package repository
 
 import (
+	"context"
 	"im/internal/models"
 	"im/internal/models/req"
+	"im/internal/pkg/cache"
+	"im/internal/pkg/consts/rediskey"
+	"time"
 
+	"golang.org/x/sync/singleflight"
 	"gorm.io/gorm"
 )
 
@@ -11,21 +16,23 @@ import (
 type IGroupMembersRepository interface {
 	Get(db *gorm.DB, cond *req.GroupMembersGet) (*models.GroupMembers, error)
 	GetList(db *gorm.DB, cond *req.GroupMembersGetList) (*models.PageResult[*models.GroupMembers], error)
+	GetListById(ctx context.Context, db *gorm.DB, cond *req.GroupMembersGetList) ([]*models.GroupMembers, error)
 	Create(db *gorm.DB, data *models.GroupMembers) (id any, err error)
 	Update(db *gorm.DB, data *models.GroupMembers) (err error)
 	Delete(db *gorm.DB, id string) (err error)
 }
 
 func NewGroupMembersRepository(in digIn) IGroupMembersRepository {
-	return groupMembersRepository{in: in}
+	return &groupMembersRepository{in: in, sf: &singleflight.Group{}}
 }
 
 type groupMembersRepository struct {
 	in digIn
+	sf *singleflight.Group
 }
 
 // Get 確認成員資訊時使用
-func (r groupMembersRepository) Get(db *gorm.DB, cond *req.GroupMembersGet) (*models.GroupMembers, error) {
+func (r *groupMembersRepository) Get(db *gorm.DB, cond *req.GroupMembersGet) (*models.GroupMembers, error) {
 	result := &models.GroupMembers{}
 	db = db.Find(result, cond)
 	if db.Error != nil {
@@ -37,7 +44,7 @@ func (r groupMembersRepository) Get(db *gorm.DB, cond *req.GroupMembersGet) (*mo
 	return result, nil
 }
 
-func (r groupMembersRepository) GetList(db *gorm.DB, cond *req.GroupMembersGetList) (*models.PageResult[*models.GroupMembers], error) {
+func (r *groupMembersRepository) GetList(db *gorm.DB, cond *req.GroupMembersGetList) (*models.PageResult[*models.GroupMembers], error) {
 	result := &models.PageResult[*models.GroupMembers]{
 		Data: make([]*models.GroupMembers, 0),
 	}
@@ -48,21 +55,35 @@ func (r groupMembersRepository) GetList(db *gorm.DB, cond *req.GroupMembersGetLi
 	return result, nil
 }
 
-func (r groupMembersRepository) Create(db *gorm.DB, data *models.GroupMembers) (id any, err error) {
+func (r *groupMembersRepository) GetListById(ctx context.Context, db *gorm.DB, cond *req.GroupMembersGetList) ([]*models.GroupMembers, error) {
+	key := rediskey.GROUP_MEMBER_KEY + cond.Id
+	return cache.GetCache[[]*models.GroupMembers](ctx,
+		r.in.Cache, r.in.Rdb, r.sf, key,
+		func() ([]*models.GroupMembers, error) {
+			result := make([]*models.GroupMembers, 0)
+			db = db.Model(models.GroupMembers{}).Scopes(cond.Scope)
+			if err := db.Find(&result).Error; err != nil {
+				return nil, err
+			}
+			return result, nil
+		}, time.Minute)
+}
+
+func (r *groupMembersRepository) Create(db *gorm.DB, data *models.GroupMembers) (id any, err error) {
 	if err := db.Create(data).Error; err != nil {
 		return nil, err
 	}
 	return data.GroupID, nil
 }
 
-func (r groupMembersRepository) Update(db *gorm.DB, data *models.GroupMembers) (err error) {
+func (r *groupMembersRepository) Update(db *gorm.DB, data *models.GroupMembers) (err error) {
 	if err := db.Updates(data).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r groupMembersRepository) Delete(db *gorm.DB, id string) (err error) {
+func (r *groupMembersRepository) Delete(db *gorm.DB, id string) (err error) {
 	if err := db.Model(models.GroupMembers{}).Delete("where id = ?", id).Error; err != nil {
 		return err
 	}

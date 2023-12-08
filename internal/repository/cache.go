@@ -18,6 +18,7 @@ type ICacheRepository interface {
 	SetRouteCache(ctx context.Context, cond *models.RouteCacheSet) error
 	GetCache(ctx context.Context, key string) ([]byte, error)
 	SetCache(ctx context.Context, key string, value []byte, ttl time.Duration) error
+	DelCache(ctx context.Context, key string) error
 }
 
 func NewCacheRepository(in digIn) ICacheRepository {

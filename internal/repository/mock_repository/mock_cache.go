@@ -24,6 +24,49 @@ func (_m *MockCacheRepository) EXPECT() *MockCacheRepository_Expecter {
 	return &MockCacheRepository_Expecter{mock: &_m.Mock}
 }
 
+// DelCache provides a mock function with given fields: ctx, key
+func (_m *MockCacheRepository) DelCache(ctx context.Context, key string) error {
+	ret := _m.Called(ctx, key)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, key)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockCacheRepository_DelCache_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DelCache'
+type MockCacheRepository_DelCache_Call struct {
+	*mock.Call
+}
+
+// DelCache is a helper method to define mock.On call
+//   - ctx context.Context
+//   - key string
+func (_e *MockCacheRepository_Expecter) DelCache(ctx interface{}, key interface{}) *MockCacheRepository_DelCache_Call {
+	return &MockCacheRepository_DelCache_Call{Call: _e.mock.On("DelCache", ctx, key)}
+}
+
+func (_c *MockCacheRepository_DelCache_Call) Run(run func(ctx context.Context, key string)) *MockCacheRepository_DelCache_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockCacheRepository_DelCache_Call) Return(_a0 error) *MockCacheRepository_DelCache_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockCacheRepository_DelCache_Call) RunAndReturn(run func(context.Context, string) error) *MockCacheRepository_DelCache_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetCache provides a mock function with given fields: ctx, key
 func (_m *MockCacheRepository) GetCache(ctx context.Context, key string) ([]byte, error) {
 	ret := _m.Called(ctx, key)
