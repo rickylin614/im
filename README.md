@@ -5,7 +5,7 @@ instant message project
 
 ## 預計架構
 
-- 實現下方WebRTC, Web, WebSocket端
+- 實現下方WebRTC, Web, WebSocket端a
 
 ```mermaid
 graph LR
@@ -64,7 +64,7 @@ graph LR
 #### 登入驗證(JWT)
 
 ```mermaid
-graph LR
+graph TD
     A[開始: IsLogin 中間件] --> B[檢查令牌是否存在]
     B -- 不存在 --> C[返回令牌錯誤，中止]
     B -- 存在 --> D[驗證令牌有效性]
@@ -73,7 +73,8 @@ graph LR
     E --> F[用戶信息是否有效]
     F -- 無效 --> C
     F -- 有效 --> G[設置用戶信息，繼續流程]
-    G --> H[流程結束]
+    G --> H[流程結束] 
+    
 ```
 
 ## API List
@@ -169,9 +170,10 @@ graph LR
 
 ```shell
 go install github.com/rickylin614/nunu@v1.0.4
-```
-```shell
+
 go install github.com/vektra/mockery/v2@v2.36.0
+
+go install github.com/swaggo/swag/cmd/swag@v1.16.1
 ```
 
 -- v2.36.0
