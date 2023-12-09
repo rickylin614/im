@@ -162,9 +162,6 @@ graph TD
     
 ```
 
-
-
-
 ## 套件安裝
 
 ```shell
@@ -178,8 +175,15 @@ go install github.com/swaggo/swag/cmd/swag@v1.16.1
 go install github.com/go-task/task/v3/cmd/task@v3.32.0
 ```
 
+### 套件教學
+
+[套件使用範例](./docs/md/note.md)
+
 ## 執行標籤
 
 - 使gin的json編碼使用非基礎套件:
   - tags加上`go_json`, 會使用`github.com/goccy/go-json`
 
+## API介紹
+
+[API說明](./docs/md/router.md)
