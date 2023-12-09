@@ -2,10 +2,6 @@
 default:
 	echo 'please choose command'
 
-.PHONY: swag
-swag:
-	go install github.com/swaggo/swag/cmd/swag@v1.16.1
-
 .PHONY: docs
 docs:
 	swag init -g ./cmd/web/main.go

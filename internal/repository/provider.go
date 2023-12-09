@@ -48,5 +48,5 @@ type digIn struct {
 	Rdb      redis.UniversalClient
 	Cache    *freecache.Cache
 	Config   *config.Config
-	rcClient *rockscache.Client
+	RcClient *rockscache.Client
 }

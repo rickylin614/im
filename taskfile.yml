@@ -1,0 +1,38 @@
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - echo 'please choose command'
+
+  docs:
+    cmds:
+      - swag init -g ./cmd/web/main.go
+
+  rundocs:
+    cmds:
+      - swag init -g ./cmd/web/main.go
+      - docker run --rm -it --env GOPATH=/go -v $(shell pwd):/go/src -p 8082:8082 -w /go/src quay.io/goswagger/swagger serve ./docs/swagger.yaml -p 8082 --no-open
+
+  nunu:
+    cmds:
+      - nunu create all {{.model}}
+      - nunu append {{.model}}
+    vars:
+      model:
+        sh: echo "{{.model}}"
+  run:
+    cmds:
+      - go run -tags go_json ./cmd/web/main.go
+
+  up:
+    cmds:
+      - docker-compose -f ./deployments/local/docker-compose.yaml up -d
+
+  down:
+    cmds:
+      - docker-compose -f ./deployments/local/docker-compose.yaml down
+
+  gen:
+    cmds:
+      - go generate ./...

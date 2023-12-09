@@ -174,6 +174,8 @@ go install github.com/rickylin614/nunu@v1.0.4
 go install github.com/vektra/mockery/v2@v2.36.0
 # 生成文件
 go install github.com/swaggo/swag/cmd/swag@v1.16.1
+# 執行taskfile
+go install github.com/go-task/task/v3/cmd/task@v3.32.0
 ```
 
 ## 執行標籤
