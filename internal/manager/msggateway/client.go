@@ -50,7 +50,7 @@ type Client struct {
 	IsBackground bool `json:"isBackground"`
 	// ctx            *UserConnContext
 	ctx            context.Context
-	longConnServer LongConnServer
+	longConnServer MsgGatewayManager
 	closed         atomic.Bool
 	closedErr      error
 	token          string
@@ -71,7 +71,7 @@ func (c *Client) ResetClient(
 	ctx *gin.Context,
 	conn LongConn,
 	isBackground, isCompress bool,
-	longConnServer LongConnServer,
+	longConnServer MsgGatewayManager,
 	token string,
 ) {
 	c.w = new(sync.Mutex)

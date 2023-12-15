@@ -7,7 +7,7 @@ import (
 )
 
 type WebRouter struct {
-	in digIn
+	in webDigIn
 }
 
 func (r WebRouter) SetRouter(router *gin.Engine) {

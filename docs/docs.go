@@ -19,6 +19,28 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/connect": {
+            "get": {
+                "tags": [
+                    "ws"
+                ],
+                "summary": "Establish WebSocket connection",
+                "responses": {
+                    "101": {
+                        "description": "WebSocket Protocol Handshake",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request format",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
         "/example": {
             "get": {
                 "tags": [

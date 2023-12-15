@@ -30,8 +30,7 @@ func main() {
 	// initial di
 	container := provider.New()
 
-	if err := container.Invoke(
-		server.Run(server.WEB)); err != nil {
+	if err := container.Invoke(server.RunWeb()); err != nil {
 		panic(err)
 	}
 }

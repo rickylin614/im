@@ -10,7 +10,7 @@ import (
 )
 
 type groupMembersHandler struct {
-	in digIn
+	in webDigIn
 }
 
 // GetList

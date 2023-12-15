@@ -6,6 +6,7 @@ import (
 	"go.uber.org/dig"
 
 	"im/internal/handler"
+	"im/internal/manager/msggateway"
 	"im/internal/middleware"
 	"im/internal/pkg/config"
 	"im/internal/pkg/localcache"
@@ -60,7 +61,13 @@ func New() *dig.Container {
 		if err := container.Provide(middleware.NewMiddleware); err != nil {
 			panic(err)
 		}
-		if err := container.Provide(handler.NewHandler); err != nil {
+		if err := container.Provide(handler.NewWebHandler); err != nil {
+			panic(err)
+		}
+		if err := container.Provide(handler.NewWebSocketHandler); err != nil {
+			panic(err)
+		}
+		if err := container.Provide(msggateway.NewWsManger); err != nil {
 			panic(err)
 		}
 		if err := container.Provide(service.NewService); err != nil {

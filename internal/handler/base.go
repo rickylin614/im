@@ -8,7 +8,7 @@ import (
 )
 
 type baseHandler struct {
-	in digIn
+	in webDigIn
 }
 
 // Ping

@@ -11,7 +11,7 @@ import (
 )
 
 type usersHandler struct {
-	in digIn
+	in webDigIn
 }
 
 // Login

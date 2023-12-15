@@ -10,7 +10,7 @@ import (
 )
 
 type friendHandler struct {
-	in digIn
+	in webDigIn
 }
 
 // GetFriends

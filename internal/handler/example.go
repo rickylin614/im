@@ -10,7 +10,7 @@ import (
 )
 
 type exampleHandler struct {
-	in digIn
+	in webDigIn
 }
 
 // Get

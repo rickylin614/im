@@ -13,29 +13,28 @@ import (
 	"go.uber.org/dig"
 )
 
-// WebDigIn the dependency invoke Server
-type WebDigIn struct {
+type WsDigIn struct {
 	dig.In
 
-	WebRouter    *router.WebRouter
+	WsRouter     *router.WsRouter
 	Config       *config.Config
 	Logger       logger.Logger
 	ServerRunner *Controller
 }
 
-type WebServer struct {
+type WsServer struct {
 	srv *http.Server
 
-	In WebDigIn
+	In WsDigIn
 }
 
-func (s *WebServer) Run(context.Context) error {
+func (s *WsServer) Run(context.Context) error {
 	r := gin.New()
 
-	s.In.WebRouter.SetRouter(r)
+	s.In.WsRouter.SetRouter(r)
 
 	s.srv = &http.Server{
-		Addr:    s.In.Config.GinConfig.Port,
+		Addr:    s.In.Config.WsConfig.Port,
 		Handler: r,
 	}
 
@@ -47,7 +46,7 @@ func (s *WebServer) Run(context.Context) error {
 	return nil
 }
 
-func (s *WebServer) Shutdown(ctx context.Context) error {
+func (s *WsServer) Shutdown(ctx context.Context) error {
 	if err := s.srv.Shutdown(ctx); err != nil {
 		return fmt.Errorf("Server Shutdown: %w\n", err)
 	}

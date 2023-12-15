@@ -10,7 +10,7 @@ import (
 )
 
 type loginRecordHandler struct {
-	in digIn
+	in webDigIn
 }
 
 // GetList

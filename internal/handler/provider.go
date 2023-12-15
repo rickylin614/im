@@ -3,16 +3,17 @@ package handler
 import (
 	"go.uber.org/dig"
 
+	"im/internal/manager/msggateway"
 	"im/internal/pkg/logger"
 	"im/internal/service"
 )
 
-// NewHandler
+// NewWebHandler
 //
 // param: in 依賴
 // return: handler 所有
-func NewHandler(in digIn) *Handler {
-	return &Handler{in: in,
+func NewWebHandler(in webDigIn) *WebHandler {
+	return &WebHandler{in: in,
 		BaseHandler:            &baseHandler{in},
 		ExampleHandler:         &exampleHandler{in},
 		UsersHandler:           &usersHandler{in: in},
@@ -25,8 +26,8 @@ func NewHandler(in digIn) *Handler {
 	}
 }
 
-type Handler struct {
-	in digIn
+type WebHandler struct {
+	in webDigIn
 
 	Logger                 logger.Logger
 	BaseHandler            *baseHandler
@@ -40,8 +41,30 @@ type Handler struct {
 	GroupInvitationHandler *groupInvitationHandler
 }
 
-type digIn struct {
+type webDigIn struct {
 	dig.In
 
 	Service *service.Service
+}
+
+// NewWebHandler
+//
+// param: in 依賴
+// return: handler 所有
+func NewWebSocketHandler(in wsDigIn) *WebSocketHandler {
+	return &WebSocketHandler{in: in,
+		WsHandler: &wsHandler{in: in},
+	}
+}
+
+type WebSocketHandler struct {
+	in wsDigIn
+
+	WsHandler *wsHandler
+}
+
+type wsDigIn struct {
+	dig.In
+
+	WsManager msggateway.MsgGatewayManager
 }

@@ -39,5 +39,12 @@ config:
     burst: 10
     store_size: 65536
     use_memory_store: false
+  ws_config:
+    port: ":9001"
+    max_conn_num: 100000
+    handshake_timeout_sec: 10
+    message_max_msg_length: 1024
+    write_buffer_size: 4096
+
 
     

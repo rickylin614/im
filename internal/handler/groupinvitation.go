@@ -10,7 +10,7 @@ import (
 )
 
 type groupInvitationHandler struct {
-	in digIn
+	in webDigIn
 }
 
 // Get

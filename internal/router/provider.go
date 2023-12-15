@@ -8,22 +8,25 @@ import (
 	"go.uber.org/dig"
 )
 
-func NewRouter(in digIn) Router {
-	return Router{
-		WebRouter: &WebRouter{in: in},
-	}
+func NewRouter(in webDigIn) *WebRouter {
+	return &WebRouter{in: in}
 }
 
-type Router struct {
-	dig.Out
-
-	WebRouter *WebRouter
+func NewWsRouter(in wsDigIn) *WsRouter {
+	return &WsRouter{in: in}
 }
 
-type digIn struct {
+type webDigIn struct {
 	dig.In
 
 	Config  *config.Config
-	Handler *handler.Handler
+	Handler *handler.WebHandler
 	Middle  *middleware.Middleware
+}
+
+type wsDigIn struct {
+	dig.In
+
+	Config  *config.Config
+	Handler *handler.WebSocketHandler
 }

@@ -788,6 +788,20 @@ info:
   title: Im
   version: "1.0"
 paths:
+  /connect:
+    get:
+      responses:
+        "101":
+          description: WebSocket Protocol Handshake
+          schema:
+            type: object
+        "400":
+          description: Invalid request format
+          schema:
+            type: object
+      summary: Establish WebSocket connection
+      tags:
+      - ws
   /example:
     delete:
       parameters:

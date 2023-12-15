@@ -8,22 +8,10 @@ import (
 	"sync"
 	"time"
 
-	"im/internal/pkg/config"
 	"im/internal/pkg/logger"
-	"im/internal/router"
 
 	"go.uber.org/dig"
 )
-
-// digIn the dependency invoke Server
-type digIn struct {
-	dig.In
-
-	WebRouter    *router.WebRouter
-	Config       *config.Config
-	Logger       logger.Logger
-	ServerRunner *Controller
-}
 
 type serverDigIn struct {
 	dig.In
