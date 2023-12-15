@@ -3,6 +3,8 @@ package main
 import (
 	"im/internal/provider"
 	"im/internal/server"
+
+	_ "go.uber.org/automaxprocs"
 )
 
 // @title           Im
