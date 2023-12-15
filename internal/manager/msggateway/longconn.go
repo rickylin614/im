@@ -41,7 +41,7 @@ type GWebSocket struct {
 	writeBufferSize  int
 }
 
-func newGWebSocket(protocolType int, handshakeTimeout time.Duration, wbs int) *GWebSocket {
+func NewGWebSocket(protocolType int, handshakeTimeout time.Duration, wbs int) *GWebSocket {
 	return &GWebSocket{protocolType: protocolType, handshakeTimeout: handshakeTimeout, writeBufferSize: wbs}
 }
 

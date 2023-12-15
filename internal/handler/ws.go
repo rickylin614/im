@@ -1,6 +1,10 @@
 package handler
 
 import (
+	"im/internal/manager/msggateway"
+	"im/internal/util/ctxs"
+	"time"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,5 +19,24 @@ type wsHandler struct {
 // @Failure 400 {object} object "Invalid request format"
 // @Router /connect [get]
 func (h wsHandler) Connect(ctx *gin.Context) {
-	// h.in.WsManager.
+	longConn := msggateway.NewGWebSocket(1,
+		time.Duration(h.in.config.WsConfig.HandshakeTimeoutSec*int(time.Second)),
+		h.in.config.WsConfig.WriteBufferSize)
+
+	// 升級協定
+	err := longConn.GenerateLongConn(ctx.Writer, ctx.Request)
+	if err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+
+	// 會員資料
+	client := h.in.WsManager.NewClient(ctx, longConn, true, false, "")
+
+	// 註冊
+	err = h.in.WsManager.Register(client)
+	if err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
 }

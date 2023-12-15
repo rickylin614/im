@@ -49,11 +49,11 @@ type Client struct {
 	User         *models.Users
 	IsBackground bool `json:"isBackground"`
 	// ctx            *UserConnContext
-	ctx            context.Context
-	longConnServer MsgGatewayManager
-	closed         atomic.Bool
-	closedErr      error
-	token          string
+	ctx             context.Context
+	longConnManager LongConnPoolMgmt
+	closed          atomic.Bool
+	closedErr       error
+	token           string
 }
 
 func newClient(ctx *gin.Context, conn LongConn, isCompress bool) *Client {
@@ -71,7 +71,6 @@ func (c *Client) ResetClient(
 	ctx *gin.Context,
 	conn LongConn,
 	isBackground, isCompress bool,
-	longConnServer MsgGatewayManager,
 	token string,
 ) {
 	c.w = new(sync.Mutex)
@@ -81,8 +80,6 @@ func (c *Client) ResetClient(
 	c.UserID = ctxs.GetUserInfo(ctx).ID
 	c.User = ctxs.GetUserInfo(ctx)
 	c.ctx = ctx
-	c.longConnServer = longConnServer
-	c.IsBackground = false
 	c.closed.Store(false)
 	c.closedErr = nil
 	c.token = token
@@ -93,7 +90,7 @@ func (c *Client) pingHandler(_ string) error {
 	return c.writePongMsg()
 }
 
-func (c *Client) readMessage() {
+func (c *Client) ReadMessage() {
 	defer func() {
 		if r := recover(); r != nil {
 			c.closedErr = ErrPanic
@@ -147,7 +144,7 @@ func (c *Client) readMessage() {
 func (c *Client) handleMessage(message []byte) error {
 	if c.IsCompress {
 		var err error
-		message, err = c.longConnServer.DecompressWithPool(message)
+		message, err = c.longConnManager.DecompressWithPool(message)
 		if err != nil {
 			return fmt.Errorf("%w", err)
 		}
@@ -170,7 +167,7 @@ func (c *Client) close() {
 
 	c.closed.Store(true)
 	c.conn.Close()
-	c.longConnServer.UnRegister(c)
+	c.longConnManager.UnRegister(c)
 }
 
 func (c *Client) replyMessage(ctx context.Context) error {

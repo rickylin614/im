@@ -4,6 +4,7 @@ import (
 	"go.uber.org/dig"
 
 	"im/internal/manager/msggateway"
+	"im/internal/pkg/config"
 	"im/internal/pkg/logger"
 	"im/internal/service"
 )
@@ -66,5 +67,6 @@ type WebSocketHandler struct {
 type wsDigIn struct {
 	dig.In
 
-	WsManager msggateway.MsgGatewayManager
+	WsManager msggateway.LongConnPoolMgmt
+	config    *config.Config
 }

@@ -49,6 +49,16 @@ var (
 	BusinessFriendshipHint = businessGroup.Add("您已经是该用户的好友", http.StatusOK) // 您已经是该用户的好友 (HTTP 200)
 )
 
+var (
+	WebSocketGroup               = Codes.Group("05")                                              // 長連線相關
+	WebSocketMaxConnectionsError = WebSocketGroup.Add("已達到最大連線數量", http.StatusServiceUnavailable) // 達到最大連線數量 (HTTP 503)
+	WebSocketConnectionTimeout   = WebSocketGroup.Add("連線超時", http.StatusRequestTimeout)          // 連線超時 (HTTP 408)
+	WebSocketInvalidDataFormat   = WebSocketGroup.Add("資料格式錯誤", http.StatusBadRequest)            // 資料格式錯誤 (HTTP 400)
+	WebSocketUnauthorizedAccess  = WebSocketGroup.Add("未授權的存取", http.StatusUnauthorized)          // 未授權的存取 (HTTP 401)
+	WebSocketConnectionClosed    = WebSocketGroup.Add("連線已被關閉", http.StatusGone)                  // 連線已被關閉 (HTTP 410)
+	WebSocketInternalServerError = WebSocketGroup.Add("服務器內部錯誤", http.StatusInternalServerError)  // 服務器內部錯誤 (HTTP 500)
+)
+
 // ShowAllErrors 內部測試使用
 func ShowAllErrors() {
 	group := []*GroupError{
