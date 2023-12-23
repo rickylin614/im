@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"im/internal/pkg/config"
 	"im/internal/pkg/logger"
+	"im/internal/pkg/signalctx"
 	"im/internal/router"
 	"net/http"
 
@@ -20,6 +21,7 @@ type WsDigIn struct {
 	Config       *config.Config
 	Logger       logger.Logger
 	ServerRunner *Controller
+	Ctx          *signalctx.Context
 }
 
 type WsServer struct {

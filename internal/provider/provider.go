@@ -14,6 +14,7 @@ import (
 	"im/internal/pkg/mongo"
 	"im/internal/pkg/rcache"
 	"im/internal/pkg/redis"
+	"im/internal/pkg/signalctx"
 	"im/internal/pkg/sqldb"
 	"im/internal/repository"
 	"im/internal/repository/sql"
@@ -31,6 +32,9 @@ func New() *dig.Container {
 	once.Do(func() {
 		container = dig.New()
 		// 基礎套件
+		if err := container.Provide(signalctx.NewContext); err != nil {
+			panic(err)
+		}
 		if err := container.Provide(logger.NewLogger); err != nil {
 			panic(err)
 		}

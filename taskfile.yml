@@ -24,7 +24,18 @@ tasks:
   run:
     cmds:
       - go run -tags go_json ./cmd/web/main.go
-
+  run:
+    cmds:
+      - go run -tags go_json ./cmd/web/main.go
+  runweb:
+    cmds:
+      - go run -tags go_json ./cmd/web/main.go
+  runjob:
+    cmds:
+      - go run ./cmd/job/main.go
+  runws:
+    cmds:
+      - go run ./cmd/ws/main.go
   up:
     cmds:
       - docker-compose -f ./deployments/local/docker-compose.yaml up -d

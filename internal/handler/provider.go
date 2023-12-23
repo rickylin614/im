@@ -53,14 +53,12 @@ type webDigIn struct {
 // param: in 依賴
 // return: handler 所有
 func NewWebSocketHandler(in wsDigIn) *WebSocketHandler {
-	return &WebSocketHandler{in: in,
+	return &WebSocketHandler{
 		WsHandler: &wsHandler{in: in},
 	}
 }
 
 type WebSocketHandler struct {
-	in wsDigIn
-
 	WsHandler *wsHandler
 }
 
@@ -68,5 +66,5 @@ type wsDigIn struct {
 	dig.In
 
 	WsManager msggateway.LongConnPoolMgmt
-	config    *config.Config
+	Config    *config.Config
 }

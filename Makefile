@@ -21,6 +21,18 @@ nunu:
 run:
 	go run -tags go_json .\cmd\web\main.go
 
+.PHONY: runweb
+runweb:
+	go run -tags go_json .\cmd\web\main.go
+	
+.PHONY: runjob
+runjob:
+	go run .\cmd\job\main.go
+
+.PHONY: runws
+runws:
+	go run .\cmd\ws\main.go
+
 .PHONY: up
 up:
 	docker-compose -f ./deployments/local/docker-compose.yaml up -d

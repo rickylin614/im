@@ -3,12 +3,13 @@ package server
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
-	"os/signal"
 	"sync"
 	"time"
 
 	"im/internal/pkg/logger"
+	"im/internal/pkg/signalctx"
 
 	"go.uber.org/dig"
 )
@@ -42,54 +43,51 @@ func (s *Controller) Register(server IServer) {
 }
 
 // Run Listen 監聽服務, 若確認所有服務正常關閉則os.Exit
-func (s *Controller) Run() {
+func (s *Controller) Run(signalctx *signalctx.Context) {
 	// Run
-	ctx := context.Background()
 	for _, server := range s.servers {
 		s.mx.Lock()
 		go func() {
-			if err := server.Run(ctx); err != nil {
-				s.in.Logger.Error(ctx, fmt.Errorf("run error: %v \n", err))
+			if err := server.Run(signalctx); err != nil {
+				s.in.Logger.Error(signalctx, fmt.Errorf("run error: %v \n", err))
 			}
 		}()
 		s.mx.Unlock()
 	}
 
-	// listen and graceful shutdown
-	shutdownSignal := make(chan os.Signal, 1)
-	signal.Notify(shutdownSignal, os.Interrupt, os.Kill)
-	c := <-shutdownSignal
+	// 監聽關機
+	c := <-signalctx.Shutdown()
+
+	// 所有使用signalctx的排程陸續關閉
+	signalctx.Cancel()
 
 	s.mx.Lock()
 	defer s.mx.Unlock()
 	fmt.Printf("Server Shutdown, osSignal: %v\n", c)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	errs := make(chan error, len(s.servers))
-	var wg sync.WaitGroup
-	wg.Add(len(s.servers))
+	var isException bool
+	// 執行所有執行序shutdown
 	for _, server := range s.servers {
+		signalctx.Increment()
 		go func(server IServer) {
-			defer wg.Done()
-			errs <- server.Shutdown(ctx)
+			defer signalctx.Decrement()
+			if err := server.Shutdown(signalctx); err != nil {
+				isException = true
+			}
+			fmt.Println("debug shutdown")
 		}(server)
 	}
 
-	wg.Wait()
-	close(errs)
-
-	var isException bool
-
-	for err := range errs {
-		if err != nil {
-			isException = true
-			s.in.Logger.Error(context.TODO(), fmt.Errorf("shutdown error: %w", err))
-		}
+	// 確認所有關閉或是timeout
+	select {
+	case <-signalctx.AllDone():
+		fmt.Println("debug AllDone")
+		break
+	case <-time.Tick(time.Second * 30):
+		slog.ErrorContext(signalctx, "Shutdown Timeout!")
 	}
 
-	s.in.Logger.Info(context.TODO(), "Server exiting")
+	slog.Info("Server exit!")
 
 	if isException {
 		os.Exit(1)

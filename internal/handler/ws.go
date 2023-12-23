@@ -20,8 +20,8 @@ type wsHandler struct {
 // @Router /connect [get]
 func (h wsHandler) Connect(ctx *gin.Context) {
 	longConn := msggateway.NewGWebSocket(1,
-		time.Duration(h.in.config.WsConfig.HandshakeTimeoutSec*int(time.Second)),
-		h.in.config.WsConfig.WriteBufferSize)
+		time.Duration(h.in.Config.WsConfig.HandshakeTimeoutSec*int(time.Second)),
+		h.in.Config.WsConfig.WriteBufferSize)
 
 	// 升級協定
 	err := longConn.GenerateLongConn(ctx.Writer, ctx.Request)

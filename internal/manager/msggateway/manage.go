@@ -3,6 +3,7 @@ package msggateway
 import (
 	"fmt"
 	"im/internal/pkg/config"
+	"im/internal/pkg/signalctx"
 	"im/internal/util/errs"
 	"net/http"
 	"os"
@@ -19,7 +20,7 @@ import (
 )
 
 type LongConnPoolMgmt interface {
-	Run() error
+	Run(ctx *signalctx.Context) error
 	// wsHandler(w http.ResponseWriter, r *http.Request)
 	NewClient(ctx *gin.Context, conn LongConn, isBackground, isCompress bool, token string) *Client
 	GetUserAllCons(userID string) ([]*Client, bool)
@@ -39,7 +40,8 @@ type LongConnPoolMgmt interface {
 type digIn struct {
 	dig.In
 
-	conf config.Config
+	Conf config.Config
+	Ctx  *signalctx.Context
 }
 
 type WsManager struct {
@@ -65,9 +67,9 @@ type WsManager struct {
 
 func NewWsManger(in digIn) LongConnPoolMgmt {
 	manager := &WsManager{
-		wsMaxConnNum:     int64(in.conf.WsConfig.MaxConnNum),
-		writeBufferSize:  in.conf.WsConfig.WriteBufferSize,
-		handshakeTimeout: time.Duration(in.conf.WsConfig.HandshakeTimeoutSec * time.Now().Second()),
+		wsMaxConnNum:     int64(in.Conf.WsConfig.MaxConnNum),
+		writeBufferSize:  in.Conf.WsConfig.WriteBufferSize,
+		handshakeTimeout: time.Duration(in.Conf.WsConfig.HandshakeTimeoutSec * time.Now().Second()),
 		clientPool: sync.Pool{
 			New: func() any {
 				return new(Client)
@@ -81,7 +83,7 @@ func NewWsManger(in digIn) LongConnPoolMgmt {
 		Compressor: NewGzipCompressor(),
 		Encoder:    NewGobEncoder(),
 	}
-	manager.Run()
+	manager.Run(in.Ctx)
 	return manager
 }
 
@@ -108,7 +110,10 @@ func (*WsManager) KickUserConn(client *Client) error {
 }
 
 // Run implements LongConnServer.
-func (ws *WsManager) Run() error {
+func (ws *WsManager) Run(ctx *signalctx.Context) error {
+	ctx.Increment()
+	defer ctx.Decrement()
+
 	var (
 		client *Client
 		wg     errgroup.Group
@@ -121,6 +126,8 @@ func (ws *WsManager) Run() error {
 		for {
 			select {
 			case <-done:
+				return nil
+			case <-ctx.Done():
 				return nil
 
 			case client = <-ws.registerChan:
