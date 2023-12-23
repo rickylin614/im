@@ -8,3 +8,10 @@ const (
 	UserStatusBlocked                    // 被封鎖
 	UserStatusInactive                   // 無效或未激活
 )
+
+type IsOnline int
+
+const (
+	Offline IsOnline = iota // 離線
+	Online                  // 在線
+)

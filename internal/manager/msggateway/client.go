@@ -49,7 +49,7 @@ type Client struct {
 	User         *models.Users
 	IsBackground bool `json:"isBackground"`
 	// ctx            *UserConnContext
-	ctx             context.Context
+	ctx             *gin.Context
 	longConnManager LongConnPoolMgmt
 	closed          atomic.Bool
 	closedErr       error
@@ -179,6 +179,10 @@ func (c *Client) PushMessage(ctx context.Context) error {
 }
 
 func (c *Client) KickOnlineMessage() error {
+	// TODO 踢出訊息
+
+	// 關閉長連線
+	c.close()
 	return nil
 }
 

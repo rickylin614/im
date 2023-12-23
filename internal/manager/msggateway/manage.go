@@ -1,10 +1,11 @@
 package msggateway
 
 import (
-	"fmt"
 	"im/internal/pkg/config"
+	"im/internal/pkg/consts/enums"
 	"im/internal/pkg/signalctx"
 	"im/internal/util/errs"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -15,6 +16,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/dig"
 	"golang.org/x/sync/errgroup"
 )
@@ -49,9 +51,10 @@ type WsManager struct {
 	registerChan      chan *Client      // 註冊Chan
 	unregisterChan    chan *Client      // 註銷Chan
 	kickHandlerChan   chan *kickHandler // 踢人Chan
-	clients           *sync.Map
-	onlineUserNum     atomic.Int64
-	onlineUserConnNum atomic.Int64
+	clients           *UserMap
+	onlineUserNum     atomic.Int64     // 統計在線用戶數量
+	onlineUserConnNum atomic.Int64     // 統計在線總連線數量(含同用戶多個連線)
+	onlineUserGauge   prometheus.Gauge // 給prometheus監聽統計的數據
 	handshakeTimeout  time.Duration
 	writeBufferSize   int
 	validate          *validator.Validate
@@ -78,8 +81,12 @@ func NewWsManger(in digIn) LongConnPoolMgmt {
 		registerChan:    make(chan *Client, 1000),
 		unregisterChan:  make(chan *Client, 1000),
 		kickHandlerChan: make(chan *kickHandler, 1000),
-		validate:        validator.New(),
-		// clients:         newUserMap(),
+		onlineUserGauge: prometheus.NewGauge(prometheus.GaugeOpts{ // TODO 另外創建一個集中管理的結構體
+			Name: "online_user_num",
+			Help: "The number of online user num",
+		}),
+		validate:   validator.New(),
+		clients:    newUserMap(),
 		Compressor: NewGzipCompressor(),
 		Encoder:    NewGobEncoder(),
 	}
@@ -131,14 +138,11 @@ func (ws *WsManager) Run(ctx *signalctx.Context) error {
 				return nil
 
 			case client = <-ws.registerChan:
-				fmt.Println(client)
-				// ws.registerClient(client)
+				ws.registerClient(client)
 			case client = <-ws.unregisterChan:
-				fmt.Println(client)
-				// ws.unregisterClient(client)
+				ws.unregisterClient(client)
 			case onlineInfo := <-ws.kickHandlerChan:
-				fmt.Println(onlineInfo)
-				// ws.multiTerminalLoginChecker(onlineInfo.clientOK, onlineInfo.oldClients, onlineInfo.newClient)
+				ws.kickClient(onlineInfo)
 			}
 		}
 	})
@@ -174,6 +178,77 @@ func (*WsManager) Validate(s any) error {
 // wsHandler implements LongConnServer.
 func (*WsManager) wsHandler(w http.ResponseWriter, r *http.Request) {
 	panic("unimplemented")
+}
+
+func (ws *WsManager) registerClient(client *Client) {
+	old, userOK := ws.clients.Get(client.UserID)
+	if !userOK { // 用戶完全沒連線
+		ws.clients.Set(client.UserID, client)
+		ws.onlineUserNum.Add(1)
+		ws.onlineUserGauge.Add(1)
+	} else { // 該用戶有同平台的連線
+		ws.multiTerminalLoginChecker(old, client)
+	}
+	ws.onlineUserConnNum.Add(1)
+
+	// 向倉儲註冊用戶資訊
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		// TODO 向其他節點更新在線資訊
+	}()
+	go func() {
+		defer wg.Done()
+		ws.SetUserOnlineStatus(client.ctx, client, enums.Online)
+	}()
+	wg.Wait()
+}
+
+func (ws *WsManager) unregisterClient(client *Client) {
+	// 放回池子減少記憶體增減
+	defer ws.clientPool.Put(client)
+
+	isDelete := ws.clients.delete(client.UserID, client.ctx.RemoteIP())
+	if isDelete { // 該用戶沒有其他在線連線
+		ws.onlineUserNum.Add(-1)
+		ws.onlineUserGauge.Add(-1)
+	}
+	ws.onlineUserConnNum.Add(-1)
+	ws.SetUserOnlineStatus(client.ctx, client, enums.Offline)
+	slog.InfoContext(client.ctx, "user offline",
+		", close reason: ", client.closedErr,
+		", online user Num: ", ws.onlineUserNum.Load(),
+		", online user conn Num: ", ws.onlineUserConnNum.Load(),
+	)
+}
+
+// multiTerminalLoginChecker 同用戶不同裝置登入是否剔除判斷
+func (ws *WsManager) multiTerminalLoginChecker(oldClients []*Client, newClient *Client) {
+	// 目前不阻擋
+	return
+}
+
+// kickClient 踢出指定用戶所有連線
+func (ws *WsManager) kickClient(kick *kickHandler) {
+	isDelete := ws.clients.deleteClients(kick.newClient.UserID, kick.oldClients)
+	if isDelete {
+		ws.onlineUserNum.Add(-1)
+	}
+	for _, c := range kick.oldClients {
+		err := c.KickOnlineMessage()
+		if err != nil {
+			slog.WarnContext(c.ctx, "KickOnlineMessage", err)
+		}
+
+	}
+	// TODO 向倉儲刪除所有用戶連線資訊
+	return
+}
+
+// SetUserOnlineStatus 更新user在線資訊
+func (ws *WsManager) SetUserOnlineStatus(ctx *gin.Context, client *Client, status enums.IsOnline) {
+	// TODO 向倉儲更新user在線資訊
 }
 
 type kickHandler struct {
