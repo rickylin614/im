@@ -57,13 +57,13 @@ func (s *Controller) Run(signalctx *signalctx.Context) {
 
 	// 監聽關機
 	c := <-signalctx.Shutdown()
+	slog.Info(fmt.Sprintf("Server Shutdown, osSignal: %v\n", c))
 
 	// 所有使用signalctx的排程陸續關閉
 	signalctx.Cancel()
 
 	s.mx.Lock()
 	defer s.mx.Unlock()
-	fmt.Printf("Server Shutdown, osSignal: %v\n", c)
 
 	var isException bool
 	// 執行所有執行序shutdown
