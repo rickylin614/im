@@ -8,6 +8,11 @@ import (
 	"sync/atomic"
 )
 
+// Context 實現關機
+// 調用Context.Done()前建議使用以下:
+//
+//	Context.Increment()
+//	defer Context.Decrement()
 type Context struct {
 	context.Context
 	mu      sync.Mutex
@@ -53,8 +58,8 @@ func (c *Context) Shutdown() <-chan os.Signal {
 }
 
 func NewContext() *Context {
-	cctx := &Context{}
-	cctx.Context, cctx.cancel = context.WithCancel(context.Background())
-	cctx.done = make(chan struct{})
-	return cctx
+	ctx := &Context{}
+	ctx.Context, ctx.cancel = context.WithCancel(context.Background())
+	ctx.done = make(chan struct{})
+	return ctx
 }

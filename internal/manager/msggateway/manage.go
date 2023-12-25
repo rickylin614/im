@@ -1,24 +1,21 @@
 package msggateway
 
 import (
+	"log/slog"
+	"net/http"
+	"sync"
+	"sync/atomic"
+	"time"
+
 	"im/internal/pkg/config"
 	"im/internal/pkg/consts/enums"
 	"im/internal/pkg/signalctx"
 	"im/internal/util/errs"
-	"log/slog"
-	"net/http"
-	"os"
-	"os/signal"
-	"sync"
-	"sync/atomic"
-	"syscall"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/dig"
-	"golang.org/x/sync/errgroup"
 )
 
 type LongConnPoolMgmt interface {
@@ -94,7 +91,7 @@ func NewWsManger(in digIn) LongConnPoolMgmt {
 	return manager
 }
 
-// GetUserAllCons implements LongConnServer.
+// NewClient implements LongConnServer.
 func (w *WsManager) NewClient(ctx *gin.Context, conn LongConn, isBackground, isCompress bool, token string) *Client {
 	client, _ := w.clientPool.Get().(*Client)
 	client.ResetClient(ctx, conn, isBackground, isCompress, token)
@@ -121,22 +118,14 @@ func (ws *WsManager) Run(ctx *signalctx.Context) error {
 	ctx.Increment()
 	defer ctx.Decrement()
 
-	var (
-		client *Client
-		wg     errgroup.Group
+	var client *Client
 
-		sigs = make(chan os.Signal, 1)
-		done = make(chan struct{}, 1)
-	)
-
-	wg.Go(func() error {
+	go func() {
 		for {
 			select {
-			case <-done:
-				return nil
 			case <-ctx.Done():
-				return nil
-
+				// TODO unregister all client
+				return
 			case client = <-ws.registerChan:
 				ws.registerClient(client)
 			case client = <-ws.unregisterChan:
@@ -145,11 +134,8 @@ func (ws *WsManager) Run(ctx *signalctx.Context) error {
 				ws.kickClient(onlineInfo)
 			}
 		}
-	})
+	}()
 
-	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-	<-sigs
-	close(done)
 	return nil
 }
 
