@@ -2,10 +2,12 @@ package repository
 
 import (
 	"context"
+
 	"im/internal/models"
 	"im/internal/models/req"
-	"im/internal/pkg/cache"
 	"im/internal/pkg/consts/rediskey"
+	"im/internal/util/cache"
+
 	"time"
 
 	"golang.org/x/sync/singleflight"
