@@ -7,22 +7,64 @@ import (
 
 	"github.com/IBM/sarama"
 	"github.com/ThreeDotsLabs/watermill"
+	"go.uber.org/dig"
 
 	"github.com/ThreeDotsLabs/watermill-kafka/v3/pkg/kafka"
 	"github.com/ThreeDotsLabs/watermill-redisstream/pkg/redisstream"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/ThreeDotsLabs/watermill/pubsub/gochannel"
 	"github.com/redis/go-redis/v9"
+
+	"im/internal/pkg/config"
+	"im/internal/pkg/logger"
 )
 
-func NewPublisher() message.Publisher {
-
-	return nil
+func NewQueue(in digIn) digOut {
+	return digOut{
+		Publisher:  NewPublisher(in),
+		Subscriber: NewSubscriber(in),
+	}
 }
 
-func NewSubscriber() message.Subscriber {
+type digIn struct {
+	dig.In
 
-	return nil
+	Logger logger.Logger
+	Config *config.Config
+	rdb    redis.UniversalClient `optional:"true"` // 標記為可選依賴
+}
+
+type digOut struct {
+	dig.Out
+
+	Publisher  message.Publisher
+	Subscriber message.Subscriber
+}
+
+func NewPublisher(in digIn) message.Publisher {
+	switch in.Config.QueueConfig.Mode {
+	case "gochannel":
+		return newChannelPubSub(in)
+	case "redis":
+		return newRedisPublic(in)
+	case "kafka":
+		return newKafkaPublic(in)
+	default:
+		return newChannelPubSub(in)
+	}
+}
+
+func NewSubscriber(in digIn) message.Subscriber {
+	switch in.Config.QueueConfig.Mode {
+	case "gochannel":
+		return newChannelPubSub(in)
+	case "redis":
+		return newRedisSubscriber(in)
+	case "kafka":
+		return newKafkaSubscriber(in)
+	default:
+		return newChannelPubSub(in)
+	}
 }
 
 func kafkaExample() {

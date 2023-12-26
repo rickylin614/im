@@ -7,6 +7,7 @@ import (
 	"strconv"
 )
 
+// updateConfigFromEnv env label fields would check os env variable instead of config setting.
 func updateConfigFromEnv(config any) error {
 	val := reflect.ValueOf(config).Elem()
 	for i := 0; i < val.NumField(); i++ {
