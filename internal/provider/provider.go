@@ -12,6 +12,7 @@ import (
 	"im/internal/pkg/localcache"
 	"im/internal/pkg/logger"
 	"im/internal/pkg/mongo"
+	"im/internal/pkg/queue"
 	"im/internal/pkg/rcache"
 	"im/internal/pkg/redis"
 	"im/internal/pkg/signalctx"
@@ -56,6 +57,9 @@ func New() *dig.Container {
 			panic(err)
 		}
 		if err := container.Provide(mongo.NewMongoDB); err != nil {
+			panic(err)
+		}
+		if err := container.Provide(queue.NewQueue); err != nil {
 			panic(err)
 		}
 		// Web業務配置
