@@ -3,9 +3,10 @@ package cache
 import (
 	"context"
 	"errors"
-	"im/internal/util/errs"
 	"log/slog"
 	"time"
+
+	"im/internal/util/errs"
 
 	"github.com/coocood/freecache"
 	"github.com/dtm-labs/rockscache"
@@ -50,6 +51,7 @@ func GetCache[T any](ctx context.Context,
 	}
 
 	data, err, _ = lock.Do(key, func() (any, error) {
+		// TODO 增加集群鎖防止髒讀
 		r, err := fn()
 		if err != nil {
 			return nil, err

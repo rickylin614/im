@@ -78,36 +78,36 @@ graph LR
 
 ## 引用套件
 
-|    | 套件                                   | 套件版本            | 說明                                                      |
-|----| -------------------------------------- | ------------------- | --------------------------------------------------------- |
-| 1  | github.com/DATA-DOG/go-sqlmock         | v1.5.0              | 用於在測試中模擬SQL數據庫的庫，不需要實際的數據庫連接。   |
-| 2  | github.com/coocood/freecache           | v1.2.4              | 高性能的內存緩存庫。                                      |
-| 3  | github.com/dtm-labs/rockscache         | v0.1.1              | 一個分佈式緩存解決方案。                                  |
-| 4  | github.com/fsnotify/fsnotify           | v1.7.0              | 用於監控文件系統通知的庫。                                |
-| 5  | github.com/gin-contrib/cors            | v1.4.0              | 用於Gin框架的跨源資源共享(CORS)中間件。                   |
-| 6  | github.com/gin-contrib/pprof           | v1.4.0              | Gin框架的pprof(性能分析)中間件。                          |
-| 7  | github.com/gin-gonic/gin               | v1.9.1              | 一個高性能的HTTP web框架。                                |
-| 8  | github.com/go-co-op/gocron             | v1.35.2             | 用於Go的簡單、流暢的定時任務庫。                          |
-| 9  | github.com/go-playground/validator/v10 | v10.16.0            | 用於結構和字段驗證的庫。                                  |
-| 10 | github.com/go-redsync/redsync/v4       | v4.10.0             | 提供分佈式系統中的分佈式鎖定機制。                        |
-| 11 | github.com/go-sql-driver/mysql         | v1.7.1              | MySQL數據庫的驅動程序。                                   |
-| 12 | github.com/goccy/go-json               | v0.10.2             | 用於JSON的高效解析和序列化庫。                            |
-| 13 | github.com/gofrs/uuid                  | v4.4.0+incompatible | 用於生成和處理UUID的庫。                                  |
-| 14 | github.com/golang-jwt/jwt/v5           | v5.0.0              | 用於處理JSON Web Tokens (JWT)的庫。                       |
-| 15 | github.com/jinzhu/copier               | v0.4.0              | 用於在Go結構體之間進行深拷貝的庫。                        |
+|    | 套件                                   | 套件版本            | 說明                                          |
+|----| -------------------------------------- | ------------------- |---------------------------------------------|
+| 1  | github.com/DATA-DOG/go-sqlmock         | v1.5.0              | 用於在測試中模擬SQL數據庫的庫，不需要實際的數據庫連接。               |
+| 2  | github.com/coocood/freecache           | v1.2.4              | 高性能的內存緩存庫。                                  |
+| 3  | github.com/dtm-labs/rockscache         | v0.1.1              | 一個分佈式緩存解決方案。                                |
+| 4  | github.com/fsnotify/fsnotify           | v1.7.0              | 用於監控文件系統通知的庫。                               |
+| 5  | github.com/gin-contrib/cors            | v1.4.0              | 用於Gin框架的跨源資源共享(CORS)中間件。                    |
+| 6  | github.com/gin-contrib/pprof           | v1.4.0              | Gin框架的pprof(性能分析)中間件。                       |
+| 7  | github.com/gin-gonic/gin               | v1.9.1              | 一個高性能的HTTP web框架。                           |
+| 8  | github.com/go-co-op/gocron             | v1.35.2             | 用於Go的簡單、流暢的定時任務庫。                           |
+| 9  | github.com/go-playground/validator/v10 | v10.16.0            | 用於結構和字段驗證的庫。                                |
+| 10 | github.com/go-redsync/redsync/v4       | v4.10.0             | 提供分佈式系統中的分佈式鎖定機制。                           |
+| 11 | github.com/go-sql-driver/mysql         | v1.7.1              | MySQL數據庫的驅動程序。                              |
+| 12 | github.com/goccy/go-json               | v0.10.2             | 用於JSON的高效解析和序列化庫。                           |
+| 13 | github.com/gofrs/uuid                  | v4.4.0+incompatible | 用於生成和處理UUID的庫。                              |
+| 14 | github.com/golang-jwt/jwt/v5           | v5.0.0              | 用於處理JSON Web Tokens (JWT)的庫。                |
+| 15 | github.com/jinzhu/copier               | v0.4.0              | 用於在Go結構體之間進行深拷貝的庫。                          |
 | 16 | github.com/prometheus/client_golang    | v1.17.0             | Prometheus的Go客戶端庫，用於監控和度量。                  |
-| 17 | github.com/redis/go-redis/v9           | v9.2.1              | Redis的Go客戶端庫。                                       |
-| 18 | github.com/spf13/viper                 | v1.17.0             | 用於處理應用配置的庫。                                    |
-| 19 | github.com/stretchr/testify            | v1.8.4              | 用於撰寫測試的庫，提供了許多有用的斷言和輔助方法。        |
-| 20 | github.com/swaggo/swag                 | v1.16.2             | 自動生成Swagger 2.0文檔的庫。                             |
+| 17 | github.com/redis/go-redis/v9           | v9.2.1              | Redis的Go客戶端庫。                               |
+| 18 | github.com/spf13/viper                 | v1.17.0             | 用於處理應用配置(設定檔)的庫。                            |
+| 19 | github.com/stretchr/testify            | v1.8.4              | 用於撰寫測試的庫，提供了許多有用的斷言和輔助方法。                   |
+| 20 | github.com/swaggo/swag                 | v1.16.2             | 自動生成Swagger 2.0文檔的庫。                        |
 | 21 | github.com/throttled/throttled/v2      | v2.12.0             | 提供速率限制和限流功能的庫。                              |
-| 22 | go.mongodb.org/mongo-driver            | v1.12.1             | MongoDB的Go驅動。                                         |
-| 23 | go.uber.org/dig                        | v1.17.1             | 用於依賴注入的庫。                                        |
-| 24 | go.uber.org/zap                        | v1.26.0             | 一個快速、結構化、級別化的日誌框架。                      |
+| 22 | go.mongodb.org/mongo-driver            | v1.12.1             | MongoDB的Go驅動。                               |
+| 23 | go.uber.org/dig                        | v1.17.1             | 用於依賴注入的庫。                                   |
+| 24 | go.uber.org/zap                        | v1.26.0             | 一個快速、結構化、級別化的日誌框架。                          |
 | 25 | golang.org/x/sync                      | v0.5.0              | 提供額外的同步套件，如semaphore、singleflight、errgroup。 |
-| 26 | gorm.io/gorm                           | v1.25.5             | GORM是一個功能強大的ORM庫。                               |
-| 27 | github.com/ThreeDotsLabs/watermill     | v1.3.5              | 事件驅動套件。方便於Queue的實現切換。                     |
-| 28 | github.com/IBM/sarama                  | v1.42.1             | Kafka用戶端套件                                           |
+| 26 | gorm.io/gorm                           | v1.25.5             | SQL的ORM庫                                    |
+| 27 | github.com/ThreeDotsLabs/watermill     | v1.3.5              | 事件驅動套件。方便於Queue的實現切換。                       |
+| 28 | github.com/IBM/sarama                  | v1.42.1             | Kafka用戶端套件                                  |
 
 
 ## 程序業務
