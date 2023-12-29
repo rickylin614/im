@@ -11,9 +11,10 @@ import (
 )
 
 func NewQueue(in digIn) digOut {
+	p, s := NewPubSub(in)
 	return digOut{
-		Publisher:  NewPublisher(in),
-		Subscriber: NewSubscriber(in),
+		Publisher:  p,
+		Subscriber: s,
 	}
 }
 
@@ -22,7 +23,7 @@ type digIn struct {
 
 	Logger logger.Logger
 	Config *config.Config
-	rdb    redis.UniversalClient `optional:"true"` // 標記為可選依賴
+	Rdb    redis.UniversalClient `optional:"true"` // 標記為可選依賴
 }
 
 type digOut struct {
@@ -32,27 +33,14 @@ type digOut struct {
 	Subscriber message.Subscriber
 }
 
-func NewPublisher(in digIn) message.Publisher {
+func NewPubSub(in digIn) (message.Publisher, message.Subscriber) {
 	switch in.Config.QueueConfig.Mode {
 	case "gochannel":
 		return newChannelPubSub(in)
 	case "redis":
-		return newRedisPublic(in)
+		return newRedisPublic(in), newRedisSubscriber(in)
 	case "kafka":
-		return newKafkaPublic(in)
-	default:
-		return newChannelPubSub(in)
-	}
-}
-
-func NewSubscriber(in digIn) message.Subscriber {
-	switch in.Config.QueueConfig.Mode {
-	case "gochannel":
-		return newChannelPubSub(in)
-	case "redis":
-		return newRedisSubscriber(in)
-	case "kafka":
-		return newKafkaSubscriber(in)
+		return newKafkaPublic(in), newKafkaSubscriber(in)
 	default:
 		return newChannelPubSub(in)
 	}
