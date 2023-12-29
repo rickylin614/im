@@ -16,7 +16,7 @@ type {{ .FileNameTitleLower }}Handler struct {
 // Get
 // @Summary Get
 // @Tags {{ .FileNameTitleLower }}
-// @Param request body request.{{ .FileName }}Get true "param"
+// @Param request query request.{{ .FileName }}Get true "param"
 // @Success 200 {object} response.APIResponse[response.{{ .FileName }}Get]
 // @Router /{{ .FileNameKebabCase }}/:id [get]
 func (h {{ .FileNameTitleLower }}Handler) Get(ctx *gin.Context) {
@@ -25,7 +25,7 @@ func (h {{ .FileNameTitleLower }}Handler) Get(ctx *gin.Context) {
 		ctxs.SetError(ctx, err)
 		return
 	}
-	if err := ctx.ShouldBindJSON(req); err != nil {
+	if err := ctx.ShouldBindQuery(req); err != nil {
 		ctxs.SetError(ctx, err)
 		return
 	}
@@ -48,12 +48,12 @@ func (h {{ .FileNameTitleLower }}Handler) Get(ctx *gin.Context) {
 // GetList
 // @Summary GetList
 // @Tags {{ .FileNameTitleLower }}
-// @Param request body request.{{ .FileName }}GetList true "param"
+// @Param request query request.{{ .FileName }}GetList true "param"
 // @Success 200 {object} response.APIResponse[response.{{ .FileName }}GetList]
 // @Router /{{ .FileNameKebabCase }} [get]
 func (h {{ .FileNameTitleLower }}Handler) GetList(ctx *gin.Context) {
 	req := &request.{{ .FileName }}GetList{}
-	if err := ctx.ShouldBindJSON(req); err != nil {
+	if err := ctx.ShouldBindQuery(req); err != nil {
 		ctxs.SetError(ctx, err)
 		return
 	}

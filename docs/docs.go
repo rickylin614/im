@@ -178,13 +178,23 @@ const docTemplate = `{
                 "summary": "獲取用戶的好友列表",
                 "parameters": [
                     {
-                        "description": "param",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.FriendGetList"
-                        }
+                        "type": "integer",
+                        "description": "頁碼",
+                        "name": "index",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "id asc",
+                        "description": "排序",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "筆數",
+                        "name": "size",
+                        "in": "query"
                     }
                 ],
                 "responses": {

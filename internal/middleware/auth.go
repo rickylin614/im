@@ -16,9 +16,12 @@ func (m authMiddleware) IsLogin(ctx *gin.Context) {
 	token := ctx.GetHeader("token")
 
 	if len(token) == 0 {
-		ctxs.SetError(ctx, errs.RequestTokenError)
-		ctx.Abort()
-		return
+		token = ctx.GetHeader("authorization")
+		if len(token) == 0 {
+			ctxs.SetError(ctx, errs.RequestTokenError)
+			ctx.Abort()
+			return
+		}
 	}
 
 	user, err := m.in.Service.UsersSrv.GetByToken(ctx, token)

@@ -903,12 +903,19 @@ paths:
       - friend
     get:
       parameters:
-      - description: param
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/req.FriendGetList'
+      - description: 頁碼
+        in: query
+        name: index
+        type: integer
+      - description: 排序
+        example: id asc
+        in: query
+        name: order
+        type: string
+      - description: 筆數
+        in: query
+        name: size
+        type: integer
       responses:
         "200":
           description: OK

@@ -3,11 +3,11 @@ package models
 import "gorm.io/gorm"
 
 type Page struct {
-	Index     int    `gorm:"-" json:"index" form:"index"`                  // 頁碼
-	Size      int    `gorm:"-" json:"size" form:"size"`                    // 筆數
-	TotalPage int    `gorm:"-" json:"-"`                                   // 總頁數
-	Total     int64  `gorm:"-" json:"-"`                                   // 總筆數
-	Order     string `gorm:"-" json:"order" form:"order" example:"id asc"` // 排序
+	Index     int    `gorm:"-"  json:"index" form:"index" example:"1""`     // 頁碼
+	Size      int    `gorm:"-"  json:"size" form:"size" example:"20"`       // 筆數
+	TotalPage int    `gorm:"-"  json:"-"`                                   // 總頁數
+	Total     int64  `gorm:"-"  json:"-"`                                   // 總筆數
+	Order     string `gorm:"-"  json:"order" form:"order" example:"id asc"` // 排序
 }
 
 func (p *Page) GetPager() *Page {

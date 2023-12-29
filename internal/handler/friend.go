@@ -16,12 +16,12 @@ type friendHandler struct {
 // GetFriends
 // @Summary 獲取用戶的好友列表
 // @Tags friend
-// @Param request body request.FriendGetList true "param"
+// @Param request query request.FriendGetList true "param"
 // @Success 200 {object} response.APIResponse[response.FriendGetList]
 // @Router /friend [get]
 func (h friendHandler) GetFriends(ctx *gin.Context) {
 	req := &request.FriendGetList{}
-	if err := ctx.ShouldBindJSON(req); err != nil {
+	if err := ctx.ShouldBindQuery(req); err != nil {
 		ctxs.SetError(ctx, err)
 		return
 	}

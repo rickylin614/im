@@ -6,7 +6,7 @@ import (
 )
 
 func newRedisPublic(in digIn) message.Publisher {
-	client := in.rdb
+	client := in.Rdb
 
 	public, err := redisstream.NewPublisher(
 		redisstream.PublisherConfig{
@@ -22,7 +22,7 @@ func newRedisPublic(in digIn) message.Publisher {
 }
 
 func newRedisSubscriber(in digIn) message.Subscriber {
-	client := in.rdb
+	client := in.Rdb
 
 	public, err := redisstream.NewSubscriber(
 		redisstream.SubscriberConfig{
