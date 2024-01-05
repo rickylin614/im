@@ -1,7 +1,6 @@
 package router
 
 import (
-	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 )
@@ -11,9 +10,10 @@ type WebRouter struct {
 }
 
 func (r WebRouter) SetRouter(router *gin.Engine) {
-	//	註冊pprof
+	// 註冊pprof
 	pprof.Register(router, "/debug/pprof")
-	router.Use(cors.Default())
+	// 設定跨來源資源共用（CORS）
+	router.Use(r.in.Middle.Cors.New())
 	// check mode
 	if r.in.Config.GinConfig.DebugMode {
 		gin.SetMode(gin.DebugMode)

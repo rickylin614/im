@@ -13,7 +13,7 @@ import (
 	"im/internal/util/errs"
 )
 
-type CacheMiddleware struct {
+type cacheMiddleware struct {
 	in    digIn
 	group singleflight.Group
 }
@@ -22,7 +22,7 @@ type CacheMiddleware struct {
 //
 //	參數限定只能有Uri。避免過多差異性。
 //	使用gin.ShouldBindUri
-func (m *CacheMiddleware) RouteCacheMiddleware(ctx *gin.Context) {
+func (m *cacheMiddleware) RouteCacheMiddleware(ctx *gin.Context) {
 	key := rediskey.ROUTE_CACHE_KEY + ctx.Request.Method + ":" + ctx.FullPath()
 
 	// 確認緩存

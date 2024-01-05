@@ -13,15 +13,17 @@ import (
 func NewMiddleware(in digIn) *Middleware {
 	return &Middleware{
 		Auth:  authMiddleware{in: in},
-		Cache: CacheMiddleware{in: in},
-		Rate:  RateLimitMiddleware{in: in},
+		Cache: cacheMiddleware{in: in},
+		Rate:  rateLimitMiddleware{in: in},
+		Cors:  corsMiddleware{},
 	}
 }
 
 type Middleware struct {
 	Auth  authMiddleware
-	Cache CacheMiddleware
-	Rate  RateLimitMiddleware
+	Cache cacheMiddleware
+	Rate  rateLimitMiddleware
+	Cors  corsMiddleware
 }
 
 type digIn struct {

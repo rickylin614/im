@@ -11,11 +11,11 @@ import (
 	"github.com/throttled/throttled/v2/store/memstore"
 )
 
-type RateLimitMiddleware struct {
+type rateLimitMiddleware struct {
 	in digIn
 }
 
-func (m *RateLimitMiddleware) RateLimitMiddleware() gin.HandlerFunc {
+func (m *rateLimitMiddleware) RateLimitMiddleware() gin.HandlerFunc {
 	var store throttled.GCRAStoreCtx
 	var err error
 	if m.in.Config.RateConfig.UseMemoryStore {
