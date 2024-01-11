@@ -60,3 +60,57 @@ func (s *JobServer) Shutdown(ctx context.Context) error {
 	s.job.Stop()
 	return nil
 }
+
+//func (s *JobServer) Run(ctx context.Context) error {
+//	defer func() {
+//		if err := recover(); err != nil {
+//			s.Run(ctx)
+//		}
+//	}()
+//
+//	logger := CronLogger{Logger: s.In.Logger}
+//	taipeiLocation, _ := time.LoadLocation("Asia/Taipei")
+//	s.job = cron.New(
+//		cron.WithChain(
+//			cron.Recover(logger),
+//			cron.SkipIfStillRunning(logger),
+//		),                                 // 有需要其他中間件可再添加
+//		cron.WithLocation(taipeiLocation), // UTC+8 時區
+//		cron.WithLogger(logger),
+//	)
+//
+//	i := 0
+//	s.job.AddFunc("*/2 * * * * *", func() {
+//		i++
+//		data := i
+//		fmt.Println("Job exec start", data)
+//		time.Sleep(time.Second * 10)
+//		fmt.Println("Job exec end", data)
+//		panic(errors.New("panic test"))
+//	})
+//
+//	return nil
+//}
+//
+//
+//type CronLogger struct {
+//	Logger logger.Logger
+//}
+//
+//func (c CronLogger) Info(msg string, keysAndValues ...interface{}) {
+//	m := make(map[any]any, len(keysAndValues)/2)
+//	for i := 0; i+1 < len(keysAndValues); i += 2 {
+//		m[keysAndValues[i]] = keysAndValues[i+1]
+//	}
+//	message := fmt.Sprintf("message: %s , datas: %+v", msg, m)
+//	c.Logger.Info(context.Background(), message)
+//}
+//
+//func (c CronLogger) Error(err error, msg string, keysAndValues ...interface{}) {
+//	m := make(map[any]any, len(keysAndValues)/2)
+//	for i := 0; i+1 < len(keysAndValues); i += 2 {
+//		m[keysAndValues[i]] = keysAndValues[i+1]
+//	}
+//	msgErr := fmt.Errorf("err: %w, message: %s , datas: %+v", err, msg, m)
+//	c.Logger.Error(context.Background(), msgErr)
+//}
