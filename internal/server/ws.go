@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
+
 	"im/internal/pkg/config"
 	"im/internal/pkg/logger"
-	"im/internal/pkg/signalctx"
 	"im/internal/router"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/dig"
@@ -17,11 +17,9 @@ import (
 type WsDigIn struct {
 	dig.In
 
-	WsRouter     *router.WsRouter
-	Config       *config.Config
-	Logger       logger.Logger
-	ServerRunner *Controller
-	Ctx          *signalctx.Context
+	WsRouter *router.WsRouter
+	Config   *config.Config
+	Logger   logger.Logger
 }
 
 type WsServer struct {

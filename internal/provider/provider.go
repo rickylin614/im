@@ -66,6 +66,9 @@ func New() *dig.Container {
 		if err := container.Provide(router.NewRouter); err != nil {
 			panic(err)
 		}
+		if err := container.Provide(router.NewWsRouter); err != nil {
+			panic(err)
+		}
 		if err := container.Provide(middleware.NewMiddleware); err != nil {
 			panic(err)
 		}

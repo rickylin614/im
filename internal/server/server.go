@@ -18,6 +18,7 @@ type serverDigIn struct {
 	dig.In
 
 	Logger logger.Logger
+	Ctx    *signalctx.Context
 }
 
 type IServer interface {
@@ -25,33 +26,34 @@ type IServer interface {
 	Shutdown(ctx context.Context) error
 }
 
-type Controller struct {
+type SrvCtrl struct {
 	mx      sync.Mutex
 	servers []IServer
 
 	in serverDigIn
 }
 
-func NewServerController(in serverDigIn) *Controller {
-	return &Controller{in: in}
+func NewServerController(in serverDigIn) *SrvCtrl {
+	return &SrvCtrl{in: in}
 }
 
-func (s *Controller) Register(server IServer) {
+func (s *SrvCtrl) Register(server IServer) {
 	s.mx.Lock()
 	s.servers = append(s.servers, server)
 	s.mx.Unlock()
 }
 
 // Run Listen 監聽服務, 若確認所有服務正常關閉則os.Exit
-func (s *Controller) Run(signalctx *signalctx.Context) {
+func (s *SrvCtrl) Run() {
+	signalctx := s.in.Ctx
 	// Run
 	for _, server := range s.servers {
 		s.mx.Lock()
-		go func() {
+		go func(server IServer) {
 			if err := server.Run(signalctx); err != nil {
 				s.in.Logger.Error(signalctx, fmt.Errorf("run error: %v \n", err))
 			}
-		}()
+		}(server)
 		s.mx.Unlock()
 	}
 

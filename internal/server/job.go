@@ -2,25 +2,21 @@ package server
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
-	"im/internal/pkg/config"
-	"im/internal/pkg/logger"
-	"im/internal/pkg/signalctx"
-
 	"github.com/go-co-op/gocron"
 	"go.uber.org/dig"
+
+	"im/internal/pkg/config"
+	"im/internal/pkg/logger"
 )
 
 type JobDigIn struct {
 	dig.In
 
-	Config       *config.Config
-	Logger       logger.Logger
-	ServerRunner *Controller
-	Ctx          *signalctx.Context
+	Config *config.Config
+	Logger logger.Logger
 }
 
 type JobServer struct {
@@ -43,13 +39,12 @@ func (s *JobServer) Run(ctx context.Context) error {
 	})
 
 	i := 0
-	s.job.Every("1s").Do(func(i *int) {
+	s.job.Every("60s").Do(func(i *int) {
 		*i++
 		data := *i
 		fmt.Println("Job exec start", data)
 		time.Sleep(time.Second * 10)
 		fmt.Println("Job exec end", data)
-		panic(errors.New("panic test"))
 	}, &i)
 
 	s.job.StartBlocking()

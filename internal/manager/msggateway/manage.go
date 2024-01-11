@@ -39,7 +39,7 @@ type LongConnPoolMgmt interface {
 type digIn struct {
 	dig.In
 
-	Conf config.Config
+	Conf *config.Config
 	Ctx  *signalctx.Context
 }
 
