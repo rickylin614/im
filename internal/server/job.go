@@ -37,6 +37,11 @@ func (s *JobServer) Run(ctx context.Context) error {
 	}()
 
 	s.job = gocron.NewScheduler(time.UTC) // UTC +0
+	gocron.SetPanicHandler(func(jobName string, recoverData interface{}) {
+		msg := "job panic! name:" + jobName
+		s.In.Logger.Error(context.Background(), fmt.Errorf("%s %v", msg, recoverData))
+	})
+
 	i := 0
 	s.job.Every("1s").Do(func(i *int) {
 		*i++
