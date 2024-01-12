@@ -22,7 +22,7 @@ func (r WebRouter) SetRouter(router *gin.Engine) {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	// TODO define recovery middleware
+	// TODO define recovery Middleware
 	router.Use(
 		gin.Recovery(),
 	)

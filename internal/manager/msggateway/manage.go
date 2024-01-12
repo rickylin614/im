@@ -152,8 +152,8 @@ func (w *WsManager) Register(c *Client) error {
 }
 
 // UnRegister implements LongConnServer.
-func (*WsManager) UnRegister(c *Client) {
-	panic("unimplemented")
+func (w *WsManager) UnRegister(c *Client) {
+	w.unregisterChan <- c
 }
 
 // Validate implements LongConnServer.

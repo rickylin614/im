@@ -27,6 +27,7 @@ type webDigIn struct {
 type wsDigIn struct {
 	dig.In
 
-	Config  *config.Config
-	Handler *handler.WebSocketHandler
+	Config     *config.Config
+	Handler    *handler.WebSocketHandler
+	Middleware *middleware.Middleware
 }
