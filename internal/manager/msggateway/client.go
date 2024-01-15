@@ -4,12 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"im/internal/models"
-	"im/internal/util/ctxs"
 	"log/slog"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
+
+	"im/internal/models"
+	"im/internal/util/ctxs"
 
 	"github.com/gin-gonic/gin"
 )
@@ -44,13 +45,13 @@ type Client struct {
 	w    *sync.Mutex
 	conn LongConn
 	// PlatformID     int    `json:"platformID"`
-	IsCompress   bool   `json:"isCompress"`
+	IsCompress   bool   `json:"isCompress"` // 訊息是否要壓縮、目前寫死 false 在建立連線的時候
 	UserID       string `json:"userID"`
 	User         *models.Users
 	IsBackground bool `json:"isBackground"`
 	// ctx            *UserConnContext
 	ctx             *gin.Context
-	longConnManager LongConnPoolMgmt
+	longConnManager ConnPoolMgmt
 	closed          atomic.Bool
 	closedErr       error
 	token           string
@@ -100,18 +101,20 @@ func (c *Client) ReadMessage() {
 	}()
 
 	c.conn.SetReadLimit(maxMessageSize)
-	_ = c.conn.SetReadDeadline(pongWait)
+	//_ = c.conn.SetReadDeadline(pongWait)
 	c.conn.SetPingHandler(c.pingHandler)
+
+	count := 1
 
 	for {
 		messageType, message, returnErr := c.conn.ReadMessage()
 		if returnErr != nil {
-			slog.WarnContext(c.ctx, "readMessage", returnErr, "messageType", messageType)
+			slog.WarnContext(c.ctx, "readMessage", "err", returnErr, "messageType", messageType)
 			c.closedErr = returnErr
 			return
 		}
 
-		slog.DebugContext(c.ctx, "readMessage", returnErr, "messageType", messageType)
+		slog.DebugContext(c.ctx, "readMessage", "err", returnErr, "messageType", messageType)
 		if c.closed.Load() { // 连接刚置位已经关闭，但是协程还没退出的场景
 			c.closedErr = ErrConnClosed
 			return
@@ -126,12 +129,21 @@ func (c *Client) ReadMessage() {
 				return
 			}
 		case MessageText:
-			c.closedErr = ErrNotSupportMessageProtocol
-			return
+			parseDataErr := c.handleMessage(message)
+			c.writeStringMsg(fmt.Sprintf("第%d次溝通 收到訊息:%s", count, message))
+			count++
+			slog.Debug("ws recieve", string(message))
+			if parseDataErr != nil {
+				c.closedErr = parseDataErr
+				return
+			}
+			//c.closedErr = ErrNotSupportMessageProtocol
 
 		case PingMessage:
 			err := c.writePongMsg()
-			slog.ErrorContext(c.ctx, "writePongMsg", err)
+			if err != nil {
+				slog.ErrorContext(c.ctx, "writePongMsg", err)
+			}
 
 		case CloseMessage:
 			c.closedErr = ErrClientClosed
@@ -198,6 +210,17 @@ func (c *Client) writeBinaryMsg(b []byte) error {
 
 	// TODO
 	return nil
+}
+
+func (c *Client) writeStringMsg(s string) error {
+	if c.closed.Load() {
+		return nil
+	}
+
+	c.w.Lock()
+	defer c.w.Unlock()
+
+	return c.conn.WriteMessage(MessageText, []byte(s))
 }
 
 func (c *Client) writePongMsg() error {

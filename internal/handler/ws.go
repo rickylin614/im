@@ -1,11 +1,16 @@
 package handler
 
 import (
-	"im/internal/manager/msggateway"
-	"im/internal/util/ctxs"
+	"log/slog"
+	"net/http"
 	"time"
 
+	"github.com/gorilla/websocket"
+
 	"github.com/gin-gonic/gin"
+
+	"im/internal/manager/msggateway"
+	"im/internal/util/ctxs"
 )
 
 type wsHandler struct {
@@ -19,24 +24,61 @@ type wsHandler struct {
 // @Failure 400 {object} object "Invalid request format"
 // @Router /connect [get]
 func (h wsHandler) Connect(ctx *gin.Context) {
-	longConn := msggateway.NewGWebSocket(1,
+	// check login
+	if err := ctxs.CheckLoginByParam(ctx, h.in.Service.UsersSrv); err != nil {
+		ctxs.SetError(ctx, err)
+		return
+	}
+
+	// base object create
+	gSocket := msggateway.NewGWebSocket(1,
 		time.Duration(h.in.Config.WsConfig.HandshakeTimeoutSec*int(time.Second)),
 		h.in.Config.WsConfig.WriteBufferSize)
 
-	// 升級協定
-	err := longConn.GenerateLongConn(ctx.Writer, ctx.Request)
+	// 升級協定 upgrade http to ws
+	err := gSocket.GenerateConnection(ctx.Writer, ctx.Request)
 	if err != nil {
 		ctxs.SetError(ctx, err)
 		return
 	}
 
-	// 會員資料
-	client := h.in.WsManager.NewClient(ctx, longConn, true, false, "")
+	// 會員資料 member info
+	client := h.in.WsManager.NewClient(ctx, gSocket, true, false, "")
 
-	// 註冊
+	// 註冊 (create message listener here)
 	err = h.in.WsManager.Register(client)
 	if err != nil {
 		ctxs.SetError(ctx, err)
 		return
 	}
+}
+
+func (h wsHandler) WsTest(c *gin.Context) {
+	var upgrader = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+	}
+	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		slog.Error("upgrade fail", err)
+		return
+	}
+	defer conn.Close()
+	for {
+		_, msg, err := conn.ReadMessage()
+		if err != nil {
+			slog.Error(string(msg), err)
+			break
+		}
+
+		err = conn.WriteMessage(websocket.TextMessage, append(msg, " - from server"...))
+		if err != nil {
+			slog.Error(string(msg), err)
+			break
+		}
+	}
+
 }

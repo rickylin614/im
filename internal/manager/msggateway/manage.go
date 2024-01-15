@@ -18,7 +18,7 @@ import (
 	"go.uber.org/dig"
 )
 
-type LongConnPoolMgmt interface {
+type ConnPoolMgmt interface {
 	Run(ctx *signalctx.Context) error
 	// wsHandler(w http.ResponseWriter, r *http.Request)
 	NewClient(ctx *gin.Context, conn LongConn, isBackground, isCompress bool, token string) *Client
@@ -65,7 +65,7 @@ type WsManager struct {
 	MessageHandler
 }
 
-func NewWsManger(in digIn) LongConnPoolMgmt {
+func NewWsManger(in digIn) ConnPoolMgmt {
 	manager := &WsManager{
 		wsMaxConnNum:     int64(in.Conf.WsConfig.MaxConnNum),
 		writeBufferSize:  in.Conf.WsConfig.WriteBufferSize,
@@ -139,7 +139,7 @@ func (ws *WsManager) Run(ctx *signalctx.Context) error {
 	return nil
 }
 
-// Register implements LongConnPoolMgmt.
+// Register implements ConnPoolMgmt.
 func (w *WsManager) Register(c *Client) error {
 	if w.onlineUserConnNum.Load() > w.wsMaxConnNum {
 		return errs.WebSocketMaxConnectionsError

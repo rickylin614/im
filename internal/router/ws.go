@@ -26,5 +26,6 @@ func (r WsRouter) SetRouter(router *gin.Engine) {
 		gin.Recovery(),
 	)
 
-	router.GET("/connect", r.in.Middleware.Auth.IsLogin, r.in.Handler.WsHandler.Connect)
+	router.GET("/connect", r.in.Handler.WsHandler.Connect)
+	router.GET("/connect2", r.in.Handler.WsHandler.WsTest)
 }

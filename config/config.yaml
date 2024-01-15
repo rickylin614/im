@@ -2,7 +2,7 @@ config:
   log_config:
     name: "im"
     env: "local"
-    level: "error"
+    level: "debug"
   mysql_config:
     master: "localhost:3306"
     slave: "localhost:3306"
@@ -44,7 +44,7 @@ config:
     max_conn_num: 100000
     handshake_timeout_sec: 10
     message_max_msg_length: 1024
-    write_buffer_size: 4096
+    write_buffer_size: 1024
   kafka_config:
     brokers:
       - "localhost:9092"

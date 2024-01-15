@@ -65,6 +65,7 @@ type WebSocketHandler struct {
 type wsDigIn struct {
 	dig.In
 
-	WsManager msggateway.LongConnPoolMgmt
+	WsManager msggateway.ConnPoolMgmt
+	Service   *service.Service
 	Config    *config.Config
 }

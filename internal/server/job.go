@@ -39,7 +39,7 @@ func (s *JobServer) Run(ctx context.Context) error {
 	})
 
 	i := 0
-	s.job.Every("60s").Do(func(i *int) {
+	s.job.Every("3600s").Do(func(i *int) {
 		*i++
 		data := *i
 		fmt.Println("Job exec start", data)

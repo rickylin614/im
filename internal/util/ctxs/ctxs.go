@@ -12,6 +12,7 @@ import (
 	"im/internal/models"
 	"im/internal/models/resp"
 	"im/internal/pkg/consts"
+	"im/internal/pkg/consts/enums"
 	"im/internal/util/errs"
 
 	"github.com/gin-gonic/gin"
@@ -70,11 +71,13 @@ func SetUserInfo(ctx *gin.Context, user *models.Users) {
 func GetUserInfo(ctx *gin.Context) (user *models.Users) {
 	data, ok := ctx.Get(consts.UserInfo)
 	if !ok {
-		panic(errors.New("not Login Func Use UserInfo"))
+		return &models.Users{}
+		//panic(errors.New("not Login Func Use UserInfo"))
 	}
 	user, ok = data.(*models.Users)
 	if !ok {
-		panic(errors.New("not Login Func Use UserInfo"))
+		return &models.Users{}
+		//panic(errors.New("not Login Func Use UserInfo"))
 	}
 	return
 }
@@ -242,4 +245,19 @@ func ParseMySQLError(err error) ([]string, bool) {
 	}
 
 	return errorMessages, true
+}
+
+// IGetToken 解藕用interface
+type IGetToken interface {
+	GetByToken(ctx *gin.Context, token string) (user *models.Users, err error)
+}
+
+func CheckLoginByParam(ctx *gin.Context, userSrv IGetToken) error {
+	token := ctx.Query(consts.Authorization_Header)
+	user, err := userSrv.GetByToken(ctx, token)
+	if err != nil || user == nil || user.Status != enums.UserStatusActive {
+		return errs.RequestTokenError
+	}
+	SetUserInfo(ctx, user)
+	return nil
 }

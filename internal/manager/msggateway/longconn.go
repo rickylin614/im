@@ -2,6 +2,7 @@ package msggateway
 
 import (
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -32,7 +33,7 @@ type LongConn interface {
 	SetPongHandler(handler PingPongHandler)
 	SetPingHandler(handler PingPongHandler)
 	// GenerateLongConn Check the connection of the current and when it was sent are the same
-	GenerateLongConn(w http.ResponseWriter, r *http.Request) error
+	GenerateConnection(w http.ResponseWriter, r *http.Request) error
 }
 type GWebSocket struct {
 	protocolType     int
@@ -49,13 +50,25 @@ func (d *GWebSocket) Close() error {
 	return d.conn.Close()
 }
 
-func (d *GWebSocket) GenerateLongConn(w http.ResponseWriter, r *http.Request) error {
-	upgrader := &websocket.Upgrader{
-		HandshakeTimeout: d.handshakeTimeout,
-		CheckOrigin:      func(r *http.Request) bool { return true },
-	}
-	if d.writeBufferSize > 0 { // default is 4kb.
+var mu = sync.Mutex{}
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
+func (d *GWebSocket) GenerateConnection(w http.ResponseWriter, r *http.Request) error {
+	mu.Lock()
+	defer mu.Unlock()
+
+	if d.writeBufferSize > 0 {
 		upgrader.WriteBufferSize = d.writeBufferSize
+	}
+	if d.handshakeTimeout > 0 {
+		upgrader.HandshakeTimeout = d.handshakeTimeout
 	}
 
 	conn, err := upgrader.Upgrade(w, r, nil)
