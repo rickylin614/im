@@ -51,7 +51,7 @@ config:
     group_id: "test_group"
     topic: "topic"
   queue_config:
-    mode: "kafka"
+    mode: "redis"
 
 
 

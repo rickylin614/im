@@ -18,7 +18,7 @@ import (
 	"go.uber.org/dig"
 )
 
-type ConnPoolMgmt interface {
+type IWsManager interface {
 	Run(ctx *signalctx.Context) error
 	// wsHandler(w http.ResponseWriter, r *http.Request)
 	NewClient(ctx *gin.Context, conn LongConn, isBackground, isCompress bool, token string) *Client
@@ -65,7 +65,7 @@ type WsManager struct {
 	MessageHandler
 }
 
-func NewWsManger(in digIn) ConnPoolMgmt {
+func NewWsManger(in digIn) IWsManager {
 	manager := &WsManager{
 		wsMaxConnNum:     int64(in.Conf.WsConfig.MaxConnNum),
 		writeBufferSize:  in.Conf.WsConfig.WriteBufferSize,
@@ -139,13 +139,13 @@ func (ws *WsManager) Run(ctx *signalctx.Context) error {
 	return nil
 }
 
-// Register implements ConnPoolMgmt.
+// Register implements IWsManager.
 func (w *WsManager) Register(c *Client) error {
 	if w.onlineUserConnNum.Load() > w.wsMaxConnNum {
 		return errs.WebSocketMaxConnectionsError
 	}
 
-	c.longConnManager = w // TODO client不保存整個wsManager
+	c.wsManager = w // TODO client不保存整個wsManager
 	w.registerChan <- c
 	go c.ReadMessage()
 	return nil

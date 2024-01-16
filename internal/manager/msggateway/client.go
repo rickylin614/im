@@ -45,16 +45,17 @@ type Client struct {
 	w    *sync.Mutex
 	conn LongConn
 	// PlatformID     int    `json:"platformID"`
-	IsCompress   bool   `json:"isCompress"` // 訊息是否要壓縮、目前寫死 false 在建立連線的時候
-	UserID       string `json:"userID"`
-	User         *models.Users
-	IsBackground bool `json:"isBackground"`
-	// ctx            *UserConnContext
-	ctx             *gin.Context
-	longConnManager ConnPoolMgmt
-	closed          atomic.Bool
-	closedErr       error
-	token           string
+	IsCompress   bool          `json:"isCompress"` // 訊息是否要壓縮、目前寫死 false 在建立連線的時候
+	UserID       string        `json:"userID"`     // 用戶ID
+	User         *models.Users `json:"user"`       // 用戶結構體
+	IsBackground bool          `json:"isBackground"`
+	ctx          *gin.Context
+	closed       atomic.Bool
+	closedErr    error
+	token        string
+
+	// 紀錄管理器位址供呼叫
+	wsManager IWsManager
 }
 
 func newClient(ctx *gin.Context, conn LongConn, isCompress bool) *Client {
@@ -156,7 +157,7 @@ func (c *Client) ReadMessage() {
 func (c *Client) handleMessage(message []byte) error {
 	if c.IsCompress {
 		var err error
-		message, err = c.longConnManager.DecompressWithPool(message)
+		message, err = c.wsManager.DecompressWithPool(message)
 		if err != nil {
 			return fmt.Errorf("%w", err)
 		}
@@ -179,7 +180,7 @@ func (c *Client) close() {
 
 	c.closed.Store(true)
 	c.conn.Close()
-	c.longConnManager.UnRegister(c)
+	c.wsManager.UnRegister(c)
 }
 
 func (c *Client) replyMessage(ctx context.Context) error {
