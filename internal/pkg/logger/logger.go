@@ -7,7 +7,6 @@ import (
 	"im/internal/pkg/config"
 	"im/internal/pkg/consts"
 
-	slogzap "github.com/samber/slog-zap/v2"
 	"go.uber.org/dig"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -75,7 +74,7 @@ func newLogger(level zapcore.Level, serviceName string, env string) *ZapLogger {
 	}
 
 	// 設置全局 給沒有di的共用方法使用
-	s := slog.New(slogzap.Option{Logger: logger}.NewZapHandler())
+	s := slog.New(NewZapHandler(logger))
 	slog.SetDefault(s)
 
 	return &ZapLogger{
