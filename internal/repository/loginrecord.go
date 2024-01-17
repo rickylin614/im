@@ -2,15 +2,15 @@ package repository
 
 import (
 	"im/internal/models"
-	"im/internal/models/req"
+	"im/internal/models/request"
 
 	"gorm.io/gorm"
 )
 
 //go:generate mockery --name ILoginRecordRepository --structname MockLoginRecordRepository --output mock_repository --outpkg mock_repository --filename mock_login_record.go --with-expecter
 type ILoginRecordRepository interface {
-	Get(db *gorm.DB, cond *req.LoginRecordGet) (*models.LoginRecord, error)
-	GetList(db *gorm.DB, cond *req.LoginRecordGetList) (*models.PageResult[*models.LoginRecord], error)
+	Get(db *gorm.DB, cond *request.LoginRecordGet) (*models.LoginRecord, error)
+	GetList(db *gorm.DB, cond *request.LoginRecordGetList) (*models.PageResult[*models.LoginRecord], error)
 	Create(db *gorm.DB, data *models.LoginRecord) (id any, err error)
 	Update(db *gorm.DB, data *models.LoginRecord) (err error)
 	Delete(db *gorm.DB, id string) (err error)
@@ -24,7 +24,7 @@ type loginRecordRepository struct {
 	in digIn
 }
 
-func (r loginRecordRepository) Get(db *gorm.DB, cond *req.LoginRecordGet) (*models.LoginRecord, error) {
+func (r loginRecordRepository) Get(db *gorm.DB, cond *request.LoginRecordGet) (*models.LoginRecord, error) {
 	result := &models.LoginRecord{}
 	if err := db.Find(result, cond).Error; err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (r loginRecordRepository) Get(db *gorm.DB, cond *req.LoginRecordGet) (*mode
 	return result, nil
 }
 
-func (r loginRecordRepository) GetList(db *gorm.DB, cond *req.LoginRecordGetList) (*models.PageResult[*models.LoginRecord], error) {
+func (r loginRecordRepository) GetList(db *gorm.DB, cond *request.LoginRecordGetList) (*models.PageResult[*models.LoginRecord], error) {
 	result := &models.PageResult[*models.LoginRecord]{
 		Page: cond.GetPager(),
 		Data: make([]*models.LoginRecord, 0),

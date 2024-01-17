@@ -102,7 +102,7 @@ func (c *Client) ReadMessage() {
 	}()
 
 	c.conn.SetReadLimit(maxMessageSize)
-	//_ = c.conn.SetReadDeadline(pongWait)
+	//_ = c.conn.SetReadDeadline(pongWait)  close when debug mode
 	c.conn.SetPingHandler(c.pingHandler)
 
 	count := 1

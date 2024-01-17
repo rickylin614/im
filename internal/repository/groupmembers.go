@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"im/internal/models"
-	"im/internal/models/req"
+	"im/internal/models/request"
 	"im/internal/pkg/consts/rediskey"
 	"im/internal/util/cache"
 
@@ -16,9 +16,9 @@ import (
 
 //go:generate mockery --name IGroupMembersRepository --structname MockGroupMembersRepository --filename mock_groupmembers.go --output mock_repository --outpkg mock_repository --with-expecter
 type IGroupMembersRepository interface {
-	Get(db *gorm.DB, cond *req.GroupMembersGet) (*models.GroupMembers, error)
-	GetList(db *gorm.DB, cond *req.GroupMembersGetList) (*models.PageResult[*models.GroupMembers], error)
-	GetListById(ctx context.Context, db *gorm.DB, cond *req.GroupMembersGetList) ([]*models.GroupMembers, error)
+	Get(db *gorm.DB, cond *request.GroupMembersGet) (*models.GroupMembers, error)
+	GetList(db *gorm.DB, cond *request.GroupMembersGetList) (*models.PageResult[*models.GroupMembers], error)
+	GetListById(ctx context.Context, db *gorm.DB, cond *request.GroupMembersGetList) ([]*models.GroupMembers, error)
 	Create(db *gorm.DB, data *models.GroupMembers) (id any, err error)
 	Update(db *gorm.DB, data *models.GroupMembers) (err error)
 	Delete(db *gorm.DB, id string) (err error)
@@ -34,7 +34,7 @@ type groupMembersRepository struct {
 }
 
 // Get 確認成員資訊時使用
-func (r *groupMembersRepository) Get(db *gorm.DB, cond *req.GroupMembersGet) (*models.GroupMembers, error) {
+func (r *groupMembersRepository) Get(db *gorm.DB, cond *request.GroupMembersGet) (*models.GroupMembers, error) {
 	result := &models.GroupMembers{}
 	db = db.Find(result, cond)
 	if db.Error != nil {
@@ -46,7 +46,7 @@ func (r *groupMembersRepository) Get(db *gorm.DB, cond *req.GroupMembersGet) (*m
 	return result, nil
 }
 
-func (r *groupMembersRepository) GetList(db *gorm.DB, cond *req.GroupMembersGetList) (*models.PageResult[*models.GroupMembers], error) {
+func (r *groupMembersRepository) GetList(db *gorm.DB, cond *request.GroupMembersGetList) (*models.PageResult[*models.GroupMembers], error) {
 	result := &models.PageResult[*models.GroupMembers]{
 		Data: make([]*models.GroupMembers, 0),
 	}
@@ -57,7 +57,7 @@ func (r *groupMembersRepository) GetList(db *gorm.DB, cond *req.GroupMembersGetL
 	return result, nil
 }
 
-func (r *groupMembersRepository) GetListById(ctx context.Context, db *gorm.DB, cond *req.GroupMembersGetList) ([]*models.GroupMembers, error) {
+func (r *groupMembersRepository) GetListById(ctx context.Context, db *gorm.DB, cond *request.GroupMembersGetList) ([]*models.GroupMembers, error) {
 	key := rediskey.GROUP_MEMBER_KEY + cond.Id
 	return cache.GetCache[[]*models.GroupMembers](ctx,
 		r.in.Cache, r.in.Rdb, r.sf, key,

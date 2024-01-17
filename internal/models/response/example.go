@@ -1,4 +1,4 @@
-package resp
+package response
 
 type ExampleGet struct {
 	Id          string `json:"id"`          // 數據ID

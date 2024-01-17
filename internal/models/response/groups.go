@@ -1,4 +1,4 @@
-package resp
+package response
 
 type GroupsGet struct {
 	ID          string `json:"id"`

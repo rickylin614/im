@@ -1,8 +1,8 @@
 package handler
 
 import (
-	request "{{ .ProjectName }}/internal/models/req"
-	response "{{ .ProjectName }}/internal/models/resp"
+	"{{ .ProjectName }}/internal/models/request"
+	"{{ .ProjectName }}/internal/models/response"
 	"{{ .ProjectName }}/internal/util/ctxs"
 
 	"github.com/gin-gonic/gin"

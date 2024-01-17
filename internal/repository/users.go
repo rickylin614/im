@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"im/internal/models"
-	"im/internal/models/req"
+	"im/internal/models/request"
 	"im/internal/pkg/consts"
 	"im/internal/pkg/consts/rediskey"
 	"im/internal/util/crypto"
@@ -17,8 +17,8 @@ import (
 
 //go:generate mockery --name IUsersRepository --structname MockUsersRepository --filename mock_users.go --output mock_repository --outpkg mock_repository --with-expecter
 type IUsersRepository interface {
-	Get(db *gorm.DB, cond *req.UsersGet) (*models.Users, error)
-	GetList(db *gorm.DB, cond *req.UsersGetList) (*models.PageResult[*models.Users], error)
+	Get(db *gorm.DB, cond *request.UsersGet) (*models.Users, error)
+	GetList(db *gorm.DB, cond *request.UsersGetList) (*models.PageResult[*models.Users], error)
 	Create(db *gorm.DB, data *models.Users) (id any, err error)
 	Update(db *gorm.DB, data *models.Users) (err error)
 	Delete(db *gorm.DB, id string) (err error)
@@ -35,7 +35,7 @@ type usersRepository struct {
 	in digIn
 }
 
-func (r usersRepository) Get(db *gorm.DB, cond *req.UsersGet) (*models.Users, error) {
+func (r usersRepository) Get(db *gorm.DB, cond *request.UsersGet) (*models.Users, error) {
 	result := &models.Users{}
 	if err := db.Find(result, cond).Error; err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func (r usersRepository) Get(db *gorm.DB, cond *req.UsersGet) (*models.Users, er
 	return result, nil
 }
 
-func (r usersRepository) GetList(db *gorm.DB, cond *req.UsersGetList) (*models.PageResult[*models.Users], error) {
+func (r usersRepository) GetList(db *gorm.DB, cond *request.UsersGetList) (*models.PageResult[*models.Users], error) {
 	result := &models.PageResult[*models.Users]{
 		Page: cond.GetPager(),
 		Data: make([]*models.Users, 0),

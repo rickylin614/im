@@ -2,15 +2,15 @@ package repository
 
 import (
 	"im/internal/models"
-	"im/internal/models/req"
+	"im/internal/models/request"
 
 	"gorm.io/gorm"
 )
 
 //go:generate mockery --name IGroupsRepository --structname MockGroupsRepository --filename mock_groups.go --output mock_repository --outpkg mock_repository --with-expecter
 type IGroupsRepository interface {
-	Get(db *gorm.DB, cond *req.GroupsGet) (*models.Groups, error)
-	GetList(db *gorm.DB, cond *req.GroupsGetList) (*models.PageResult[*models.Groups], error)
+	Get(db *gorm.DB, cond *request.GroupsGet) (*models.Groups, error)
+	GetList(db *gorm.DB, cond *request.GroupsGetList) (*models.PageResult[*models.Groups], error)
 	Create(db *gorm.DB, data *models.Groups) (id any, err error)
 	Update(db *gorm.DB, data *models.Groups) (err error)
 	Delete(db *gorm.DB, id string) (err error)
@@ -24,7 +24,7 @@ type groupsRepository struct {
 	in digIn
 }
 
-func (r groupsRepository) Get(db *gorm.DB, cond *req.GroupsGet) (*models.Groups, error) {
+func (r groupsRepository) Get(db *gorm.DB, cond *request.GroupsGet) (*models.Groups, error) {
 	result := &models.Groups{}
 	if err := db.Find(result, cond).Error; err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (r groupsRepository) Get(db *gorm.DB, cond *req.GroupsGet) (*models.Groups,
 	return result, nil
 }
 
-func (r groupsRepository) GetList(db *gorm.DB, cond *req.GroupsGetList) (*models.PageResult[*models.Groups], error) {
+func (r groupsRepository) GetList(db *gorm.DB, cond *request.GroupsGetList) (*models.PageResult[*models.Groups], error) {
 	result := &models.PageResult[*models.Groups]{
 		Page: cond.GetPager(),
 		Data: make([]*models.Groups, 0),

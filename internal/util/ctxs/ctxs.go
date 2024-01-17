@@ -10,7 +10,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 
 	"im/internal/models"
-	"im/internal/models/resp"
+	"im/internal/models/response"
 	"im/internal/pkg/consts"
 	"im/internal/pkg/consts/enums"
 	"im/internal/util/errs"
@@ -33,7 +33,7 @@ type IStatusCode interface {
 
 func SetError(ctx *gin.Context, err error) {
 	code, msg, data, statusCode := ParseError(err)
-	response := resp.APIResponse[any]{
+	response := response.APIResponse[any]{
 		Code:    code,
 		Message: msg,
 		Data:    data,
@@ -47,7 +47,7 @@ func SetResp(ctx *gin.Context, data any) {
 	if v, ok := data.(IMessage); ok {
 		msg = v.GetMessage()
 	}
-	response := resp.APIResponse[any]{
+	response := response.APIResponse[any]{
 		Code:    "0",
 		Message: msg,
 		Data:    data,
@@ -56,7 +56,7 @@ func SetResp(ctx *gin.Context, data any) {
 }
 
 func SetSuccessResp(ctx *gin.Context) {
-	response := resp.APIResponse[any]{
+	response := response.APIResponse[any]{
 		Code:    "0",
 		Message: "操作成功",
 		Data:    nil,

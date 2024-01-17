@@ -1,4 +1,4 @@
-package resp
+package response
 
 type APIResponse[T any] struct {
 	Code    string `json:"code"` // 回傳代碼

@@ -2,7 +2,7 @@ package service
 
 import (
 	"im/internal/models"
-	"im/internal/models/req"
+	"im/internal/models/request"
 	"im/internal/pkg/consts/enums"
 	"im/internal/util/ctxs"
 	"im/internal/util/errs"
@@ -14,11 +14,11 @@ import (
 )
 
 type IFriendRequestservice interface {
-	Get(ctx *gin.Context, cond *req.FriendRequestsGet) (*models.FriendRequests, error)
-	GetList(ctx *gin.Context, cond *req.FriendRequestsGetList) (*models.PageResult[*models.FriendRequests], error)
-	Create(ctx *gin.Context, cond *req.FriendRequestsCreate) (id any, err error)
-	Update(ctx *gin.Context, cond *req.FriendRequestsUpdate) (err error)
-	Delete(ctx *gin.Context, cond *req.FriendRequestsDelete) (err error)
+	Get(ctx *gin.Context, cond *request.FriendRequestsGet) (*models.FriendRequests, error)
+	GetList(ctx *gin.Context, cond *request.FriendRequestsGetList) (*models.PageResult[*models.FriendRequests], error)
+	Create(ctx *gin.Context, cond *request.FriendRequestsCreate) (id any, err error)
+	Update(ctx *gin.Context, cond *request.FriendRequestsUpdate) (err error)
+	Delete(ctx *gin.Context, cond *request.FriendRequestsDelete) (err error)
 }
 
 func NewFriendRequestservice(in DigIn) IFriendRequestservice {
@@ -29,23 +29,23 @@ type FriendRequestservice struct {
 	in DigIn
 }
 
-func (s FriendRequestservice) Get(ctx *gin.Context, cond *req.FriendRequestsGet) (*models.FriendRequests, error) {
+func (s FriendRequestservice) Get(ctx *gin.Context, cond *request.FriendRequestsGet) (*models.FriendRequests, error) {
 	db := s.in.DB.Session(ctx)
 	return s.in.Repository.FriendRequestsRepo.Get(db, cond)
 }
 
-func (s FriendRequestservice) GetList(ctx *gin.Context, cond *req.FriendRequestsGetList) (*models.PageResult[*models.FriendRequests], error) {
+func (s FriendRequestservice) GetList(ctx *gin.Context, cond *request.FriendRequestsGetList) (*models.PageResult[*models.FriendRequests], error) {
 	db := s.in.DB.Session(ctx)
 	return s.in.Repository.FriendRequestsRepo.GetList(db, cond)
 }
 
 // Create 好友申請
-func (s FriendRequestservice) Create(ctx *gin.Context, cond *req.FriendRequestsCreate) (id any, err error) {
+func (s FriendRequestservice) Create(ctx *gin.Context, cond *request.FriendRequestsCreate) (id any, err error) {
 	db := s.in.DB.Session(ctx)
 	loginID := ctxs.GetUserInfo(ctx).ID
 
 	// 查詢對象ID
-	u, err := s.in.Repository.UsersRepo.Get(db, &req.UsersGet{
+	u, err := s.in.Repository.UsersRepo.Get(db, &request.UsersGet{
 		Username: cond.UserName,
 	})
 	if err != nil || len(u.ID) == 0 {
@@ -53,7 +53,7 @@ func (s FriendRequestservice) Create(ctx *gin.Context, cond *req.FriendRequestsC
 	}
 
 	// 驗證是否已經是好友
-	f, err := s.in.Repository.FriendRepo.Get(db, &req.FriendGet{
+	f, err := s.in.Repository.FriendRepo.Get(db, &request.FriendGet{
 		PUserID: loginID,
 		FUserID: u.ID,
 	})
@@ -65,7 +65,7 @@ func (s FriendRequestservice) Create(ctx *gin.Context, cond *req.FriendRequestsC
 	}
 
 	// 驗證是否已經發出過好友請求
-	fs, err := s.in.Repository.FriendRequestsRepo.Get(db, &req.FriendRequestsGet{
+	fs, err := s.in.Repository.FriendRequestsRepo.Get(db, &request.FriendRequestsGet{
 		SenderID:   loginID,
 		ReceiverID: u.ID,
 		RequestStatusConds: []enums.FriendReqStatus{
@@ -81,7 +81,7 @@ func (s FriendRequestservice) Create(ctx *gin.Context, cond *req.FriendRequestsC
 	}
 
 	// 驗證對方是否發送過好友請求
-	fs2, err := s.in.Repository.FriendRequestsRepo.Get(db, &req.FriendRequestsGet{
+	fs2, err := s.in.Repository.FriendRequestsRepo.Get(db, &request.FriendRequestsGet{
 		SenderID:   u.ID,
 		ReceiverID: loginID,
 		RequestStatusConds: []enums.FriendReqStatus{
@@ -118,11 +118,11 @@ func (s FriendRequestservice) Create(ctx *gin.Context, cond *req.FriendRequestsC
 	return s.in.Repository.FriendRequestsRepo.Create(db, insertData)
 }
 
-func (s FriendRequestservice) Update(ctx *gin.Context, cond *req.FriendRequestsUpdate) (err error) {
+func (s FriendRequestservice) Update(ctx *gin.Context, cond *request.FriendRequestsUpdate) (err error) {
 	db := s.in.DB.Session(ctx)
 
 	// 確認好友請求存在
-	fr, err := s.in.Repository.FriendRequestsRepo.Get(db, &req.FriendRequestsGet{
+	fr, err := s.in.Repository.FriendRequestsRepo.Get(db, &request.FriendRequestsGet{
 		ID:         cond.ID,
 		ReceiverID: ctxs.GetUserInfo(ctx).ID, // 必須是自己的ID
 		RequestStatusConds: []enums.FriendReqStatus{
@@ -163,7 +163,7 @@ func (s FriendRequestservice) Update(ctx *gin.Context, cond *req.FriendRequestsU
 	return nil
 }
 
-func (s FriendRequestservice) Delete(ctx *gin.Context, cond *req.FriendRequestsDelete) (err error) {
+func (s FriendRequestservice) Delete(ctx *gin.Context, cond *request.FriendRequestsDelete) (err error) {
 	db := s.in.DB.Session(ctx)
 	return s.in.Repository.FriendRequestsRepo.Delete(db, cond.ID)
 }

@@ -1,8 +1,8 @@
 package handler
 
 import (
-	request "im/internal/models/req"
-	response "im/internal/models/resp"
+	"im/internal/models/request"
+	"im/internal/models/response"
 	"im/internal/util/ctxs"
 	"im/internal/util/errs"
 

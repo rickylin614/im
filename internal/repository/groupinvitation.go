@@ -2,7 +2,7 @@ package repository
 
 import (
 	"im/internal/models"
-	"im/internal/models/req"
+	"im/internal/models/request"
 
 	"gorm.io/gorm"
 )
@@ -10,8 +10,8 @@ import (
 //go:generate mockery --name IGroupInvitationRepository --structname MockGroupInvitationRepository --filename mock_group_invitation.go --output mock_repository --outpkg mock_repository --with-expecter
 
 type IGroupInvitationRepository interface {
-	Get(db *gorm.DB, cond *req.GroupInvitationGet) (*models.GroupInvitation, error)
-	GetList(db *gorm.DB, cond *req.GroupInvitationGetList) (*models.PageResult[*models.GroupInvitation], error)
+	Get(db *gorm.DB, cond *request.GroupInvitationGet) (*models.GroupInvitation, error)
+	GetList(db *gorm.DB, cond *request.GroupInvitationGetList) (*models.PageResult[*models.GroupInvitation], error)
 	Create(db *gorm.DB, data *models.GroupInvitation) (id any, err error)
 	Update(db *gorm.DB, data *models.GroupInvitation) (err error)
 	Delete(db *gorm.DB, id string) (err error)
@@ -25,7 +25,7 @@ type groupInvitationRepository struct {
 	in digIn
 }
 
-func (r groupInvitationRepository) Get(db *gorm.DB, cond *req.GroupInvitationGet) (*models.GroupInvitation, error) {
+func (r groupInvitationRepository) Get(db *gorm.DB, cond *request.GroupInvitationGet) (*models.GroupInvitation, error) {
 	result := &models.GroupInvitation{}
 	db = db.Find(result, cond)
 	if db.Error != nil {
@@ -37,7 +37,7 @@ func (r groupInvitationRepository) Get(db *gorm.DB, cond *req.GroupInvitationGet
 	return result, nil
 }
 
-func (r groupInvitationRepository) GetList(db *gorm.DB, cond *req.GroupInvitationGetList) (*models.PageResult[*models.GroupInvitation], error) {
+func (r groupInvitationRepository) GetList(db *gorm.DB, cond *request.GroupInvitationGetList) (*models.PageResult[*models.GroupInvitation], error) {
 	result := &models.PageResult[*models.GroupInvitation]{
 		Page: cond.GetPager(),
 		Data: make([]*models.GroupInvitation, 0),

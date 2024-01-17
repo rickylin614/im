@@ -11,7 +11,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 
 	"im/internal/models"
-	"im/internal/models/req"
+	"im/internal/models/request"
 	"im/internal/pkg/consts"
 	"im/internal/pkg/consts/enums"
 	"im/internal/service"
@@ -82,7 +82,7 @@ func (suite *UserServiceTestSuite) TearDownSuite() {
 
 func (suite *UserServiceTestSuite) TestGetUser() {
 	ctx := &gin.Context{Request: &http.Request{}}
-	getCond := &req.UsersGet{Username: "testuser"}
+	getCond := &request.UsersGet{Username: "testuser"}
 	expectedUser := &models.Users{Username: "testuser"}
 
 	suite.Deps.UsersRepo.On("Get", mock.Anything, getCond).Return(expectedUser, nil).Once()
@@ -94,7 +94,7 @@ func (suite *UserServiceTestSuite) TestGetUser() {
 
 func (suite *UserServiceTestSuite) TestGetList() {
 	ctx := &gin.Context{Request: &http.Request{}}
-	getListCond := &req.UsersGetList{
+	getListCond := &request.UsersGetList{
 		Page: models.Page{
 			Index: 1,
 			Size:  10,
@@ -118,7 +118,7 @@ func (suite *UserServiceTestSuite) TestGetList() {
 }
 
 func (suite *UserServiceTestSuite) TestCreate() {
-	createCond := &req.UsersCreate{
+	createCond := &request.UsersCreate{
 		Username: "newuser",
 		Password: "password123",
 	}
@@ -132,7 +132,7 @@ func (suite *UserServiceTestSuite) TestCreate() {
 }
 
 func (suite *UserServiceTestSuite) TestUpdate() {
-	updateCond := &req.UsersUpdate{
+	updateCond := &request.UsersUpdate{
 		ID:       uuid.New(),
 		Nickname: "updatedNickname",
 	}
@@ -144,7 +144,7 @@ func (suite *UserServiceTestSuite) TestUpdate() {
 }
 
 func (suite *UserServiceTestSuite) TestDelete() {
-	deleteCond := &req.UsersDelete{
+	deleteCond := &request.UsersDelete{
 		ID: uuid.New(),
 	}
 
@@ -155,7 +155,7 @@ func (suite *UserServiceTestSuite) TestDelete() {
 }
 
 func (suite *UserServiceTestSuite) TestLogin() {
-	loginCond := &req.UsersLogin{
+	loginCond := &request.UsersLogin{
 		Username: "existinguser",
 		Password: "password123",
 	}
@@ -171,7 +171,7 @@ func (suite *UserServiceTestSuite) TestLogin() {
 }
 
 func (suite *UserServiceTestSuite) TestLoginUserNotFound() {
-	loginCond := &req.UsersLogin{
+	loginCond := &request.UsersLogin{
 		Username: "nonexistinguser",
 		Password: "password123",
 	}
@@ -185,7 +185,7 @@ func (suite *UserServiceTestSuite) TestLoginUserNotFound() {
 }
 
 func (suite *UserServiceTestSuite) TestLoginPasswordVerificationFailed() {
-	loginCond := &req.UsersLogin{
+	loginCond := &request.UsersLogin{
 		Username: "existinguser",
 		Password: "wrongpassword",
 	}
@@ -201,7 +201,7 @@ func (suite *UserServiceTestSuite) TestLoginPasswordVerificationFailed() {
 }
 
 func (suite *UserServiceTestSuite) TestLoginUserStatusBlocked() {
-	loginCond := &req.UsersLogin{
+	loginCond := &request.UsersLogin{
 		Username: "blockeduser",
 		Password: "password123",
 	}
@@ -217,7 +217,7 @@ func (suite *UserServiceTestSuite) TestLoginUserStatusBlocked() {
 }
 
 func (suite *UserServiceTestSuite) TestSetTokenFail() {
-	loginCond := &req.UsersLogin{
+	loginCond := &request.UsersLogin{
 		Username: "existinguser",
 		Password: "password123",
 	}

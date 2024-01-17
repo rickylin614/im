@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"im/internal/models"
-	"im/internal/models/req"
+	"im/internal/models/request"
 	"im/internal/pkg/consts"
 	"im/internal/pkg/consts/enums"
 	"im/internal/util/crypto"
@@ -20,12 +20,12 @@ import (
 )
 
 type IUsersService interface {
-	Get(ctx *gin.Context, cond *req.UsersGet) (*models.Users, error)
-	GetList(ctx *gin.Context, cond *req.UsersGetList) (*models.PageResult[*models.Users], error)
-	Create(ctx *gin.Context, cond *req.UsersCreate) (id any, err error)
-	Update(ctx *gin.Context, cond *req.UsersUpdate) (err error)
-	Delete(ctx *gin.Context, cond *req.UsersDelete) (err error)
-	Login(ctx *gin.Context, cond *req.UsersLogin) (token string, err error)
+	Get(ctx *gin.Context, cond *request.UsersGet) (*models.Users, error)
+	GetList(ctx *gin.Context, cond *request.UsersGetList) (*models.PageResult[*models.Users], error)
+	Create(ctx *gin.Context, cond *request.UsersCreate) (id any, err error)
+	Update(ctx *gin.Context, cond *request.UsersUpdate) (err error)
+	Delete(ctx *gin.Context, cond *request.UsersDelete) (err error)
+	Login(ctx *gin.Context, cond *request.UsersLogin) (token string, err error)
 	Logout(ctx *gin.Context, token string) (err error)
 	GetByToken(ctx *gin.Context, token string) (user *models.Users, err error)
 }
@@ -38,17 +38,17 @@ type UsersService struct {
 	In DigIn
 }
 
-func (s UsersService) Get(ctx *gin.Context, cond *req.UsersGet) (*models.Users, error) {
+func (s UsersService) Get(ctx *gin.Context, cond *request.UsersGet) (*models.Users, error) {
 	db := s.In.DB.Session(ctx)
 	return s.In.Repository.UsersRepo.Get(db, cond)
 }
 
-func (s UsersService) GetList(ctx *gin.Context, cond *req.UsersGetList) (*models.PageResult[*models.Users], error) {
+func (s UsersService) GetList(ctx *gin.Context, cond *request.UsersGetList) (*models.PageResult[*models.Users], error) {
 	db := s.In.DB.Session(ctx)
 	return s.In.Repository.UsersRepo.GetList(db, cond)
 }
 
-func (s UsersService) Create(ctx *gin.Context, cond *req.UsersCreate) (id any, err error) {
+func (s UsersService) Create(ctx *gin.Context, cond *request.UsersCreate) (id any, err error) {
 	db := s.In.DB.Session(ctx)
 	insertData := &models.Users{ID: uuid.New(), PasswordHash: crypto.Hash(cond.Password), Status: enums.UserStatusActive}
 	if err := copier.Copy(insertData, cond); err != nil {
@@ -57,7 +57,7 @@ func (s UsersService) Create(ctx *gin.Context, cond *req.UsersCreate) (id any, e
 	return s.In.Repository.UsersRepo.Create(db, insertData)
 }
 
-func (s UsersService) Update(ctx *gin.Context, cond *req.UsersUpdate) (err error) {
+func (s UsersService) Update(ctx *gin.Context, cond *request.UsersUpdate) (err error) {
 	db := s.In.DB.Session(ctx)
 	updateData := &models.Users{}
 	if err := copier.Copy(updateData, cond); err != nil {
@@ -66,16 +66,16 @@ func (s UsersService) Update(ctx *gin.Context, cond *req.UsersUpdate) (err error
 	return s.In.Repository.UsersRepo.Update(db, updateData)
 }
 
-func (s UsersService) Delete(ctx *gin.Context, cond *req.UsersDelete) (err error) {
+func (s UsersService) Delete(ctx *gin.Context, cond *request.UsersDelete) (err error) {
 	db := s.In.DB.Session(ctx)
 	return s.In.Repository.UsersRepo.Delete(db, cond.ID)
 }
 
-func (s UsersService) Login(ctx *gin.Context, cond *req.UsersLogin) (token string, err error) {
+func (s UsersService) Login(ctx *gin.Context, cond *request.UsersLogin) (token string, err error) {
 	db := s.In.DB.Session(ctx)
 
 	// 取得使用者資訊
-	getCond := &req.UsersGet{Username: cond.Username}
+	getCond := &request.UsersGet{Username: cond.Username}
 	user, err := s.In.Repository.UsersRepo.Get(db, getCond)
 	if err != nil || user == nil {
 		return "", errs.LoginCommonError

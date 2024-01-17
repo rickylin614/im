@@ -1,4 +1,4 @@
-package resp
+package response
 
 import (
 	"im/internal/pkg/consts/enums"

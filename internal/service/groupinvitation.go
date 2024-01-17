@@ -2,7 +2,7 @@ package service
 
 import (
 	"im/internal/models"
-	"im/internal/models/req"
+	"im/internal/models/request"
 	"im/internal/pkg/consts/enums"
 	"im/internal/util/ctxs"
 	"im/internal/util/errs"
@@ -13,11 +13,11 @@ import (
 )
 
 type IGroupInvitationService interface {
-	Get(ctx *gin.Context, cond *req.GroupInvitationGet) (*models.GroupInvitation, error)
-	GetList(ctx *gin.Context, cond *req.GroupInvitationGetList) (*models.PageResult[*models.GroupInvitation], error)
-	Create(ctx *gin.Context, cond *req.GroupInvitationCreate) (id any, err error)
-	Update(ctx *gin.Context, cond *req.GroupInvitationUpdate) (err error)
-	Delete(ctx *gin.Context, cond *req.GroupInvitationDelete) (err error)
+	Get(ctx *gin.Context, cond *request.GroupInvitationGet) (*models.GroupInvitation, error)
+	GetList(ctx *gin.Context, cond *request.GroupInvitationGetList) (*models.PageResult[*models.GroupInvitation], error)
+	Create(ctx *gin.Context, cond *request.GroupInvitationCreate) (id any, err error)
+	Update(ctx *gin.Context, cond *request.GroupInvitationUpdate) (err error)
+	Delete(ctx *gin.Context, cond *request.GroupInvitationDelete) (err error)
 }
 
 func NewGroupInvitationService(in DigIn) IGroupInvitationService {
@@ -28,20 +28,20 @@ type groupInvitationService struct {
 	In DigIn
 }
 
-func (s groupInvitationService) Get(ctx *gin.Context, cond *req.GroupInvitationGet) (*models.GroupInvitation, error) {
+func (s groupInvitationService) Get(ctx *gin.Context, cond *request.GroupInvitationGet) (*models.GroupInvitation, error) {
 	db := s.In.DB.Session(ctx)
 	return s.In.Repository.GroupInvitationRepo.Get(db, cond)
 }
 
-func (s groupInvitationService) GetList(ctx *gin.Context, cond *req.GroupInvitationGetList) (*models.PageResult[*models.GroupInvitation], error) {
+func (s groupInvitationService) GetList(ctx *gin.Context, cond *request.GroupInvitationGetList) (*models.PageResult[*models.GroupInvitation], error) {
 	db := s.In.DB.Session(ctx)
 	return s.In.Repository.GroupInvitationRepo.GetList(db, cond)
 }
 
-func (s groupInvitationService) Create(ctx *gin.Context, cond *req.GroupInvitationCreate) (id any, err error) {
+func (s groupInvitationService) Create(ctx *gin.Context, cond *request.GroupInvitationCreate) (id any, err error) {
 	db := s.In.DB.Session(ctx)
 	// 檢查是群組成員 TODO 創一層共用代碼
-	m, err := s.In.Repository.GroupMembersRepo.Get(db, &req.GroupMembersGet{
+	m, err := s.In.Repository.GroupMembersRepo.Get(db, &request.GroupMembersGet{
 		UserId: ctxs.GetUserInfo(ctx).ID,
 	})
 	if err != nil {
@@ -51,7 +51,7 @@ func (s groupInvitationService) Create(ctx *gin.Context, cond *req.GroupInvitati
 	}
 
 	// 對象已是群組成員
-	t, err := s.In.Repository.GroupMembersRepo.Get(db, &req.GroupMembersGet{
+	t, err := s.In.Repository.GroupMembersRepo.Get(db, &request.GroupMembersGet{
 		UserId: cond.InviteeId,
 	})
 	if err != nil {
@@ -61,7 +61,7 @@ func (s groupInvitationService) Create(ctx *gin.Context, cond *req.GroupInvitati
 	}
 
 	// 檢查是否邀請過
-	i, err := s.In.Repository.GroupInvitationRepo.Get(db, &req.GroupInvitationGet{
+	i, err := s.In.Repository.GroupInvitationRepo.Get(db, &request.GroupInvitationGet{
 		GroupID:   cond.GroupId,
 		InviterID: ctxs.GetUserInfo(ctx).ID,
 		InviteeID: cond.InviteeId,
@@ -83,7 +83,7 @@ func (s groupInvitationService) Create(ctx *gin.Context, cond *req.GroupInvitati
 	return s.In.Repository.GroupInvitationRepo.Create(db, insertData)
 }
 
-func (s groupInvitationService) Update(ctx *gin.Context, cond *req.GroupInvitationUpdate) (err error) {
+func (s groupInvitationService) Update(ctx *gin.Context, cond *request.GroupInvitationUpdate) (err error) {
 	db := s.In.DB.Session(ctx)
 	updateData := &models.GroupInvitation{}
 	if err := copier.Copy(updateData, cond); err != nil {
@@ -92,7 +92,7 @@ func (s groupInvitationService) Update(ctx *gin.Context, cond *req.GroupInvitati
 	return s.In.Repository.GroupInvitationRepo.Update(db, updateData)
 }
 
-func (s groupInvitationService) Delete(ctx *gin.Context, cond *req.GroupInvitationDelete) (err error) {
+func (s groupInvitationService) Delete(ctx *gin.Context, cond *request.GroupInvitationDelete) (err error) {
 	db := s.In.DB.Session(ctx)
 	return s.In.Repository.GroupInvitationRepo.Delete(db, cond.ID)
 }

@@ -2,16 +2,16 @@ package repository
 
 import (
 	"im/internal/models"
-	"im/internal/models/req"
+	"im/internal/models/request"
 
 	"gorm.io/gorm"
 )
 
 //go:generate mockery --name IFriendRepository --structname MockFriendRepository --filename mock_friend.go --output mock_repository --outpkg mock_repository --with-expecter
 type IFriendRepository interface {
-	Get(db *gorm.DB, cond *req.FriendGet) (*models.Friend, error)
-	GetList(db *gorm.DB, cond *req.FriendGetList) (*models.PageResult[*models.Friend], error)
-	GetMutualList(db *gorm.DB, cond *req.FriendMutualGet) (*models.PageResult[*models.Friend], error)
+	Get(db *gorm.DB, cond *request.FriendGet) (*models.Friend, error)
+	GetList(db *gorm.DB, cond *request.FriendGetList) (*models.PageResult[*models.Friend], error)
+	GetMutualList(db *gorm.DB, cond *request.FriendMutualGet) (*models.PageResult[*models.Friend], error)
 	Create(db *gorm.DB, data *models.Friend) (id any, err error)
 	Update(db *gorm.DB, data *models.Friend) (err error)
 	Delete(db *gorm.DB, id string) (err error)
@@ -25,7 +25,7 @@ type friendRepository struct {
 	in digIn
 }
 
-func (r friendRepository) Get(db *gorm.DB, cond *req.FriendGet) (*models.Friend, error) {
+func (r friendRepository) Get(db *gorm.DB, cond *request.FriendGet) (*models.Friend, error) {
 	result := &models.Friend{}
 	if err := db.Find(result, cond).Error; err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func (r friendRepository) Get(db *gorm.DB, cond *req.FriendGet) (*models.Friend,
 	return result, nil
 }
 
-func (r friendRepository) GetList(db *gorm.DB, cond *req.FriendGetList) (*models.PageResult[*models.Friend], error) {
+func (r friendRepository) GetList(db *gorm.DB, cond *request.FriendGetList) (*models.PageResult[*models.Friend], error) {
 	result := &models.PageResult[*models.Friend]{
 		Page: cond.GetPager(),
 		Data: make([]*models.Friend, 0),
@@ -48,7 +48,7 @@ func (r friendRepository) GetList(db *gorm.DB, cond *req.FriendGetList) (*models
 	return result, nil
 }
 
-func (r friendRepository) GetMutualList(db *gorm.DB, cond *req.FriendMutualGet) (*models.PageResult[*models.Friend], error) {
+func (r friendRepository) GetMutualList(db *gorm.DB, cond *request.FriendMutualGet) (*models.PageResult[*models.Friend], error) {
 	result := &models.PageResult[*models.Friend]{
 		Page: cond.GetPager(),
 		Data: make([]*models.Friend, 0),

@@ -2,15 +2,15 @@ package repository
 
 import (
 	"im/internal/models"
-	"im/internal/models/req"
+	"im/internal/models/request"
 
 	"gorm.io/gorm"
 )
 
 //go:generate mockery --name IFriendRequestsRepository --structname MockFriendRequestsRepository --filename mock_friendrequests.go --output mock_repository --outpkg mock_repository --with-expecter
 type IFriendRequestsRepository interface {
-	Get(db *gorm.DB, cond *req.FriendRequestsGet) (*models.FriendRequests, error)
-	GetList(db *gorm.DB, cond *req.FriendRequestsGetList) (*models.PageResult[*models.FriendRequests], error)
+	Get(db *gorm.DB, cond *request.FriendRequestsGet) (*models.FriendRequests, error)
+	GetList(db *gorm.DB, cond *request.FriendRequestsGetList) (*models.PageResult[*models.FriendRequests], error)
 	Create(db *gorm.DB, data *models.FriendRequests) (id any, err error)
 	Update(db *gorm.DB, data *models.FriendRequests) (err error)
 	Delete(db *gorm.DB, id string) (err error)
@@ -24,7 +24,7 @@ type FriendRequestsRepository struct {
 	in digIn
 }
 
-func (r FriendRequestsRepository) Get(db *gorm.DB, cond *req.FriendRequestsGet) (*models.FriendRequests, error) {
+func (r FriendRequestsRepository) Get(db *gorm.DB, cond *request.FriendRequestsGet) (*models.FriendRequests, error) {
 	result := &models.FriendRequests{}
 	if err := db.Scopes(cond.Scope).Find(result, cond).Error; err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (r FriendRequestsRepository) Get(db *gorm.DB, cond *req.FriendRequestsGet) 
 	return result, nil
 }
 
-func (r FriendRequestsRepository) GetList(db *gorm.DB, cond *req.FriendRequestsGetList) (*models.PageResult[*models.FriendRequests], error) {
+func (r FriendRequestsRepository) GetList(db *gorm.DB, cond *request.FriendRequestsGetList) (*models.PageResult[*models.FriendRequests], error) {
 	result := &models.PageResult[*models.FriendRequests]{
 		Page: cond.GetPager(),
 		Data: make([]*models.FriendRequests, 0),
