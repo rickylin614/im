@@ -87,6 +87,9 @@ func NewWsManger(in digIn) IWsManager {
 		Compressor: NewGzipCompressor(),
 		Encoder:    NewGobEncoder(),
 	}
+	manager.clientPool.New = func() any {
+		return newClient(nil, nil, false)
+	}
 	manager.Run(in.Ctx)
 	return manager
 }
