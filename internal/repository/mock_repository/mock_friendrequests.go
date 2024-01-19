@@ -3,7 +3,7 @@
 package mock_repository
 
 import (
-	models "im/internal/models"
+	"im/internal/models/po"
 
 	mock "github.com/stretchr/testify/mock"
 	gorm "gorm.io/gorm"
@@ -25,15 +25,15 @@ func (_m *MockFriendRequestsRepository) EXPECT() *MockFriendRequestsRepository_E
 }
 
 // Create provides a mock function with given fields: db, data
-func (_m *MockFriendRequestsRepository) Create(db *gorm.DB, data *models.FriendRequests) (interface{}, error) {
+func (_m *MockFriendRequestsRepository) Create(db *gorm.DB, data *po.FriendRequests) (interface{}, error) {
 	ret := _m.Called(db, data)
 
 	var r0 interface{}
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.FriendRequests) (interface{}, error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.FriendRequests) (interface{}, error)); ok {
 		return rf(db, data)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.FriendRequests) interface{}); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.FriendRequests) interface{}); ok {
 		r0 = rf(db, data)
 	} else {
 		if ret.Get(0) != nil {
@@ -41,7 +41,7 @@ func (_m *MockFriendRequestsRepository) Create(db *gorm.DB, data *models.FriendR
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*gorm.DB, *models.FriendRequests) error); ok {
+	if rf, ok := ret.Get(1).(func(*gorm.DB, *po.FriendRequests) error); ok {
 		r1 = rf(db, data)
 	} else {
 		r1 = ret.Error(1)
@@ -62,9 +62,9 @@ func (_e *MockFriendRequestsRepository_Expecter) Create(db interface{}, data int
 	return &MockFriendRequestsRepository_Create_Call{Call: _e.mock.On("Create", db, data)}
 }
 
-func (_c *MockFriendRequestsRepository_Create_Call) Run(run func(db *gorm.DB, data *models.FriendRequests)) *MockFriendRequestsRepository_Create_Call {
+func (_c *MockFriendRequestsRepository_Create_Call) Run(run func(db *gorm.DB, data *po.FriendRequests)) *MockFriendRequestsRepository_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*gorm.DB), args[1].(*models.FriendRequests))
+		run(args[0].(*gorm.DB), args[1].(*po.FriendRequests))
 	})
 	return _c
 }
@@ -74,7 +74,7 @@ func (_c *MockFriendRequestsRepository_Create_Call) Return(id interface{}, err e
 	return _c
 }
 
-func (_c *MockFriendRequestsRepository_Create_Call) RunAndReturn(run func(*gorm.DB, *models.FriendRequests) (interface{}, error)) *MockFriendRequestsRepository_Create_Call {
+func (_c *MockFriendRequestsRepository_Create_Call) RunAndReturn(run func(*gorm.DB, *po.FriendRequests) (interface{}, error)) *MockFriendRequestsRepository_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -123,19 +123,19 @@ func (_c *MockFriendRequestsRepository_Delete_Call) RunAndReturn(run func(*gorm.
 }
 
 // Get provides a mock function with given fields: db, cond
-func (_m *MockFriendRequestsRepository) Get(db *gorm.DB, cond *req.FriendRequestsGet) (*models.FriendRequests, error) {
+func (_m *MockFriendRequestsRepository) Get(db *gorm.DB, cond *req.FriendRequestsGet) (*po.FriendRequests, error) {
 	ret := _m.Called(db, cond)
 
-	var r0 *models.FriendRequests
+	var r0 *po.FriendRequests
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.FriendRequestsGet) (*models.FriendRequests, error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.FriendRequestsGet) (*po.FriendRequests, error)); ok {
 		return rf(db, cond)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.FriendRequestsGet) *models.FriendRequests); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.FriendRequestsGet) *po.FriendRequests); ok {
 		r0 = rf(db, cond)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.FriendRequests)
+			r0 = ret.Get(0).(*po.FriendRequests)
 		}
 	}
 
@@ -167,30 +167,30 @@ func (_c *MockFriendRequestsRepository_Get_Call) Run(run func(db *gorm.DB, cond 
 	return _c
 }
 
-func (_c *MockFriendRequestsRepository_Get_Call) Return(_a0 *models.FriendRequests, _a1 error) *MockFriendRequestsRepository_Get_Call {
+func (_c *MockFriendRequestsRepository_Get_Call) Return(_a0 *po.FriendRequests, _a1 error) *MockFriendRequestsRepository_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockFriendRequestsRepository_Get_Call) RunAndReturn(run func(*gorm.DB, *req.FriendRequestsGet) (*models.FriendRequests, error)) *MockFriendRequestsRepository_Get_Call {
+func (_c *MockFriendRequestsRepository_Get_Call) RunAndReturn(run func(*gorm.DB, *req.FriendRequestsGet) (*po.FriendRequests, error)) *MockFriendRequestsRepository_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetList provides a mock function with given fields: db, cond
-func (_m *MockFriendRequestsRepository) GetList(db *gorm.DB, cond *req.FriendRequestsGetList) (*models.PageResult[*models.FriendRequests], error) {
+func (_m *MockFriendRequestsRepository) GetList(db *gorm.DB, cond *req.FriendRequestsGetList) (*po.PageResult[*po.FriendRequests], error) {
 	ret := _m.Called(db, cond)
 
-	var r0 *models.PageResult[*models.FriendRequests]
+	var r0 *po.PageResult[*po.FriendRequests]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.FriendRequestsGetList) (*models.PageResult[*models.FriendRequests], error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.FriendRequestsGetList) (*po.PageResult[*po.FriendRequests], error)); ok {
 		return rf(db, cond)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.FriendRequestsGetList) *models.PageResult[*models.FriendRequests]); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.FriendRequestsGetList) *po.PageResult[*po.FriendRequests]); ok {
 		r0 = rf(db, cond)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.PageResult[*models.FriendRequests])
+			r0 = ret.Get(0).(*po.PageResult[*po.FriendRequests])
 		}
 	}
 
@@ -222,22 +222,22 @@ func (_c *MockFriendRequestsRepository_GetList_Call) Run(run func(db *gorm.DB, c
 	return _c
 }
 
-func (_c *MockFriendRequestsRepository_GetList_Call) Return(_a0 *models.PageResult[*models.FriendRequests], _a1 error) *MockFriendRequestsRepository_GetList_Call {
+func (_c *MockFriendRequestsRepository_GetList_Call) Return(_a0 *po.PageResult[*po.FriendRequests], _a1 error) *MockFriendRequestsRepository_GetList_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockFriendRequestsRepository_GetList_Call) RunAndReturn(run func(*gorm.DB, *req.FriendRequestsGetList) (*models.PageResult[*models.FriendRequests], error)) *MockFriendRequestsRepository_GetList_Call {
+func (_c *MockFriendRequestsRepository_GetList_Call) RunAndReturn(run func(*gorm.DB, *req.FriendRequestsGetList) (*po.PageResult[*po.FriendRequests], error)) *MockFriendRequestsRepository_GetList_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Update provides a mock function with given fields: db, data
-func (_m *MockFriendRequestsRepository) Update(db *gorm.DB, data *models.FriendRequests) error {
+func (_m *MockFriendRequestsRepository) Update(db *gorm.DB, data *po.FriendRequests) error {
 	ret := _m.Called(db, data)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.FriendRequests) error); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.FriendRequests) error); ok {
 		r0 = rf(db, data)
 	} else {
 		r0 = ret.Error(0)
@@ -258,9 +258,9 @@ func (_e *MockFriendRequestsRepository_Expecter) Update(db interface{}, data int
 	return &MockFriendRequestsRepository_Update_Call{Call: _e.mock.On("Update", db, data)}
 }
 
-func (_c *MockFriendRequestsRepository_Update_Call) Run(run func(db *gorm.DB, data *models.FriendRequests)) *MockFriendRequestsRepository_Update_Call {
+func (_c *MockFriendRequestsRepository_Update_Call) Run(run func(db *gorm.DB, data *po.FriendRequests)) *MockFriendRequestsRepository_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*gorm.DB), args[1].(*models.FriendRequests))
+		run(args[0].(*gorm.DB), args[1].(*po.FriendRequests))
 	})
 	return _c
 }
@@ -270,7 +270,7 @@ func (_c *MockFriendRequestsRepository_Update_Call) Return(err error) *MockFrien
 	return _c
 }
 
-func (_c *MockFriendRequestsRepository_Update_Call) RunAndReturn(run func(*gorm.DB, *models.FriendRequests) error) *MockFriendRequestsRepository_Update_Call {
+func (_c *MockFriendRequestsRepository_Update_Call) RunAndReturn(run func(*gorm.DB, *po.FriendRequests) error) *MockFriendRequestsRepository_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

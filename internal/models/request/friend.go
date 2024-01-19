@@ -1,7 +1,7 @@
 package request
 
 import (
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/pkg/consts/enums"
 
 	"time"
@@ -19,15 +19,15 @@ type FriendGet struct {
 }
 
 type FriendMutualGet struct {
-	UserID      string `json:"-"`                             // 用户ID
-	TUserId     string `json:"t_user_id"  binding:"required"` // 對象用户ID
-	models.Page `gorm:"-"`
+	UserID  string `json:"-"`                             // 用户ID
+	TUserId string `json:"t_user_id"  binding:"required"` // 對象用户ID
+	po.Page `gorm:"-"`
 }
 
 type FriendGetList struct {
-	PUserID     string             `json:"-"` // 主要用户的ID
-	Status      enums.FriendStatus `json:"-"`
-	models.Page `gorm:"-"`
+	PUserID string             `json:"-"` // 主要用户的ID
+	Status  enums.FriendStatus `json:"-"`
+	po.Page `gorm:"-"`
 }
 
 func (list FriendGetList) Scope(db *gorm.DB) *gorm.DB {

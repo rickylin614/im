@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/singleflight"
 
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/pkg/consts/rediskey"
 	"im/internal/util/ctxs"
 	"im/internal/util/errs"
@@ -26,7 +26,7 @@ func (m *cacheMiddleware) RouteCacheMiddleware(ctx *gin.Context) {
 	key := rediskey.ROUTE_CACHE_KEY + ctx.Request.Method + ":" + ctx.FullPath()
 
 	// 確認緩存
-	cache, err := m.in.Service.RouteCacheSrv.Get(ctx, &models.RouteCacheGet{
+	cache, err := m.in.Service.RouteCacheSrv.Get(ctx, &po.RouteCacheGet{
 		RouteCacheKey: key,
 	})
 
@@ -59,9 +59,9 @@ func (m *cacheMiddleware) RouteCacheMiddleware(ctx *gin.Context) {
 		responseData := wrappedWriter.body.Bytes()
 		status := wrappedWriter.Status()
 
-		routeCache := models.NewRouteCache(status, responseData)
+		routeCache := po.NewRouteCache(status, responseData)
 		// 保存緩存資料
-		err := m.in.Service.RouteCacheSrv.Set(ctx, &models.RouteCacheSet{
+		err := m.in.Service.RouteCacheSrv.Set(ctx, &po.RouteCacheSet{
 			RouteCacheKey:  key,
 			RouteCacheData: routeCache,
 			TTL:            ttl,
@@ -75,7 +75,7 @@ func (m *cacheMiddleware) RouteCacheMiddleware(ctx *gin.Context) {
 		return routeCache, nil
 	})
 
-	if v, ok := data.(*models.RouteCache); err == nil && ok {
+	if v, ok := data.(*po.RouteCache); err == nil && ok {
 		if shared {
 			ctx.Data(v.Status, "application/json; charset=utf-8", v.Body)
 			ctx.Abort()

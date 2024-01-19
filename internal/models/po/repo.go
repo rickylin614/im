@@ -1,4 +1,4 @@
-package models
+package po
 
 // type Users struct {
 // 	Id           string `gorm:"column:id"`

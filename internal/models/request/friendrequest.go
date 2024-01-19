@@ -1,7 +1,7 @@
 package request
 
 import (
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/pkg/consts/enums"
 
 	"time"
@@ -27,9 +27,9 @@ func (f FriendRequestsGet) Scope(db *gorm.DB) *gorm.DB {
 }
 
 type FriendRequestsGetList struct {
-	UserId      string `json:"-"`                         // 用戶id
-	IsSender    bool   `json:"is_sender" example:"false"` // true: 請求列表 false: 被請求列表
-	models.Page `gorm:"-"`
+	UserId   string `json:"-"`                         // 用戶id
+	IsSender bool   `json:"is_sender" example:"false"` // true: 請求列表 false: 被請求列表
+	po.Page  `gorm:"-"`
 }
 
 func (cond FriendRequestsGetList) Scope(db *gorm.DB) *gorm.DB {

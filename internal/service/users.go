@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/models/request"
 	"im/internal/pkg/consts"
 	"im/internal/pkg/consts/enums"
@@ -20,14 +20,14 @@ import (
 )
 
 type IUsersService interface {
-	Get(ctx *gin.Context, cond *request.UsersGet) (*models.Users, error)
-	GetList(ctx *gin.Context, cond *request.UsersGetList) (*models.PageResult[*models.Users], error)
+	Get(ctx *gin.Context, cond *request.UsersGet) (*po.Users, error)
+	GetList(ctx *gin.Context, cond *request.UsersGetList) (*po.PageResult[*po.Users], error)
 	Create(ctx *gin.Context, cond *request.UsersCreate) (id any, err error)
 	Update(ctx *gin.Context, cond *request.UsersUpdate) (err error)
 	Delete(ctx *gin.Context, cond *request.UsersDelete) (err error)
 	Login(ctx *gin.Context, cond *request.UsersLogin) (token string, err error)
 	Logout(ctx *gin.Context, token string) (err error)
-	GetByToken(ctx *gin.Context, token string) (user *models.Users, err error)
+	GetByToken(ctx *gin.Context, token string) (user *po.Users, err error)
 }
 
 func NewUsersService(in DigIn) IUsersService {
@@ -38,19 +38,19 @@ type UsersService struct {
 	In DigIn
 }
 
-func (s UsersService) Get(ctx *gin.Context, cond *request.UsersGet) (*models.Users, error) {
+func (s UsersService) Get(ctx *gin.Context, cond *request.UsersGet) (*po.Users, error) {
 	db := s.In.DB.Session(ctx)
 	return s.In.Repository.UsersRepo.Get(db, cond)
 }
 
-func (s UsersService) GetList(ctx *gin.Context, cond *request.UsersGetList) (*models.PageResult[*models.Users], error) {
+func (s UsersService) GetList(ctx *gin.Context, cond *request.UsersGetList) (*po.PageResult[*po.Users], error) {
 	db := s.In.DB.Session(ctx)
 	return s.In.Repository.UsersRepo.GetList(db, cond)
 }
 
 func (s UsersService) Create(ctx *gin.Context, cond *request.UsersCreate) (id any, err error) {
 	db := s.In.DB.Session(ctx)
-	insertData := &models.Users{ID: uuid.New(), PasswordHash: crypto.Hash(cond.Password), Status: enums.UserStatusActive}
+	insertData := &po.Users{ID: uuid.New(), PasswordHash: crypto.Hash(cond.Password), Status: enums.UserStatusActive}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (s UsersService) Create(ctx *gin.Context, cond *request.UsersCreate) (id an
 
 func (s UsersService) Update(ctx *gin.Context, cond *request.UsersUpdate) (err error) {
 	db := s.In.DB.Session(ctx)
-	updateData := &models.Users{}
+	updateData := &po.Users{}
 	if err := copier.Copy(updateData, cond); err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func (s UsersService) Login(ctx *gin.Context, cond *request.UsersLogin) (token s
 	// 產token並返回
 	jwtTokenUuid := uuid.New()
 	jwfclaims := jwt.NewWithClaims(jwt.SigningMethodRS256,
-		&models.JWTClaims{
+		&po.JWTClaims{
 			User:     user,
 			DeviceID: ctxs.GetDeviceID(ctx),
 			RegisteredClaims: jwt.RegisteredClaims{
@@ -124,7 +124,7 @@ func (s UsersService) Login(ctx *gin.Context, cond *request.UsersLogin) (token s
 	return token, nil
 }
 
-func (s UsersService) loginRecord(loginRecord *models.LoginRecord) {
+func (s UsersService) loginRecord(loginRecord *po.LoginRecord) {
 	ctx := context.Background()
 	db := s.In.DB.Session(ctx)
 	if _, err := s.In.Repository.LoginRecordRepo.Create(db, loginRecord); err != nil {
@@ -132,8 +132,8 @@ func (s UsersService) loginRecord(loginRecord *models.LoginRecord) {
 	}
 }
 
-func composeLoginRecord(ctx *gin.Context, user *models.Users, loginStatus enums.LoginState) *models.LoginRecord {
-	return &models.LoginRecord{
+func composeLoginRecord(ctx *gin.Context, user *po.Users, loginStatus enums.LoginState) *po.LoginRecord {
+	return &po.LoginRecord{
 		Name:       user.Nickname,
 		UserID:     user.ID,
 		UserAgent:  ctx.Request.UserAgent(),
@@ -144,7 +144,7 @@ func composeLoginRecord(ctx *gin.Context, user *models.Users, loginStatus enums.
 }
 
 func (s UsersService) Logout(ctx *gin.Context, jwtToken string) (err error) {
-	token, _ := jwt.ParseWithClaims(jwtToken, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, _ := jwt.ParseWithClaims(jwtToken, &po.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// 确保token的签名算法是我们预期的
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -152,7 +152,7 @@ func (s UsersService) Logout(ctx *gin.Context, jwtToken string) (err error) {
 		return crypto.GetRsaPublicKey(), nil
 	})
 
-	claims, ok := token.Claims.(*models.JWTClaims)
+	claims, ok := token.Claims.(*po.JWTClaims)
 	if !ok {
 		return errs.RequestTokenError
 	}
@@ -160,8 +160,8 @@ func (s UsersService) Logout(ctx *gin.Context, jwtToken string) (err error) {
 	return s.In.Repository.UsersRepo.DelToken(ctx, claims.Issuer, claims.DeviceID)
 }
 
-func (s UsersService) GetByToken(ctx *gin.Context, jwtToken string) (user *models.Users, err error) {
-	token, err := jwt.ParseWithClaims(jwtToken, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+func (s UsersService) GetByToken(ctx *gin.Context, jwtToken string) (user *po.Users, err error) {
+	token, err := jwt.ParseWithClaims(jwtToken, &po.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// 驗證算法
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -174,7 +174,7 @@ func (s UsersService) GetByToken(ctx *gin.Context, jwtToken string) (user *model
 		return nil, errs.RequestTokenError
 	}
 
-	claims, ok := token.Claims.(*models.JWTClaims)
+	claims, ok := token.Claims.(*po.JWTClaims)
 	if !ok || !token.Valid {
 		return nil, errs.RequestTokenError
 	}

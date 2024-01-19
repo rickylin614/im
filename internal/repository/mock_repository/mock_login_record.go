@@ -3,7 +3,7 @@
 package mock_repository
 
 import (
-	models "im/internal/models"
+	"im/internal/models/po"
 
 	mock "github.com/stretchr/testify/mock"
 	gorm "gorm.io/gorm"
@@ -25,15 +25,15 @@ func (_m *MockLoginRecordRepository) EXPECT() *MockLoginRecordRepository_Expecte
 }
 
 // Create provides a mock function with given fields: db, data
-func (_m *MockLoginRecordRepository) Create(db *gorm.DB, data *models.LoginRecord) (interface{}, error) {
+func (_m *MockLoginRecordRepository) Create(db *gorm.DB, data *po.LoginRecord) (interface{}, error) {
 	ret := _m.Called(db, data)
 
 	var r0 interface{}
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.LoginRecord) (interface{}, error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.LoginRecord) (interface{}, error)); ok {
 		return rf(db, data)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.LoginRecord) interface{}); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.LoginRecord) interface{}); ok {
 		r0 = rf(db, data)
 	} else {
 		if ret.Get(0) != nil {
@@ -41,7 +41,7 @@ func (_m *MockLoginRecordRepository) Create(db *gorm.DB, data *models.LoginRecor
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*gorm.DB, *models.LoginRecord) error); ok {
+	if rf, ok := ret.Get(1).(func(*gorm.DB, *po.LoginRecord) error); ok {
 		r1 = rf(db, data)
 	} else {
 		r1 = ret.Error(1)
@@ -62,9 +62,9 @@ func (_e *MockLoginRecordRepository_Expecter) Create(db interface{}, data interf
 	return &MockLoginRecordRepository_Create_Call{Call: _e.mock.On("Create", db, data)}
 }
 
-func (_c *MockLoginRecordRepository_Create_Call) Run(run func(db *gorm.DB, data *models.LoginRecord)) *MockLoginRecordRepository_Create_Call {
+func (_c *MockLoginRecordRepository_Create_Call) Run(run func(db *gorm.DB, data *po.LoginRecord)) *MockLoginRecordRepository_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*gorm.DB), args[1].(*models.LoginRecord))
+		run(args[0].(*gorm.DB), args[1].(*po.LoginRecord))
 	})
 	return _c
 }
@@ -74,7 +74,7 @@ func (_c *MockLoginRecordRepository_Create_Call) Return(id interface{}, err erro
 	return _c
 }
 
-func (_c *MockLoginRecordRepository_Create_Call) RunAndReturn(run func(*gorm.DB, *models.LoginRecord) (interface{}, error)) *MockLoginRecordRepository_Create_Call {
+func (_c *MockLoginRecordRepository_Create_Call) RunAndReturn(run func(*gorm.DB, *po.LoginRecord) (interface{}, error)) *MockLoginRecordRepository_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -123,19 +123,19 @@ func (_c *MockLoginRecordRepository_Delete_Call) RunAndReturn(run func(*gorm.DB,
 }
 
 // Get provides a mock function with given fields: db, cond
-func (_m *MockLoginRecordRepository) Get(db *gorm.DB, cond *req.LoginRecordGet) (*models.LoginRecord, error) {
+func (_m *MockLoginRecordRepository) Get(db *gorm.DB, cond *req.LoginRecordGet) (*po.LoginRecord, error) {
 	ret := _m.Called(db, cond)
 
-	var r0 *models.LoginRecord
+	var r0 *po.LoginRecord
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.LoginRecordGet) (*models.LoginRecord, error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.LoginRecordGet) (*po.LoginRecord, error)); ok {
 		return rf(db, cond)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.LoginRecordGet) *models.LoginRecord); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.LoginRecordGet) *po.LoginRecord); ok {
 		r0 = rf(db, cond)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.LoginRecord)
+			r0 = ret.Get(0).(*po.LoginRecord)
 		}
 	}
 
@@ -167,30 +167,30 @@ func (_c *MockLoginRecordRepository_Get_Call) Run(run func(db *gorm.DB, cond *re
 	return _c
 }
 
-func (_c *MockLoginRecordRepository_Get_Call) Return(_a0 *models.LoginRecord, _a1 error) *MockLoginRecordRepository_Get_Call {
+func (_c *MockLoginRecordRepository_Get_Call) Return(_a0 *po.LoginRecord, _a1 error) *MockLoginRecordRepository_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockLoginRecordRepository_Get_Call) RunAndReturn(run func(*gorm.DB, *req.LoginRecordGet) (*models.LoginRecord, error)) *MockLoginRecordRepository_Get_Call {
+func (_c *MockLoginRecordRepository_Get_Call) RunAndReturn(run func(*gorm.DB, *req.LoginRecordGet) (*po.LoginRecord, error)) *MockLoginRecordRepository_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetList provides a mock function with given fields: db, cond
-func (_m *MockLoginRecordRepository) GetList(db *gorm.DB, cond *req.LoginRecordGetList) (*models.PageResult[*models.LoginRecord], error) {
+func (_m *MockLoginRecordRepository) GetList(db *gorm.DB, cond *req.LoginRecordGetList) (*po.PageResult[*po.LoginRecord], error) {
 	ret := _m.Called(db, cond)
 
-	var r0 *models.PageResult[*models.LoginRecord]
+	var r0 *po.PageResult[*po.LoginRecord]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.LoginRecordGetList) (*models.PageResult[*models.LoginRecord], error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.LoginRecordGetList) (*po.PageResult[*po.LoginRecord], error)); ok {
 		return rf(db, cond)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.LoginRecordGetList) *models.PageResult[*models.LoginRecord]); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.LoginRecordGetList) *po.PageResult[*po.LoginRecord]); ok {
 		r0 = rf(db, cond)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.PageResult[*models.LoginRecord])
+			r0 = ret.Get(0).(*po.PageResult[*po.LoginRecord])
 		}
 	}
 
@@ -222,22 +222,22 @@ func (_c *MockLoginRecordRepository_GetList_Call) Run(run func(db *gorm.DB, cond
 	return _c
 }
 
-func (_c *MockLoginRecordRepository_GetList_Call) Return(_a0 *models.PageResult[*models.LoginRecord], _a1 error) *MockLoginRecordRepository_GetList_Call {
+func (_c *MockLoginRecordRepository_GetList_Call) Return(_a0 *po.PageResult[*po.LoginRecord], _a1 error) *MockLoginRecordRepository_GetList_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockLoginRecordRepository_GetList_Call) RunAndReturn(run func(*gorm.DB, *req.LoginRecordGetList) (*models.PageResult[*models.LoginRecord], error)) *MockLoginRecordRepository_GetList_Call {
+func (_c *MockLoginRecordRepository_GetList_Call) RunAndReturn(run func(*gorm.DB, *req.LoginRecordGetList) (*po.PageResult[*po.LoginRecord], error)) *MockLoginRecordRepository_GetList_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Update provides a mock function with given fields: db, data
-func (_m *MockLoginRecordRepository) Update(db *gorm.DB, data *models.LoginRecord) error {
+func (_m *MockLoginRecordRepository) Update(db *gorm.DB, data *po.LoginRecord) error {
 	ret := _m.Called(db, data)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.LoginRecord) error); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.LoginRecord) error); ok {
 		r0 = rf(db, data)
 	} else {
 		r0 = ret.Error(0)
@@ -258,9 +258,9 @@ func (_e *MockLoginRecordRepository_Expecter) Update(db interface{}, data interf
 	return &MockLoginRecordRepository_Update_Call{Call: _e.mock.On("Update", db, data)}
 }
 
-func (_c *MockLoginRecordRepository_Update_Call) Run(run func(db *gorm.DB, data *models.LoginRecord)) *MockLoginRecordRepository_Update_Call {
+func (_c *MockLoginRecordRepository_Update_Call) Run(run func(db *gorm.DB, data *po.LoginRecord)) *MockLoginRecordRepository_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*gorm.DB), args[1].(*models.LoginRecord))
+		run(args[0].(*gorm.DB), args[1].(*po.LoginRecord))
 	})
 	return _c
 }
@@ -270,7 +270,7 @@ func (_c *MockLoginRecordRepository_Update_Call) Return(err error) *MockLoginRec
 	return _c
 }
 
-func (_c *MockLoginRecordRepository_Update_Call) RunAndReturn(run func(*gorm.DB, *models.LoginRecord) error) *MockLoginRecordRepository_Update_Call {
+func (_c *MockLoginRecordRepository_Update_Call) RunAndReturn(run func(*gorm.DB, *po.LoginRecord) error) *MockLoginRecordRepository_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

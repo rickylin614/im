@@ -1,7 +1,7 @@
 package service
 
 import (
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/models/request"
 
 	"github.com/gin-gonic/gin"
@@ -9,8 +9,8 @@ import (
 )
 
 type ILoginRecordService interface {
-	Get(ctx *gin.Context, cond *request.LoginRecordGet) (*models.LoginRecord, error)
-	GetList(ctx *gin.Context, cond *request.LoginRecordGetList) (*models.PageResult[*models.LoginRecord], error)
+	Get(ctx *gin.Context, cond *request.LoginRecordGet) (*po.LoginRecord, error)
+	GetList(ctx *gin.Context, cond *request.LoginRecordGetList) (*po.PageResult[*po.LoginRecord], error)
 	Create(ctx *gin.Context, cond *request.LoginRecordCreate) (id any, err error)
 	Update(ctx *gin.Context, cond *request.LoginRecordUpdate) (err error)
 	Delete(ctx *gin.Context, cond *request.LoginRecordDelete) (err error)
@@ -24,19 +24,19 @@ type loginRecordService struct {
 	in DigIn
 }
 
-func (s loginRecordService) Get(ctx *gin.Context, cond *request.LoginRecordGet) (*models.LoginRecord, error) {
+func (s loginRecordService) Get(ctx *gin.Context, cond *request.LoginRecordGet) (*po.LoginRecord, error) {
 	db := s.in.DB.Session(ctx)
 	return s.in.Repository.LoginRecordRepo.Get(db, cond)
 }
 
-func (s loginRecordService) GetList(ctx *gin.Context, cond *request.LoginRecordGetList) (*models.PageResult[*models.LoginRecord], error) {
+func (s loginRecordService) GetList(ctx *gin.Context, cond *request.LoginRecordGetList) (*po.PageResult[*po.LoginRecord], error) {
 	db := s.in.DB.Session(ctx)
 	return s.in.Repository.LoginRecordRepo.GetList(db, cond)
 }
 
 func (s loginRecordService) Create(ctx *gin.Context, cond *request.LoginRecordCreate) (id any, err error) {
 	db := s.in.DB.Session(ctx)
-	insertData := &models.LoginRecord{}
+	insertData := &po.LoginRecord{}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (s loginRecordService) Create(ctx *gin.Context, cond *request.LoginRecordCr
 
 func (s loginRecordService) Update(ctx *gin.Context, cond *request.LoginRecordUpdate) (err error) {
 	db := s.in.DB.Session(ctx)
-	updateData := &models.LoginRecord{}
+	updateData := &po.LoginRecord{}
 	if err := copier.Copy(updateData, cond); err != nil {
 		return err
 	}

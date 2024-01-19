@@ -3,7 +3,7 @@
 package mock_repository
 
 import (
-	models "im/internal/models"
+	"im/internal/models/po"
 
 	mock "github.com/stretchr/testify/mock"
 	gorm "gorm.io/gorm"
@@ -25,15 +25,15 @@ func (_m *MockGroupsRepository) EXPECT() *MockGroupsRepository_Expecter {
 }
 
 // Create provides a mock function with given fields: db, data
-func (_m *MockGroupsRepository) Create(db *gorm.DB, data *models.Groups) (interface{}, error) {
+func (_m *MockGroupsRepository) Create(db *gorm.DB, data *po.Groups) (interface{}, error) {
 	ret := _m.Called(db, data)
 
 	var r0 interface{}
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.Groups) (interface{}, error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.Groups) (interface{}, error)); ok {
 		return rf(db, data)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.Groups) interface{}); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.Groups) interface{}); ok {
 		r0 = rf(db, data)
 	} else {
 		if ret.Get(0) != nil {
@@ -41,7 +41,7 @@ func (_m *MockGroupsRepository) Create(db *gorm.DB, data *models.Groups) (interf
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*gorm.DB, *models.Groups) error); ok {
+	if rf, ok := ret.Get(1).(func(*gorm.DB, *po.Groups) error); ok {
 		r1 = rf(db, data)
 	} else {
 		r1 = ret.Error(1)
@@ -62,9 +62,9 @@ func (_e *MockGroupsRepository_Expecter) Create(db interface{}, data interface{}
 	return &MockGroupsRepository_Create_Call{Call: _e.mock.On("Create", db, data)}
 }
 
-func (_c *MockGroupsRepository_Create_Call) Run(run func(db *gorm.DB, data *models.Groups)) *MockGroupsRepository_Create_Call {
+func (_c *MockGroupsRepository_Create_Call) Run(run func(db *gorm.DB, data *po.Groups)) *MockGroupsRepository_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*gorm.DB), args[1].(*models.Groups))
+		run(args[0].(*gorm.DB), args[1].(*po.Groups))
 	})
 	return _c
 }
@@ -74,7 +74,7 @@ func (_c *MockGroupsRepository_Create_Call) Return(id interface{}, err error) *M
 	return _c
 }
 
-func (_c *MockGroupsRepository_Create_Call) RunAndReturn(run func(*gorm.DB, *models.Groups) (interface{}, error)) *MockGroupsRepository_Create_Call {
+func (_c *MockGroupsRepository_Create_Call) RunAndReturn(run func(*gorm.DB, *po.Groups) (interface{}, error)) *MockGroupsRepository_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -123,19 +123,19 @@ func (_c *MockGroupsRepository_Delete_Call) RunAndReturn(run func(*gorm.DB, stri
 }
 
 // Get provides a mock function with given fields: db, cond
-func (_m *MockGroupsRepository) Get(db *gorm.DB, cond *req.GroupsGet) (*models.Groups, error) {
+func (_m *MockGroupsRepository) Get(db *gorm.DB, cond *req.GroupsGet) (*po.Groups, error) {
 	ret := _m.Called(db, cond)
 
-	var r0 *models.Groups
+	var r0 *po.Groups
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupsGet) (*models.Groups, error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupsGet) (*po.Groups, error)); ok {
 		return rf(db, cond)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupsGet) *models.Groups); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupsGet) *po.Groups); ok {
 		r0 = rf(db, cond)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.Groups)
+			r0 = ret.Get(0).(*po.Groups)
 		}
 	}
 
@@ -167,30 +167,30 @@ func (_c *MockGroupsRepository_Get_Call) Run(run func(db *gorm.DB, cond *req.Gro
 	return _c
 }
 
-func (_c *MockGroupsRepository_Get_Call) Return(_a0 *models.Groups, _a1 error) *MockGroupsRepository_Get_Call {
+func (_c *MockGroupsRepository_Get_Call) Return(_a0 *po.Groups, _a1 error) *MockGroupsRepository_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockGroupsRepository_Get_Call) RunAndReturn(run func(*gorm.DB, *req.GroupsGet) (*models.Groups, error)) *MockGroupsRepository_Get_Call {
+func (_c *MockGroupsRepository_Get_Call) RunAndReturn(run func(*gorm.DB, *req.GroupsGet) (*po.Groups, error)) *MockGroupsRepository_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetList provides a mock function with given fields: db, cond
-func (_m *MockGroupsRepository) GetList(db *gorm.DB, cond *req.GroupsGetList) (*models.PageResult[*models.Groups], error) {
+func (_m *MockGroupsRepository) GetList(db *gorm.DB, cond *req.GroupsGetList) (*po.PageResult[*po.Groups], error) {
 	ret := _m.Called(db, cond)
 
-	var r0 *models.PageResult[*models.Groups]
+	var r0 *po.PageResult[*po.Groups]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupsGetList) (*models.PageResult[*models.Groups], error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupsGetList) (*po.PageResult[*po.Groups], error)); ok {
 		return rf(db, cond)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupsGetList) *models.PageResult[*models.Groups]); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupsGetList) *po.PageResult[*po.Groups]); ok {
 		r0 = rf(db, cond)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.PageResult[*models.Groups])
+			r0 = ret.Get(0).(*po.PageResult[*po.Groups])
 		}
 	}
 
@@ -222,22 +222,22 @@ func (_c *MockGroupsRepository_GetList_Call) Run(run func(db *gorm.DB, cond *req
 	return _c
 }
 
-func (_c *MockGroupsRepository_GetList_Call) Return(_a0 *models.PageResult[*models.Groups], _a1 error) *MockGroupsRepository_GetList_Call {
+func (_c *MockGroupsRepository_GetList_Call) Return(_a0 *po.PageResult[*po.Groups], _a1 error) *MockGroupsRepository_GetList_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockGroupsRepository_GetList_Call) RunAndReturn(run func(*gorm.DB, *req.GroupsGetList) (*models.PageResult[*models.Groups], error)) *MockGroupsRepository_GetList_Call {
+func (_c *MockGroupsRepository_GetList_Call) RunAndReturn(run func(*gorm.DB, *req.GroupsGetList) (*po.PageResult[*po.Groups], error)) *MockGroupsRepository_GetList_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Update provides a mock function with given fields: db, data
-func (_m *MockGroupsRepository) Update(db *gorm.DB, data *models.Groups) error {
+func (_m *MockGroupsRepository) Update(db *gorm.DB, data *po.Groups) error {
 	ret := _m.Called(db, data)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.Groups) error); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.Groups) error); ok {
 		r0 = rf(db, data)
 	} else {
 		r0 = ret.Error(0)
@@ -258,9 +258,9 @@ func (_e *MockGroupsRepository_Expecter) Update(db interface{}, data interface{}
 	return &MockGroupsRepository_Update_Call{Call: _e.mock.On("Update", db, data)}
 }
 
-func (_c *MockGroupsRepository_Update_Call) Run(run func(db *gorm.DB, data *models.Groups)) *MockGroupsRepository_Update_Call {
+func (_c *MockGroupsRepository_Update_Call) Run(run func(db *gorm.DB, data *po.Groups)) *MockGroupsRepository_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*gorm.DB), args[1].(*models.Groups))
+		run(args[0].(*gorm.DB), args[1].(*po.Groups))
 	})
 	return _c
 }
@@ -270,7 +270,7 @@ func (_c *MockGroupsRepository_Update_Call) Return(err error) *MockGroupsReposit
 	return _c
 }
 
-func (_c *MockGroupsRepository_Update_Call) RunAndReturn(run func(*gorm.DB, *models.Groups) error) *MockGroupsRepository_Update_Call {
+func (_c *MockGroupsRepository_Update_Call) RunAndReturn(run func(*gorm.DB, *po.Groups) error) *MockGroupsRepository_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

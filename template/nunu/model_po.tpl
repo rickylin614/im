@@ -1,4 +1,4 @@
-package models
+package po
 
 type {{ .FileName }} struct {
 	ID string `gorm:"column:id"`

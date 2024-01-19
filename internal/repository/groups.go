@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/models/request"
 
 	"gorm.io/gorm"
@@ -9,10 +9,10 @@ import (
 
 //go:generate mockery --name IGroupsRepository --structname MockGroupsRepository --filename mock_groups.go --output mock_repository --outpkg mock_repository --with-expecter
 type IGroupsRepository interface {
-	Get(db *gorm.DB, cond *request.GroupsGet) (*models.Groups, error)
-	GetList(db *gorm.DB, cond *request.GroupsGetList) (*models.PageResult[*models.Groups], error)
-	Create(db *gorm.DB, data *models.Groups) (id any, err error)
-	Update(db *gorm.DB, data *models.Groups) (err error)
+	Get(db *gorm.DB, cond *request.GroupsGet) (*po.Groups, error)
+	GetList(db *gorm.DB, cond *request.GroupsGetList) (*po.PageResult[*po.Groups], error)
+	Create(db *gorm.DB, data *po.Groups) (id any, err error)
+	Update(db *gorm.DB, data *po.Groups) (err error)
 	Delete(db *gorm.DB, id string) (err error)
 }
 
@@ -24,20 +24,20 @@ type groupsRepository struct {
 	in digIn
 }
 
-func (r groupsRepository) Get(db *gorm.DB, cond *request.GroupsGet) (*models.Groups, error) {
-	result := &models.Groups{}
+func (r groupsRepository) Get(db *gorm.DB, cond *request.GroupsGet) (*po.Groups, error) {
+	result := &po.Groups{}
 	if err := db.Find(result, cond).Error; err != nil {
 		return nil, err
 	}
 	return result, nil
 }
 
-func (r groupsRepository) GetList(db *gorm.DB, cond *request.GroupsGetList) (*models.PageResult[*models.Groups], error) {
-	result := &models.PageResult[*models.Groups]{
+func (r groupsRepository) GetList(db *gorm.DB, cond *request.GroupsGetList) (*po.PageResult[*po.Groups], error) {
+	result := &po.PageResult[*po.Groups]{
 		Page: cond.GetPager(),
-		Data: make([]*models.Groups, 0),
+		Data: make([]*po.Groups, 0),
 	}
-	db = db.Model(models.Groups{}).Scopes(cond.Scope)
+	db = db.Model(po.Groups{}).Scopes(cond.Scope)
 	if err := db.Count(&result.Total).Error; err != nil {
 		return nil, err
 	}
@@ -47,14 +47,14 @@ func (r groupsRepository) GetList(db *gorm.DB, cond *request.GroupsGetList) (*mo
 	return result, nil
 }
 
-func (r groupsRepository) Create(db *gorm.DB, data *models.Groups) (id any, err error) {
+func (r groupsRepository) Create(db *gorm.DB, data *po.Groups) (id any, err error) {
 	if err := db.Create(data).Error; err != nil {
 		return nil, err
 	}
 	return data.ID, nil
 }
 
-func (r groupsRepository) Update(db *gorm.DB, data *models.Groups) (err error) {
+func (r groupsRepository) Update(db *gorm.DB, data *po.Groups) (err error) {
 	if err := db.Updates(data).Error; err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func (r groupsRepository) Update(db *gorm.DB, data *models.Groups) (err error) {
 }
 
 func (r groupsRepository) Delete(db *gorm.DB, id string) (err error) {
-	if err := db.Model(models.Groups{}).Delete("where id = ?", id).Error; err != nil {
+	if err := db.Model(po.Groups{}).Delete("where id = ?", id).Error; err != nil {
 		return err
 	}
 	return nil

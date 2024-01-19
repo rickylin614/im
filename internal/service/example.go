@@ -1,7 +1,7 @@
 package service
 
 import (
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/models/request"
 	"im/internal/util/uuid"
 
@@ -10,8 +10,8 @@ import (
 )
 
 type IExampleService interface {
-	Get(ctx *gin.Context, cond *request.ExampleGet) (*models.Example, error)
-	GetList(ctx *gin.Context, cond *request.ExampleGetList) (*models.PageResult[*models.Example], error)
+	Get(ctx *gin.Context, cond *request.ExampleGet) (*po.Example, error)
+	GetList(ctx *gin.Context, cond *request.ExampleGetList) (*po.PageResult[*po.Example], error)
 	Create(ctx *gin.Context, cond *request.ExampleCreate) (id any, err error)
 	Update(ctx *gin.Context, cond *request.ExampleUpdate) (err error)
 	Delete(ctx *gin.Context, cond *request.ExampleDelete) (err error)
@@ -25,19 +25,19 @@ type exampleService struct {
 	in DigIn
 }
 
-func (s exampleService) Get(ctx *gin.Context, cond *request.ExampleGet) (*models.Example, error) {
+func (s exampleService) Get(ctx *gin.Context, cond *request.ExampleGet) (*po.Example, error) {
 	db := s.in.DB.Session(ctx)
 	return s.in.Repository.ExampleRepo.Get(db, cond)
 }
 
-func (s exampleService) GetList(ctx *gin.Context, cond *request.ExampleGetList) (*models.PageResult[*models.Example], error) {
+func (s exampleService) GetList(ctx *gin.Context, cond *request.ExampleGetList) (*po.PageResult[*po.Example], error) {
 	db := s.in.DB.Session(ctx)
 	return s.in.Repository.ExampleRepo.GetList(db, cond)
 }
 
 func (s exampleService) Create(ctx *gin.Context, cond *request.ExampleCreate) (id any, err error) {
 	db := s.in.DB.Session(ctx)
-	insertData := &models.Example{ID: uuid.New()}
+	insertData := &po.Example{ID: uuid.New()}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (s exampleService) Create(ctx *gin.Context, cond *request.ExampleCreate) (i
 
 func (s exampleService) Update(ctx *gin.Context, cond *request.ExampleUpdate) (err error) {
 	db := s.in.DB.Session(ctx)
-	updateData := &models.Example{}
+	updateData := &po.Example{}
 	if err := copier.Copy(updateData, cond); err != nil {
 		return err
 	}

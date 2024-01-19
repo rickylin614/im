@@ -1,7 +1,7 @@
 package request
 
 import (
-	"im/internal/models"
+	"im/internal/models/po"
 
 	"gorm.io/gorm"
 )
@@ -10,7 +10,7 @@ type GroupsGet struct {
 }
 
 type GroupsGetList struct {
-	models.Page `gorm:"-"`
+	po.Page `gorm:"-"`
 }
 
 func (list GroupsGetList) Scope(db *gorm.DB) *gorm.DB {

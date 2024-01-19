@@ -3,7 +3,7 @@ package request
 import (
 	"gorm.io/gorm"
 
-	"im/internal/models"
+	"im/internal/models/po"
 )
 
 type ExampleGet struct {
@@ -13,9 +13,9 @@ type ExampleGet struct {
 }
 
 type ExampleGetList struct {
-	models.Page `gorm:"-"`
-	Name        string   `json:"name" example:"名字"`                                     // 範例名
-	Id          []string `json:"id" gorm:"id" binding:"required" example:"1,2,3,4,5,6"` // 範例ID列表
+	po.Page `gorm:"-"`
+	Name    string   `json:"name" example:"名字"`                                     // 範例名
+	Id      []string `json:"id" gorm:"id" binding:"required" example:"1,2,3,4,5,6"` // 範例ID列表
 }
 
 func (list ExampleGetList) Scope(db *gorm.DB) *gorm.DB {

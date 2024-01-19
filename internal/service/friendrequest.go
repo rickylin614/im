@@ -1,7 +1,7 @@
 package service
 
 import (
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/models/request"
 	"im/internal/pkg/consts/enums"
 	"im/internal/util/ctxs"
@@ -14,8 +14,8 @@ import (
 )
 
 type IFriendRequestservice interface {
-	Get(ctx *gin.Context, cond *request.FriendRequestsGet) (*models.FriendRequests, error)
-	GetList(ctx *gin.Context, cond *request.FriendRequestsGetList) (*models.PageResult[*models.FriendRequests], error)
+	Get(ctx *gin.Context, cond *request.FriendRequestsGet) (*po.FriendRequests, error)
+	GetList(ctx *gin.Context, cond *request.FriendRequestsGetList) (*po.PageResult[*po.FriendRequests], error)
 	Create(ctx *gin.Context, cond *request.FriendRequestsCreate) (id any, err error)
 	Update(ctx *gin.Context, cond *request.FriendRequestsUpdate) (err error)
 	Delete(ctx *gin.Context, cond *request.FriendRequestsDelete) (err error)
@@ -29,12 +29,12 @@ type FriendRequestservice struct {
 	in DigIn
 }
 
-func (s FriendRequestservice) Get(ctx *gin.Context, cond *request.FriendRequestsGet) (*models.FriendRequests, error) {
+func (s FriendRequestservice) Get(ctx *gin.Context, cond *request.FriendRequestsGet) (*po.FriendRequests, error) {
 	db := s.in.DB.Session(ctx)
 	return s.in.Repository.FriendRequestsRepo.Get(db, cond)
 }
 
-func (s FriendRequestservice) GetList(ctx *gin.Context, cond *request.FriendRequestsGetList) (*models.PageResult[*models.FriendRequests], error) {
+func (s FriendRequestservice) GetList(ctx *gin.Context, cond *request.FriendRequestsGetList) (*po.PageResult[*po.FriendRequests], error) {
 	db := s.in.DB.Session(ctx)
 	return s.in.Repository.FriendRequestsRepo.GetList(db, cond)
 }
@@ -104,7 +104,7 @@ func (s FriendRequestservice) Create(ctx *gin.Context, cond *request.FriendReque
 	}
 
 	// 建立好友請求
-	insertData := &models.FriendRequests{
+	insertData := &po.FriendRequests{
 		ID:            uuid.New(),
 		SenderID:      loginID,
 		SenderName:    ctxs.GetUserInfo(ctx).Username,
@@ -152,7 +152,7 @@ func (s FriendRequestservice) Update(ctx *gin.Context, cond *request.FriendReque
 		return errs.CommonUnknownError
 	}
 
-	err = s.in.Repository.FriendRequestsRepo.Update(db, &models.FriendRequests{
+	err = s.in.Repository.FriendRequestsRepo.Update(db, &po.FriendRequests{
 		ID:            cond.ID,
 		RequestStatus: enums.FriendReqStatus(cond.RequestStatus),
 	})
@@ -169,10 +169,10 @@ func (s FriendRequestservice) Delete(ctx *gin.Context, cond *request.FriendReque
 }
 
 // createFriend 創建好友
-func (s FriendRequestservice) createFriend(ctx *gin.Context, db *gorm.DB, fr *models.FriendRequests) error {
+func (s FriendRequestservice) createFriend(ctx *gin.Context, db *gorm.DB, fr *po.FriendRequests) error {
 	// 建立好友
 	msgId := uuid.New()
-	_, err := s.in.Repository.FriendRepo.Create(db, &models.Friend{
+	_, err := s.in.Repository.FriendRepo.Create(db, &po.Friend{
 		ID:        uuid.New(),
 		PUserID:   fr.SenderID,
 		FUserID:   fr.ReceiverID,
@@ -184,7 +184,7 @@ func (s FriendRequestservice) createFriend(ctx *gin.Context, db *gorm.DB, fr *mo
 	if err != nil {
 		return err
 	}
-	_, err = s.in.Repository.FriendRepo.Create(db, &models.Friend{
+	_, err = s.in.Repository.FriendRepo.Create(db, &po.Friend{
 		ID:        uuid.New(),
 		PUserID:   fr.ReceiverID,
 		FUserID:   fr.SenderID,

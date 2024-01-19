@@ -8,14 +8,14 @@ import (
 	"github.com/redis/go-redis/v9"
 	"golang.org/x/sync/singleflight"
 
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/util/errs"
 )
 
 //go:generate mockery --name ICacheRepository --structname MockCacheRepository --filename mock_cache.go --output mock_repository --outpkg mock_repository --with-expecter
 type ICacheRepository interface {
-	GetRouteCache(ctx context.Context, cond *models.RouteCacheGet) (*models.RouteCache, error)
-	SetRouteCache(ctx context.Context, cond *models.RouteCacheSet) error
+	GetRouteCache(ctx context.Context, cond *po.RouteCacheGet) (*po.RouteCache, error)
+	SetRouteCache(ctx context.Context, cond *po.RouteCacheSet) error
 	GetCache(ctx context.Context, key string) ([]byte, error)
 	SetCache(ctx context.Context, key string, value []byte, ttl time.Duration) error
 	DelCache(ctx context.Context, key string) error
@@ -30,8 +30,8 @@ type cacheRepository struct {
 	group singleflight.Group
 }
 
-func (r *cacheRepository) GetRouteCache(ctx context.Context, cond *models.RouteCacheGet) (*models.RouteCache, error) {
-	result := &models.RouteCache{}
+func (r *cacheRepository) GetRouteCache(ctx context.Context, cond *po.RouteCacheGet) (*po.RouteCache, error) {
+	result := &po.RouteCache{}
 	// 設定三秒以內的吃內存
 	cacheData, err := r.in.Cache.Get([]byte(cond.RouteCacheKey))
 	if err == nil {
@@ -59,7 +59,7 @@ func (r *cacheRepository) GetRouteCache(ctx context.Context, cond *models.RouteC
 	return nil, errs.CommonUnknownError
 }
 
-func (r *cacheRepository) SetRouteCache(ctx context.Context, cond *models.RouteCacheSet) error {
+func (r *cacheRepository) SetRouteCache(ctx context.Context, cond *po.RouteCacheSet) error {
 	r.in.Cache.Set([]byte(cond.RouteCacheKey), cond.RouteCacheData.Bytes(), 3)
 	return r.in.Rdb.Set(ctx, cond.RouteCacheKey, cond.RouteCacheData.String(), cond.TTL).Err()
 }

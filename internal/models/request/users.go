@@ -1,7 +1,7 @@
 package request
 
 import (
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/pkg/consts/enums"
 
 	"gorm.io/gorm"
@@ -23,7 +23,7 @@ type UsersGet struct {
 }
 
 type UsersGetList struct {
-	models.Page `gorm:"-"`
+	po.Page `gorm:"-"`
 }
 
 func (list UsersGetList) Scope(db *gorm.DB) *gorm.DB {

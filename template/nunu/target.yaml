@@ -3,8 +3,8 @@ target_path:
   service: "./internal/service/"
   repository: "./internal/repository/"
   model: 
-    - path: "./internal/models/"
-      temp_file: "model.tpl"
+    - path: "./internal/models/po/"
+      temp_file: "model_po.tpl"
     - path: "./internal/models/request/"
       temp_file: "model_req.tpl"
     - path: "./internal/models/response/"

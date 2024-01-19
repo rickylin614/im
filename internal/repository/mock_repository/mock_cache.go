@@ -4,7 +4,8 @@ package mock_repository
 
 import (
 	context "context"
-	models "im/internal/models"
+
+	models "im/internal/models/po"
 
 	mock "github.com/stretchr/testify/mock"
 

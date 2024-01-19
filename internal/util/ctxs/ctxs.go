@@ -9,7 +9,7 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/models/response"
 	"im/internal/pkg/consts"
 	"im/internal/pkg/consts/enums"
@@ -64,19 +64,19 @@ func SetSuccessResp(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
-func SetUserInfo(ctx *gin.Context, user *models.Users) {
+func SetUserInfo(ctx *gin.Context, user *po.Users) {
 	ctx.Set(consts.UserInfo, user)
 }
 
-func GetUserInfo(ctx *gin.Context) (user *models.Users) {
+func GetUserInfo(ctx *gin.Context) (user *po.Users) {
 	data, ok := ctx.Get(consts.UserInfo)
 	if !ok {
-		return &models.Users{}
+		return &po.Users{}
 		//panic(errors.New("not Login Func Use UserInfo"))
 	}
-	user, ok = data.(*models.Users)
+	user, ok = data.(*po.Users)
 	if !ok {
-		return &models.Users{}
+		return &po.Users{}
 		//panic(errors.New("not Login Func Use UserInfo"))
 	}
 	return
@@ -249,7 +249,7 @@ func ParseMySQLError(err error) ([]string, bool) {
 
 // IGetToken 解藕用interface
 type IGetToken interface {
-	GetByToken(ctx *gin.Context, token string) (user *models.Users, err error)
+	GetByToken(ctx *gin.Context, token string) (user *po.Users, err error)
 }
 
 func CheckLoginByParam(ctx *gin.Context, userSrv IGetToken) error {

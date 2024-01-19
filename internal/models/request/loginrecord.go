@@ -1,7 +1,7 @@
 package request
 
 import (
-	"im/internal/models"
+	"im/internal/models/po"
 
 	"gorm.io/gorm"
 )
@@ -9,7 +9,7 @@ import (
 type LoginRecordGet struct{}
 
 type LoginRecordGetList struct {
-	models.Page `gorm:"-"`
+	po.Page `gorm:"-"`
 }
 
 func (list LoginRecordGetList) Scope(db *gorm.DB) *gorm.DB {

@@ -7,7 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"gorm.io/gorm"
 
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/models/request"
 	"im/internal/pkg/consts"
 	"im/internal/pkg/consts/rediskey"
@@ -17,12 +17,12 @@ import (
 
 //go:generate mockery --name IUsersRepository --structname MockUsersRepository --filename mock_users.go --output mock_repository --outpkg mock_repository --with-expecter
 type IUsersRepository interface {
-	Get(db *gorm.DB, cond *request.UsersGet) (*models.Users, error)
-	GetList(db *gorm.DB, cond *request.UsersGetList) (*models.PageResult[*models.Users], error)
-	Create(db *gorm.DB, data *models.Users) (id any, err error)
-	Update(db *gorm.DB, data *models.Users) (err error)
+	Get(db *gorm.DB, cond *request.UsersGet) (*po.Users, error)
+	GetList(db *gorm.DB, cond *request.UsersGetList) (*po.PageResult[*po.Users], error)
+	Create(db *gorm.DB, data *po.Users) (id any, err error)
+	Update(db *gorm.DB, data *po.Users) (err error)
 	Delete(db *gorm.DB, id string) (err error)
-	GetByToken(ctx context.Context, UserID, deviceID, reqToken string) (*models.JWTClaims, error)
+	GetByToken(ctx context.Context, UserID, deviceID, reqToken string) (*po.JWTClaims, error)
 	SetToken(ctx context.Context, UserID, deviceID, jwtData string) error
 	DelToken(ctx context.Context, UserID, deviceID string) error
 }
@@ -35,20 +35,20 @@ type usersRepository struct {
 	in digIn
 }
 
-func (r usersRepository) Get(db *gorm.DB, cond *request.UsersGet) (*models.Users, error) {
-	result := &models.Users{}
+func (r usersRepository) Get(db *gorm.DB, cond *request.UsersGet) (*po.Users, error) {
+	result := &po.Users{}
 	if err := db.Find(result, cond).Error; err != nil {
 		return nil, err
 	}
 	return result, nil
 }
 
-func (r usersRepository) GetList(db *gorm.DB, cond *request.UsersGetList) (*models.PageResult[*models.Users], error) {
-	result := &models.PageResult[*models.Users]{
+func (r usersRepository) GetList(db *gorm.DB, cond *request.UsersGetList) (*po.PageResult[*po.Users], error) {
+	result := &po.PageResult[*po.Users]{
 		Page: cond.GetPager(),
-		Data: make([]*models.Users, 0),
+		Data: make([]*po.Users, 0),
 	}
-	db = db.Model(models.Users{}).Scopes(cond.Scope)
+	db = db.Model(po.Users{}).Scopes(cond.Scope)
 	if err := db.Count(&result.Total).Error; err != nil {
 		return nil, err
 	}
@@ -58,14 +58,14 @@ func (r usersRepository) GetList(db *gorm.DB, cond *request.UsersGetList) (*mode
 	return result, nil
 }
 
-func (r usersRepository) Create(db *gorm.DB, data *models.Users) (id any, err error) {
+func (r usersRepository) Create(db *gorm.DB, data *po.Users) (id any, err error) {
 	if err := db.Create(data).Error; err != nil {
 		return nil, err
 	}
 	return data.ID, nil
 }
 
-func (r usersRepository) Update(db *gorm.DB, data *models.Users) (err error) {
+func (r usersRepository) Update(db *gorm.DB, data *po.Users) (err error) {
 	if err := db.Updates(data).Error; err != nil {
 		return err
 	}
@@ -73,13 +73,13 @@ func (r usersRepository) Update(db *gorm.DB, data *models.Users) (err error) {
 }
 
 func (r usersRepository) Delete(db *gorm.DB, id string) (err error) {
-	if err := db.Model(models.Users{}).Delete("where id = ?", id).Error; err != nil {
+	if err := db.Model(po.Users{}).Delete("where id = ?", id).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r usersRepository) GetByToken(ctx context.Context, UserID, deviceID, reqToken string) (*models.JWTClaims, error) {
+func (r usersRepository) GetByToken(ctx context.Context, UserID, deviceID, reqToken string) (*po.JWTClaims, error) {
 	key := rediskey.LoginKey + UserID + ":" + deviceID
 	rget := r.in.Rdb.Get(ctx, key)
 	if rget.Err() != nil {
@@ -87,7 +87,7 @@ func (r usersRepository) GetByToken(ctx context.Context, UserID, deviceID, reqTo
 		return nil, rget.Err()
 	}
 
-	token, err := jwt.ParseWithClaims(rget.Val(), &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(rget.Val(), &po.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// 确保token的签名算法是我们预期的
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -100,7 +100,7 @@ func (r usersRepository) GetByToken(ctx context.Context, UserID, deviceID, reqTo
 		return nil, errs.RequestTokenError
 	}
 
-	claims, ok := token.Claims.(*models.JWTClaims)
+	claims, ok := token.Claims.(*po.JWTClaims)
 	if !ok || !token.Valid {
 		r.in.Logger.Error(ctx, fmt.Errorf("token.Claims.(*models.JWTClaims) error, useId: %s, device: %s", UserID, deviceID))
 		return nil, errs.RequestTokenError

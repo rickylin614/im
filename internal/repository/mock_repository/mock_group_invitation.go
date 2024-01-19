@@ -3,7 +3,7 @@
 package mock_repository
 
 import (
-	models "im/internal/models"
+	"im/internal/models/po"
 
 	mock "github.com/stretchr/testify/mock"
 	gorm "gorm.io/gorm"
@@ -25,15 +25,15 @@ func (_m *MockGroupInvitationRepository) EXPECT() *MockGroupInvitationRepository
 }
 
 // Create provides a mock function with given fields: db, data
-func (_m *MockGroupInvitationRepository) Create(db *gorm.DB, data *models.GroupInvitation) (interface{}, error) {
+func (_m *MockGroupInvitationRepository) Create(db *gorm.DB, data *po.GroupInvitation) (interface{}, error) {
 	ret := _m.Called(db, data)
 
 	var r0 interface{}
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.GroupInvitation) (interface{}, error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.GroupInvitation) (interface{}, error)); ok {
 		return rf(db, data)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.GroupInvitation) interface{}); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.GroupInvitation) interface{}); ok {
 		r0 = rf(db, data)
 	} else {
 		if ret.Get(0) != nil {
@@ -41,7 +41,7 @@ func (_m *MockGroupInvitationRepository) Create(db *gorm.DB, data *models.GroupI
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*gorm.DB, *models.GroupInvitation) error); ok {
+	if rf, ok := ret.Get(1).(func(*gorm.DB, *po.GroupInvitation) error); ok {
 		r1 = rf(db, data)
 	} else {
 		r1 = ret.Error(1)
@@ -62,9 +62,9 @@ func (_e *MockGroupInvitationRepository_Expecter) Create(db interface{}, data in
 	return &MockGroupInvitationRepository_Create_Call{Call: _e.mock.On("Create", db, data)}
 }
 
-func (_c *MockGroupInvitationRepository_Create_Call) Run(run func(db *gorm.DB, data *models.GroupInvitation)) *MockGroupInvitationRepository_Create_Call {
+func (_c *MockGroupInvitationRepository_Create_Call) Run(run func(db *gorm.DB, data *po.GroupInvitation)) *MockGroupInvitationRepository_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*gorm.DB), args[1].(*models.GroupInvitation))
+		run(args[0].(*gorm.DB), args[1].(*po.GroupInvitation))
 	})
 	return _c
 }
@@ -74,7 +74,7 @@ func (_c *MockGroupInvitationRepository_Create_Call) Return(id interface{}, err 
 	return _c
 }
 
-func (_c *MockGroupInvitationRepository_Create_Call) RunAndReturn(run func(*gorm.DB, *models.GroupInvitation) (interface{}, error)) *MockGroupInvitationRepository_Create_Call {
+func (_c *MockGroupInvitationRepository_Create_Call) RunAndReturn(run func(*gorm.DB, *po.GroupInvitation) (interface{}, error)) *MockGroupInvitationRepository_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -123,19 +123,19 @@ func (_c *MockGroupInvitationRepository_Delete_Call) RunAndReturn(run func(*gorm
 }
 
 // Get provides a mock function with given fields: db, cond
-func (_m *MockGroupInvitationRepository) Get(db *gorm.DB, cond *req.GroupInvitationGet) (*models.GroupInvitation, error) {
+func (_m *MockGroupInvitationRepository) Get(db *gorm.DB, cond *req.GroupInvitationGet) (*po.GroupInvitation, error) {
 	ret := _m.Called(db, cond)
 
-	var r0 *models.GroupInvitation
+	var r0 *po.GroupInvitation
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupInvitationGet) (*models.GroupInvitation, error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupInvitationGet) (*po.GroupInvitation, error)); ok {
 		return rf(db, cond)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupInvitationGet) *models.GroupInvitation); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupInvitationGet) *po.GroupInvitation); ok {
 		r0 = rf(db, cond)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.GroupInvitation)
+			r0 = ret.Get(0).(*po.GroupInvitation)
 		}
 	}
 
@@ -167,30 +167,30 @@ func (_c *MockGroupInvitationRepository_Get_Call) Run(run func(db *gorm.DB, cond
 	return _c
 }
 
-func (_c *MockGroupInvitationRepository_Get_Call) Return(_a0 *models.GroupInvitation, _a1 error) *MockGroupInvitationRepository_Get_Call {
+func (_c *MockGroupInvitationRepository_Get_Call) Return(_a0 *po.GroupInvitation, _a1 error) *MockGroupInvitationRepository_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockGroupInvitationRepository_Get_Call) RunAndReturn(run func(*gorm.DB, *req.GroupInvitationGet) (*models.GroupInvitation, error)) *MockGroupInvitationRepository_Get_Call {
+func (_c *MockGroupInvitationRepository_Get_Call) RunAndReturn(run func(*gorm.DB, *req.GroupInvitationGet) (*po.GroupInvitation, error)) *MockGroupInvitationRepository_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetList provides a mock function with given fields: db, cond
-func (_m *MockGroupInvitationRepository) GetList(db *gorm.DB, cond *req.GroupInvitationGetList) (*models.PageResult[*models.GroupInvitation], error) {
+func (_m *MockGroupInvitationRepository) GetList(db *gorm.DB, cond *req.GroupInvitationGetList) (*po.PageResult[*po.GroupInvitation], error) {
 	ret := _m.Called(db, cond)
 
-	var r0 *models.PageResult[*models.GroupInvitation]
+	var r0 *po.PageResult[*po.GroupInvitation]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupInvitationGetList) (*models.PageResult[*models.GroupInvitation], error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupInvitationGetList) (*po.PageResult[*po.GroupInvitation], error)); ok {
 		return rf(db, cond)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupInvitationGetList) *models.PageResult[*models.GroupInvitation]); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.GroupInvitationGetList) *po.PageResult[*po.GroupInvitation]); ok {
 		r0 = rf(db, cond)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.PageResult[*models.GroupInvitation])
+			r0 = ret.Get(0).(*po.PageResult[*po.GroupInvitation])
 		}
 	}
 
@@ -222,22 +222,22 @@ func (_c *MockGroupInvitationRepository_GetList_Call) Run(run func(db *gorm.DB, 
 	return _c
 }
 
-func (_c *MockGroupInvitationRepository_GetList_Call) Return(_a0 *models.PageResult[*models.GroupInvitation], _a1 error) *MockGroupInvitationRepository_GetList_Call {
+func (_c *MockGroupInvitationRepository_GetList_Call) Return(_a0 *po.PageResult[*po.GroupInvitation], _a1 error) *MockGroupInvitationRepository_GetList_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockGroupInvitationRepository_GetList_Call) RunAndReturn(run func(*gorm.DB, *req.GroupInvitationGetList) (*models.PageResult[*models.GroupInvitation], error)) *MockGroupInvitationRepository_GetList_Call {
+func (_c *MockGroupInvitationRepository_GetList_Call) RunAndReturn(run func(*gorm.DB, *req.GroupInvitationGetList) (*po.PageResult[*po.GroupInvitation], error)) *MockGroupInvitationRepository_GetList_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Update provides a mock function with given fields: db, data
-func (_m *MockGroupInvitationRepository) Update(db *gorm.DB, data *models.GroupInvitation) error {
+func (_m *MockGroupInvitationRepository) Update(db *gorm.DB, data *po.GroupInvitation) error {
 	ret := _m.Called(db, data)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.GroupInvitation) error); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.GroupInvitation) error); ok {
 		r0 = rf(db, data)
 	} else {
 		r0 = ret.Error(0)
@@ -258,9 +258,9 @@ func (_e *MockGroupInvitationRepository_Expecter) Update(db interface{}, data in
 	return &MockGroupInvitationRepository_Update_Call{Call: _e.mock.On("Update", db, data)}
 }
 
-func (_c *MockGroupInvitationRepository_Update_Call) Run(run func(db *gorm.DB, data *models.GroupInvitation)) *MockGroupInvitationRepository_Update_Call {
+func (_c *MockGroupInvitationRepository_Update_Call) Run(run func(db *gorm.DB, data *po.GroupInvitation)) *MockGroupInvitationRepository_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*gorm.DB), args[1].(*models.GroupInvitation))
+		run(args[0].(*gorm.DB), args[1].(*po.GroupInvitation))
 	})
 	return _c
 }
@@ -270,7 +270,7 @@ func (_c *MockGroupInvitationRepository_Update_Call) Return(err error) *MockGrou
 	return _c
 }
 
-func (_c *MockGroupInvitationRepository_Update_Call) RunAndReturn(run func(*gorm.DB, *models.GroupInvitation) error) *MockGroupInvitationRepository_Update_Call {
+func (_c *MockGroupInvitationRepository_Update_Call) RunAndReturn(run func(*gorm.DB, *po.GroupInvitation) error) *MockGroupInvitationRepository_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

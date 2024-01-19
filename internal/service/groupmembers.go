@@ -1,7 +1,7 @@
 package service
 
 import (
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/models/request"
 	"im/internal/util/ctxs"
 	"im/internal/util/errs"
@@ -12,8 +12,8 @@ import (
 )
 
 type IGroupMembersService interface {
-	Get(ctx *gin.Context, cond *request.GroupMembersGet) (*models.GroupMembers, error)
-	GetList(ctx *gin.Context, cond *request.GroupMembersGetList) ([]*models.GroupMembers, error)
+	Get(ctx *gin.Context, cond *request.GroupMembersGet) (*po.GroupMembers, error)
+	GetList(ctx *gin.Context, cond *request.GroupMembersGetList) ([]*po.GroupMembers, error)
 	Create(ctx *gin.Context, cond *request.GroupMembersCreate) (id any, err error)
 	Update(ctx *gin.Context, cond *request.GroupMembersUpdate) (err error)
 	Delete(ctx *gin.Context, cond *request.GroupMembersDelete) (err error)
@@ -27,12 +27,12 @@ type groupMembersService struct {
 	in DigIn
 }
 
-func (s groupMembersService) Get(ctx *gin.Context, cond *request.GroupMembersGet) (*models.GroupMembers, error) {
+func (s groupMembersService) Get(ctx *gin.Context, cond *request.GroupMembersGet) (*po.GroupMembers, error) {
 	db := s.in.DB.Session(ctx)
 	return s.in.Repository.GroupMembersRepo.Get(db, cond)
 }
 
-func (s groupMembersService) GetList(ctx *gin.Context, cond *request.GroupMembersGetList) ([]*models.GroupMembers, error) {
+func (s groupMembersService) GetList(ctx *gin.Context, cond *request.GroupMembersGetList) ([]*po.GroupMembers, error) {
 	db := s.in.DB.Session(ctx)
 
 	result, err := s.in.Repository.GroupMembersRepo.GetListById(ctx, db, cond)
@@ -50,7 +50,7 @@ func (s groupMembersService) GetList(ctx *gin.Context, cond *request.GroupMember
 
 func (s groupMembersService) Create(ctx *gin.Context, cond *request.GroupMembersCreate) (id any, err error) {
 	db := s.in.DB.Session(ctx)
-	insertData := &models.GroupMembers{GroupID: uuid.New()}
+	insertData := &po.GroupMembers{GroupID: uuid.New()}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (s groupMembersService) Create(ctx *gin.Context, cond *request.GroupMembers
 
 func (s groupMembersService) Update(ctx *gin.Context, cond *request.GroupMembersUpdate) (err error) {
 	db := s.in.DB.Session(ctx)
-	updateData := &models.GroupMembers{}
+	updateData := &po.GroupMembers{}
 	if err := copier.Copy(updateData, cond); err != nil {
 		return err
 	}
@@ -71,7 +71,7 @@ func (s groupMembersService) Delete(ctx *gin.Context, cond *request.GroupMembers
 	return s.in.Repository.GroupMembersRepo.Delete(db, cond.ID)
 }
 
-func (s groupMembersService) IsGroupMember(ctx *gin.Context, members []*models.GroupMembers) bool {
+func (s groupMembersService) IsGroupMember(ctx *gin.Context, members []*po.GroupMembers) bool {
 	for _, v := range members {
 		userid := ctxs.GetUserInfo(ctx).ID
 		if v.UserID == userid {

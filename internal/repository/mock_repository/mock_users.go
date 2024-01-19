@@ -9,7 +9,7 @@ import (
 
 	mock "github.com/stretchr/testify/mock"
 
-	models "im/internal/models"
+	"im/internal/models/po"
 
 	req "im/internal/models/request"
 )
@@ -28,15 +28,15 @@ func (_m *MockUsersRepository) EXPECT() *MockUsersRepository_Expecter {
 }
 
 // Create provides a mock function with given fields: db, data
-func (_m *MockUsersRepository) Create(db *gorm.DB, data *models.Users) (interface{}, error) {
+func (_m *MockUsersRepository) Create(db *gorm.DB, data *po.Users) (interface{}, error) {
 	ret := _m.Called(db, data)
 
 	var r0 interface{}
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.Users) (interface{}, error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.Users) (interface{}, error)); ok {
 		return rf(db, data)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.Users) interface{}); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.Users) interface{}); ok {
 		r0 = rf(db, data)
 	} else {
 		if ret.Get(0) != nil {
@@ -44,7 +44,7 @@ func (_m *MockUsersRepository) Create(db *gorm.DB, data *models.Users) (interfac
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*gorm.DB, *models.Users) error); ok {
+	if rf, ok := ret.Get(1).(func(*gorm.DB, *po.Users) error); ok {
 		r1 = rf(db, data)
 	} else {
 		r1 = ret.Error(1)
@@ -65,9 +65,9 @@ func (_e *MockUsersRepository_Expecter) Create(db interface{}, data interface{})
 	return &MockUsersRepository_Create_Call{Call: _e.mock.On("Create", db, data)}
 }
 
-func (_c *MockUsersRepository_Create_Call) Run(run func(db *gorm.DB, data *models.Users)) *MockUsersRepository_Create_Call {
+func (_c *MockUsersRepository_Create_Call) Run(run func(db *gorm.DB, data *po.Users)) *MockUsersRepository_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*gorm.DB), args[1].(*models.Users))
+		run(args[0].(*gorm.DB), args[1].(*po.Users))
 	})
 	return _c
 }
@@ -77,7 +77,7 @@ func (_c *MockUsersRepository_Create_Call) Return(id interface{}, err error) *Mo
 	return _c
 }
 
-func (_c *MockUsersRepository_Create_Call) RunAndReturn(run func(*gorm.DB, *models.Users) (interface{}, error)) *MockUsersRepository_Create_Call {
+func (_c *MockUsersRepository_Create_Call) RunAndReturn(run func(*gorm.DB, *po.Users) (interface{}, error)) *MockUsersRepository_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -170,19 +170,19 @@ func (_c *MockUsersRepository_Delete_Call) RunAndReturn(run func(*gorm.DB, strin
 }
 
 // Get provides a mock function with given fields: db, cond
-func (_m *MockUsersRepository) Get(db *gorm.DB, cond *req.UsersGet) (*models.Users, error) {
+func (_m *MockUsersRepository) Get(db *gorm.DB, cond *req.UsersGet) (*po.Users, error) {
 	ret := _m.Called(db, cond)
 
-	var r0 *models.Users
+	var r0 *po.Users
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.UsersGet) (*models.Users, error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.UsersGet) (*po.Users, error)); ok {
 		return rf(db, cond)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.UsersGet) *models.Users); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.UsersGet) *po.Users); ok {
 		r0 = rf(db, cond)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.Users)
+			r0 = ret.Get(0).(*po.Users)
 		}
 	}
 
@@ -214,30 +214,30 @@ func (_c *MockUsersRepository_Get_Call) Run(run func(db *gorm.DB, cond *req.User
 	return _c
 }
 
-func (_c *MockUsersRepository_Get_Call) Return(_a0 *models.Users, _a1 error) *MockUsersRepository_Get_Call {
+func (_c *MockUsersRepository_Get_Call) Return(_a0 *po.Users, _a1 error) *MockUsersRepository_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockUsersRepository_Get_Call) RunAndReturn(run func(*gorm.DB, *req.UsersGet) (*models.Users, error)) *MockUsersRepository_Get_Call {
+func (_c *MockUsersRepository_Get_Call) RunAndReturn(run func(*gorm.DB, *req.UsersGet) (*po.Users, error)) *MockUsersRepository_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetByToken provides a mock function with given fields: ctx, UserID, deviceID, reqToken
-func (_m *MockUsersRepository) GetByToken(ctx context.Context, UserID string, deviceID string, reqToken string) (*models.JWTClaims, error) {
+func (_m *MockUsersRepository) GetByToken(ctx context.Context, UserID string, deviceID string, reqToken string) (*po.JWTClaims, error) {
 	ret := _m.Called(ctx, UserID, deviceID, reqToken)
 
-	var r0 *models.JWTClaims
+	var r0 *po.JWTClaims
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) (*models.JWTClaims, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) (*po.JWTClaims, error)); ok {
 		return rf(ctx, UserID, deviceID, reqToken)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) *models.JWTClaims); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) *po.JWTClaims); ok {
 		r0 = rf(ctx, UserID, deviceID, reqToken)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.JWTClaims)
+			r0 = ret.Get(0).(*po.JWTClaims)
 		}
 	}
 
@@ -271,30 +271,30 @@ func (_c *MockUsersRepository_GetByToken_Call) Run(run func(ctx context.Context,
 	return _c
 }
 
-func (_c *MockUsersRepository_GetByToken_Call) Return(_a0 *models.JWTClaims, _a1 error) *MockUsersRepository_GetByToken_Call {
+func (_c *MockUsersRepository_GetByToken_Call) Return(_a0 *po.JWTClaims, _a1 error) *MockUsersRepository_GetByToken_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockUsersRepository_GetByToken_Call) RunAndReturn(run func(context.Context, string, string, string) (*models.JWTClaims, error)) *MockUsersRepository_GetByToken_Call {
+func (_c *MockUsersRepository_GetByToken_Call) RunAndReturn(run func(context.Context, string, string, string) (*po.JWTClaims, error)) *MockUsersRepository_GetByToken_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetList provides a mock function with given fields: db, cond
-func (_m *MockUsersRepository) GetList(db *gorm.DB, cond *req.UsersGetList) (*models.PageResult[*models.Users], error) {
+func (_m *MockUsersRepository) GetList(db *gorm.DB, cond *req.UsersGetList) (*po.PageResult[*po.Users], error) {
 	ret := _m.Called(db, cond)
 
-	var r0 *models.PageResult[*models.Users]
+	var r0 *po.PageResult[*po.Users]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.UsersGetList) (*models.PageResult[*models.Users], error)); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.UsersGetList) (*po.PageResult[*po.Users], error)); ok {
 		return rf(db, cond)
 	}
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.UsersGetList) *models.PageResult[*models.Users]); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *req.UsersGetList) *po.PageResult[*po.Users]); ok {
 		r0 = rf(db, cond)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.PageResult[*models.Users])
+			r0 = ret.Get(0).(*po.PageResult[*po.Users])
 		}
 	}
 
@@ -326,12 +326,12 @@ func (_c *MockUsersRepository_GetList_Call) Run(run func(db *gorm.DB, cond *req.
 	return _c
 }
 
-func (_c *MockUsersRepository_GetList_Call) Return(_a0 *models.PageResult[*models.Users], _a1 error) *MockUsersRepository_GetList_Call {
+func (_c *MockUsersRepository_GetList_Call) Return(_a0 *po.PageResult[*po.Users], _a1 error) *MockUsersRepository_GetList_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockUsersRepository_GetList_Call) RunAndReturn(run func(*gorm.DB, *req.UsersGetList) (*models.PageResult[*models.Users], error)) *MockUsersRepository_GetList_Call {
+func (_c *MockUsersRepository_GetList_Call) RunAndReturn(run func(*gorm.DB, *req.UsersGetList) (*po.PageResult[*po.Users], error)) *MockUsersRepository_GetList_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -382,11 +382,11 @@ func (_c *MockUsersRepository_SetToken_Call) RunAndReturn(run func(context.Conte
 }
 
 // Update provides a mock function with given fields: db, data
-func (_m *MockUsersRepository) Update(db *gorm.DB, data *models.Users) error {
+func (_m *MockUsersRepository) Update(db *gorm.DB, data *po.Users) error {
 	ret := _m.Called(db, data)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*gorm.DB, *models.Users) error); ok {
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *po.Users) error); ok {
 		r0 = rf(db, data)
 	} else {
 		r0 = ret.Error(0)
@@ -407,9 +407,9 @@ func (_e *MockUsersRepository_Expecter) Update(db interface{}, data interface{})
 	return &MockUsersRepository_Update_Call{Call: _e.mock.On("Update", db, data)}
 }
 
-func (_c *MockUsersRepository_Update_Call) Run(run func(db *gorm.DB, data *models.Users)) *MockUsersRepository_Update_Call {
+func (_c *MockUsersRepository_Update_Call) Run(run func(db *gorm.DB, data *po.Users)) *MockUsersRepository_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*gorm.DB), args[1].(*models.Users))
+		run(args[0].(*gorm.DB), args[1].(*po.Users))
 	})
 	return _c
 }
@@ -419,7 +419,7 @@ func (_c *MockUsersRepository_Update_Call) Return(err error) *MockUsersRepositor
 	return _c
 }
 
-func (_c *MockUsersRepository_Update_Call) RunAndReturn(run func(*gorm.DB, *models.Users) error) *MockUsersRepository_Update_Call {
+func (_c *MockUsersRepository_Update_Call) RunAndReturn(run func(*gorm.DB, *po.Users) error) *MockUsersRepository_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

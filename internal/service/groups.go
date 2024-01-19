@@ -1,7 +1,7 @@
 package service
 
 import (
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/models/request"
 	"im/internal/util/ctxs"
 	"im/internal/util/uuid"
@@ -11,8 +11,8 @@ import (
 )
 
 type IGroupsService interface {
-	Get(ctx *gin.Context, cond *request.GroupsGet) (*models.Groups, error)
-	GetList(ctx *gin.Context, cond *request.GroupsGetList) (*models.PageResult[*models.Groups], error)
+	Get(ctx *gin.Context, cond *request.GroupsGet) (*po.Groups, error)
+	GetList(ctx *gin.Context, cond *request.GroupsGetList) (*po.PageResult[*po.Groups], error)
 	Create(ctx *gin.Context, cond *request.GroupsCreate) (id any, err error)
 	Update(ctx *gin.Context, cond *request.GroupsUpdate) (err error)
 	Delete(ctx *gin.Context, cond *request.GroupsDelete) (err error)
@@ -26,19 +26,19 @@ type groupsService struct {
 	in DigIn
 }
 
-func (s groupsService) Get(ctx *gin.Context, cond *request.GroupsGet) (*models.Groups, error) {
+func (s groupsService) Get(ctx *gin.Context, cond *request.GroupsGet) (*po.Groups, error) {
 	db := s.in.DB.Session(ctx)
 	return s.in.Repository.GroupsRepo.Get(db, cond)
 }
 
-func (s groupsService) GetList(ctx *gin.Context, cond *request.GroupsGetList) (*models.PageResult[*models.Groups], error) {
+func (s groupsService) GetList(ctx *gin.Context, cond *request.GroupsGetList) (*po.PageResult[*po.Groups], error) {
 	db := s.in.DB.Session(ctx)
 	return s.in.Repository.GroupsRepo.GetList(db, cond)
 }
 
 func (s groupsService) Create(ctx *gin.Context, cond *request.GroupsCreate) (id any, err error) {
 	db := s.in.DB.Session(ctx)
-	insertData := &models.Groups{ID: uuid.New(), GroupOwnerID: ctxs.GetUserInfo(ctx).ID}
+	insertData := &po.Groups{ID: uuid.New(), GroupOwnerID: ctxs.GetUserInfo(ctx).ID}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (s groupsService) Create(ctx *gin.Context, cond *request.GroupsCreate) (id 
 
 func (s groupsService) Update(ctx *gin.Context, cond *request.GroupsUpdate) (err error) {
 	db := s.in.DB.Session(ctx)
-	updateData := &models.Groups{}
+	updateData := &po.Groups{}
 	if err := copier.Copy(updateData, cond); err != nil {
 		return err
 	}

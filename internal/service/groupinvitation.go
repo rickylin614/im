@@ -1,7 +1,7 @@
 package service
 
 import (
-	"im/internal/models"
+	"im/internal/models/po"
 	"im/internal/models/request"
 	"im/internal/pkg/consts/enums"
 	"im/internal/util/ctxs"
@@ -13,8 +13,8 @@ import (
 )
 
 type IGroupInvitationService interface {
-	Get(ctx *gin.Context, cond *request.GroupInvitationGet) (*models.GroupInvitation, error)
-	GetList(ctx *gin.Context, cond *request.GroupInvitationGetList) (*models.PageResult[*models.GroupInvitation], error)
+	Get(ctx *gin.Context, cond *request.GroupInvitationGet) (*po.GroupInvitation, error)
+	GetList(ctx *gin.Context, cond *request.GroupInvitationGetList) (*po.PageResult[*po.GroupInvitation], error)
 	Create(ctx *gin.Context, cond *request.GroupInvitationCreate) (id any, err error)
 	Update(ctx *gin.Context, cond *request.GroupInvitationUpdate) (err error)
 	Delete(ctx *gin.Context, cond *request.GroupInvitationDelete) (err error)
@@ -28,12 +28,12 @@ type groupInvitationService struct {
 	In DigIn
 }
 
-func (s groupInvitationService) Get(ctx *gin.Context, cond *request.GroupInvitationGet) (*models.GroupInvitation, error) {
+func (s groupInvitationService) Get(ctx *gin.Context, cond *request.GroupInvitationGet) (*po.GroupInvitation, error) {
 	db := s.In.DB.Session(ctx)
 	return s.In.Repository.GroupInvitationRepo.Get(db, cond)
 }
 
-func (s groupInvitationService) GetList(ctx *gin.Context, cond *request.GroupInvitationGetList) (*models.PageResult[*models.GroupInvitation], error) {
+func (s groupInvitationService) GetList(ctx *gin.Context, cond *request.GroupInvitationGetList) (*po.PageResult[*po.GroupInvitation], error) {
 	db := s.In.DB.Session(ctx)
 	return s.In.Repository.GroupInvitationRepo.GetList(db, cond)
 }
@@ -73,7 +73,7 @@ func (s groupInvitationService) Create(ctx *gin.Context, cond *request.GroupInvi
 	}
 
 	// 創建邀請
-	insertData := &models.GroupInvitation{
+	insertData := &po.GroupInvitation{
 		ID:               uuid.New(),
 		GroupID:          cond.GroupId,
 		InviterID:        ctxs.GetUserInfo(ctx).ID,
@@ -85,7 +85,7 @@ func (s groupInvitationService) Create(ctx *gin.Context, cond *request.GroupInvi
 
 func (s groupInvitationService) Update(ctx *gin.Context, cond *request.GroupInvitationUpdate) (err error) {
 	db := s.In.DB.Session(ctx)
-	updateData := &models.GroupInvitation{}
+	updateData := &po.GroupInvitation{}
 	if err := copier.Copy(updateData, cond); err != nil {
 		return err
 	}
