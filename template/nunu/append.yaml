@@ -1,9 +1,9 @@
 files:
   - path: "internal/handler/provider.go"
-    regex: "type Handler struct \\{.*?\\}"
+    regex: "type WebHandler struct \\{.*?\\}"
     template: "\\n\\t{{ .FileName }}Handler  *{{ .FileNameTitleLower }}Handler"
   - path: "internal/handler/provider.go"
-    regex: "func NewHandler\\(in digIn\\) .*?Handler \\{.*?\\\t}"
+    regex: "func NewWebHandler\\(in webDigIn\\) .*?WebHandler \\{.*?\\\t}"
     template: "\\n\\t\\t{{ .FileName }}Handler:  &{{ .FileNameTitleLower }}Handler{in: in},"
   - path: "internal/service/provider.go"
     regex: "type Service struct \\{.*?\\}"
