@@ -2,7 +2,7 @@ package service
 
 import (
 	"{{ .ProjectName }}/internal/models"
-	"{{ .ProjectName }}/internal/models/req"
+	"{{ .ProjectName }}/internal/models/request"
 	"{{ .ProjectName }}/internal/util/uuid"
 
 	"github.com/gin-gonic/gin"

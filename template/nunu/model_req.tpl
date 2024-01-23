@@ -1,7 +1,7 @@
-package req
+package request
 
 import (
-	"{{ .ProjectName }}/internal/models"
+	"{{ .ProjectName }}/internal/models/po"
 
 	"gorm.io/gorm"
 )
@@ -9,7 +9,7 @@ import (
 type {{ .FileName }}Get struct{}
 
 type {{ .FileName }}GetList struct {
-	models.Page `gorm:"-"`
+	po.Page `gorm:"-"`
 }
 
 func (list {{ .FileName }}GetList) Scope(db *gorm.DB) *gorm.DB {
