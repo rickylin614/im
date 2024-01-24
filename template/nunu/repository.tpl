@@ -10,8 +10,8 @@ import (
 //go:generate mockery --name I{{ .FileName }}Repository --structname Mock{{ .FileName }}Repository --filename mock_{{ .FileNameSnakeCase }}.go --output mock_repository --outpkg mock_repository --with-expecter
 
 type I{{ .FileName }}Repository interface {
-	Get(db *gorm.DB, cond *req.{{ .FileName }}Get) (*po.{{ .FileName }}, error)
-	GetList(db *gorm.DB, cond *req.{{ .FileName }}GetList) (*po.PageResult[*po.{{ .FileName }}], error)
+	Get(db *gorm.DB, cond *request.{{ .FileName }}Get) (*po.{{ .FileName }}, error)
+	GetList(db *gorm.DB, cond *request.{{ .FileName }}GetList) (*po.PageResult[*po.{{ .FileName }}], error)
 	Create(db *gorm.DB, data *po.{{ .FileName }}) (id any, err error)
 	Update(db *gorm.DB, data *po.{{ .FileName }}) (err error)
 	Delete(db *gorm.DB, id string) (err error)
@@ -25,7 +25,7 @@ type {{ .FileNameTitleLower }}Repository struct {
 	in digIn
 }
 
-func (r *{{ .FileNameTitleLower }}Repository) Get(db *gorm.DB, cond *req.{{ .FileName }}Get) (*po.{{ .FileName }}, error) {
+func (r *{{ .FileNameTitleLower }}Repository) Get(db *gorm.DB, cond *request.{{ .FileName }}Get) (*po.{{ .FileName }}, error) {
 	result := &po.{{ .FileName }}{}
 	db = db.Find(result, cond)
 	if db.Error != nil {
@@ -37,7 +37,7 @@ func (r *{{ .FileNameTitleLower }}Repository) Get(db *gorm.DB, cond *req.{{ .Fil
 	return result, nil
 }
 
-func (r *{{ .FileNameTitleLower }}Repository) GetList(db *gorm.DB, cond *req.{{ .FileName }}GetList) (*po.PageResult[*po.{{ .FileName }}], error) {
+func (r *{{ .FileNameTitleLower }}Repository) GetList(db *gorm.DB, cond *request.{{ .FileName }}GetList) (*po.PageResult[*po.{{ .FileName }}], error) {
 	result := &po.PageResult[*po.{{ .FileName }}]{
 		Page: cond.GetPager(),
 		Data: make([]*po.{{ .FileName }}, 0),

@@ -24,6 +24,7 @@ func NewWebHandler(in webDigIn) *WebHandler {
 		GroupsHandler:          &groupsHandler{in: in},
 		GroupMembersHandler:    &groupMembersHandler{in: in},
 		GroupInvitationHandler: &groupInvitationHandler{in: in},
+		MessageHandler:         &messageHandler{in: in},
 	}
 }
 
@@ -40,6 +41,7 @@ type WebHandler struct {
 	GroupsHandler          *groupsHandler
 	GroupMembersHandler    *groupMembersHandler
 	GroupInvitationHandler *groupInvitationHandler
+	MessageHandler         *messageHandler
 }
 
 type webDigIn struct {
@@ -48,10 +50,10 @@ type webDigIn struct {
 	Service *service.Service
 }
 
-// NewWebHandler
+// NewWebSocketHandler
 //
 // param: in 依賴
-// return: handler 所有
+// return: WebSocketHandler ws用的處理器
 func NewWebSocketHandler(in wsDigIn) *WebSocketHandler {
 	return &WebSocketHandler{
 		WsHandler: &wsHandler{in: in},

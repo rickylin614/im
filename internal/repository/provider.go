@@ -22,6 +22,7 @@ func NewRepository(in digIn) *Repository {
 		GroupMembersRepo:    NewGroupMembersRepository(in),
 		CacheRepo:           NewCacheRepository(in),
 		GroupInvitationRepo: NewGroupInvitationRepository(in),
+		MessageRepo:         NewMessageRepository(in),
 	}
 }
 
@@ -37,6 +38,7 @@ type Repository struct {
 	GroupMembersRepo    IGroupMembersRepository
 	CacheRepo           ICacheRepository
 	GroupInvitationRepo IGroupInvitationRepository
+	MessageRepo         IMessageRepository
 }
 
 // digIn repository require indendency

@@ -5,6 +5,7 @@ import (
 	"go.uber.org/dig"
 
 	"im/internal/pkg/signalctx"
+	"im/internal/service"
 )
 
 func NewListener(in digIn) digOut {
@@ -17,6 +18,8 @@ type digIn struct {
 	Ctx        *signalctx.Context
 	Publisher  message.Publisher
 	Subscriber message.Subscriber
+
+	Service service.Service
 }
 
 type digOut struct {

@@ -10,7 +10,7 @@ import (
 )
 
 type {{ .FileNameTitleLower }}Handler struct {
-	in digIn
+	in webDigIn
 }
 
 // Get

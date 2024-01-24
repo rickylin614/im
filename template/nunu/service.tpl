@@ -1,7 +1,7 @@
 package service
 
 import (
-	"{{ .ProjectName }}/internal/models"
+	"{{ .ProjectName }}/internal/models/po"
 	"{{ .ProjectName }}/internal/models/request"
 	"{{ .ProjectName }}/internal/util/uuid"
 
@@ -10,11 +10,11 @@ import (
 )
 
 type I{{ .FileName }}Service interface {
-	Get(ctx *gin.Context, cond *req.{{ .FileName }}Get) (*models.{{ .FileName }}, error)
-	GetList(ctx *gin.Context, cond *req.{{ .FileName }}GetList) (*models.PageResult[*models.{{ .FileName }}], error)
-	Create(ctx *gin.Context, cond *req.{{ .FileName }}Create) (id any, err error)
-	Update(ctx *gin.Context, cond *req.{{ .FileName }}Update) (err error)
-	Delete(ctx *gin.Context, cond *req.{{ .FileName }}Delete) (err error)
+	Get(ctx *gin.Context, cond *request.{{ .FileName }}Get) (*po.{{ .FileName }}, error)
+	GetList(ctx *gin.Context, cond *request.{{ .FileName }}GetList) (*po.PageResult[*po.{{ .FileName }}], error)
+	Create(ctx *gin.Context, cond *request.{{ .FileName }}Create) (id any, err error)
+	Update(ctx *gin.Context, cond *request.{{ .FileName }}Update) (err error)
+	Delete(ctx *gin.Context, cond *request.{{ .FileName }}Delete) (err error)
 }
 
 func New{{ .FileName }}Service(in DigIn) I{{ .FileName }}Service {
@@ -25,35 +25,35 @@ type {{ .FileNameTitleLower }}Service struct {
 	In DigIn
 }
 
-func (s {{ .FileNameTitleLower }}Service) Get(ctx *gin.Context, cond *req.{{ .FileName }}Get) (*models.{{ .FileName }}, error) {
+func (s {{ .FileNameTitleLower }}Service) Get(ctx *gin.Context, cond *request.{{ .FileName }}Get) (*po.{{ .FileName }}, error) {
 	db := s.In.DB.Session(ctx)
 	return s.In.Repository.{{ .FileName }}Repo.Get(db, cond)
 }
 
-func (s {{ .FileNameTitleLower }}Service) GetList(ctx *gin.Context, cond *req.{{ .FileName }}GetList) (*models.PageResult[*models.{{ .FileName }}], error) {
+func (s {{ .FileNameTitleLower }}Service) GetList(ctx *gin.Context, cond *request.{{ .FileName }}GetList) (*po.PageResult[*po.{{ .FileName }}], error) {
 	db := s.In.DB.Session(ctx)
 	return s.In.Repository.{{ .FileName }}Repo.GetList(db, cond)
 }
 
-func (s {{ .FileNameTitleLower }}Service) Create(ctx *gin.Context, cond *req.{{ .FileName }}Create) (id any, err error) {
+func (s {{ .FileNameTitleLower }}Service) Create(ctx *gin.Context, cond *request.{{ .FileName }}Create) (id any, err error) {
 	db := s.In.DB.Session(ctx)
-	insertData := &models.{{ .FileName }}{ID: uuid.New()}
+	insertData := &po.{{ .FileName }}{ID: uuid.New()}
 	if err := copier.Copy(insertData, cond); err != nil {
 		return nil, err
 	}
 	return s.In.Repository.{{ .FileName }}Repo.Create(db, insertData)
 }
 
-func (s {{ .FileNameTitleLower }}Service) Update(ctx *gin.Context, cond *req.{{ .FileName }}Update) (err error) {
+func (s {{ .FileNameTitleLower }}Service) Update(ctx *gin.Context, cond *request.{{ .FileName }}Update) (err error) {
 	db := s.In.DB.Session(ctx)
-	updateData := &models.{{ .FileName }}{}
+	updateData := &po.{{ .FileName }}{}
 	if err := copier.Copy(updateData, cond); err != nil {
 		return err
 	}
 	return s.In.Repository.{{ .FileName }}Repo.Update(db, updateData)
 }
 
-func (s {{ .FileNameTitleLower }}Service) Delete(ctx *gin.Context, cond *req.{{ .FileName }}Delete) (err error) {
+func (s {{ .FileNameTitleLower }}Service) Delete(ctx *gin.Context, cond *request.{{ .FileName }}Delete) (err error) {
 	db := s.In.DB.Session(ctx)
 	return s.In.Repository.{{ .FileName }}Repo.Delete(db, cond.ID)
 }

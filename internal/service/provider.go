@@ -20,6 +20,7 @@ func NewService(in DigIn) *Service {
 		GroupMembersSrv:    NewGroupMembersService(in),
 		RouteCacheSrv:      NewRouteCacheService(in),
 		GroupInvitationSrv: NewGroupInvitationService(in),
+		MessageSrv:         NewMessageService(in),
 	}
 }
 
@@ -35,6 +36,7 @@ type Service struct {
 	GroupMembersSrv    IGroupMembersService
 	RouteCacheSrv      IRouteCacheService
 	GroupInvitationSrv IGroupInvitationService
+	MessageSrv         IMessageService
 }
 
 // DigIn repository require independence
