@@ -30,8 +30,8 @@ func (h wsHandler) Connect(ctx *gin.Context) {
 		return
 	}
 
-	// base object create
-	gSocket := msggateway.NewGWebSocket(1,
+	// 創建長連線物件
+	gSocket := msggateway.NewClientConn(1,
 		time.Duration(h.in.Config.WsConfig.HandshakeTimeoutSec*int(time.Second)),
 		h.in.Config.WsConfig.WriteBufferSize)
 

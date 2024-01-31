@@ -1,7 +1,10 @@
 package request
 
 import (
+	"time"
+
 	"im/internal/models/po"
+	"im/internal/pkg/consts/enums"
 
 	"gorm.io/gorm"
 )
@@ -17,7 +20,16 @@ func (list MessageGetList) Scope(db *gorm.DB) *gorm.DB {
 	return db
 }
 
-type MessageCreate struct{}
+type MessageCreate struct {
+	ID         string
+	Sender     string
+	Recipient  string
+	MsgContent []byte
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	Status     enums.MessageStatus
+	MsgType    enums.MessageType
+}
 
 type MessageUpdate struct{}
 

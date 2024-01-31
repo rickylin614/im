@@ -31,6 +31,10 @@ type IStatusCode interface {
 	GetStatusCode() int
 }
 
+func Background() *gin.Context {
+	return &gin.Context{}
+}
+
 func SetError(ctx *gin.Context, err error) {
 	code, msg, data, statusCode := ParseError(err)
 	response := response.APIResponse[any]{

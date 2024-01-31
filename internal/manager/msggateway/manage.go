@@ -1,12 +1,14 @@
 package msggateway
 
 import (
+	"context"
 	"log/slog"
 	"net/http"
 	"sync"
 	"sync/atomic"
 	"time"
 
+	"im/internal/models/po"
 	"im/internal/pkg/config"
 	"im/internal/pkg/consts/enums"
 	"im/internal/pkg/signalctx"
@@ -21,8 +23,8 @@ import (
 type IWsManager interface {
 	Run(ctx *signalctx.Context) error
 	// wsHandler(w http.ResponseWriter, r *http.Request)
-	NewClient(ctx *gin.Context, conn LongConn, isBackground, isCompress bool, token string) *Client
-	GetUserAllCons(userID string) ([]*Client, bool)
+	NewClient(ctx *gin.Context, conn IClientConn, isBackground, isCompress bool, token string) *Client
+	GetUserAllConnects(userID string) ([]*Client, bool)
 	GetUserPlatformCons(userID string, platform int) ([]*Client, bool, bool)
 	Validate(s any) error
 	// SetCacheHandler(cache cache.MsgModel)
@@ -30,10 +32,11 @@ type IWsManager interface {
 	KickUserConn(client *Client) error
 	Register(c *Client) error
 	UnRegister(c *Client)
+
+	SendMessage(context context.Context, data *po.Message) error
 	// SetKickHandlerInfo(i *kickHandler)
 	Compressor
 	Encoder
-	MessageHandler
 }
 
 type digIn struct {
@@ -44,11 +47,13 @@ type digIn struct {
 }
 
 type WsManager struct {
-	wsMaxConnNum      int64             // 設定檔限制的最大連線數量
-	registerChan      chan *Client      // 註冊Chan
-	unregisterChan    chan *Client      // 註銷Chan
-	kickHandlerChan   chan *kickHandler // 踢人Chan
-	clients           *UserMap
+	wsMaxConnNum    int64             // 設定檔限制的最大連線數量
+	registerChan    chan *Client      // 註冊Chan
+	unregisterChan  chan *Client      // 註銷Chan
+	kickHandlerChan chan *kickHandler // 踢人Chan
+
+	clients *UserMap // 管理用戶列表
+
 	onlineUserNum     atomic.Int64     // 統計在線用戶數量
 	onlineUserConnNum atomic.Int64     // 統計在線總連線數量(含同用戶多個連線)
 	onlineUserGauge   prometheus.Gauge // 給prometheus監聽統計的數據
@@ -62,7 +67,6 @@ type WsManager struct {
 
 	Compressor
 	Encoder
-	MessageHandler
 }
 
 func NewWsManger(in digIn) IWsManager {
@@ -95,14 +99,14 @@ func NewWsManger(in digIn) IWsManager {
 }
 
 // NewClient implements LongConnServer.
-func (w *WsManager) NewClient(ctx *gin.Context, conn LongConn, isBackground, isCompress bool, token string) *Client {
+func (w *WsManager) NewClient(ctx *gin.Context, conn IClientConn, isBackground, isCompress bool, token string) *Client {
 	client, _ := w.clientPool.Get().(*Client)
 	client.ResetClient(ctx, conn, isBackground, isCompress, token)
 	return client
 }
 
-// GetUserAllCons implements LongConnServer.
-func (*WsManager) GetUserAllCons(userID string) ([]*Client, bool) {
+// GetUserAllConnects implements LongConnServer.
+func (*WsManager) GetUserAllConnects(userID string) ([]*Client, bool) {
 	panic("unimplemented")
 }
 
@@ -117,7 +121,7 @@ func (*WsManager) KickUserConn(client *Client) error {
 }
 
 // Run implements LongConnServer.
-func (ws *WsManager) Run(ctx *signalctx.Context) error {
+func (w *WsManager) Run(ctx *signalctx.Context) error {
 	ctx.Increment()
 	defer ctx.Decrement()
 
@@ -129,12 +133,12 @@ func (ws *WsManager) Run(ctx *signalctx.Context) error {
 			case <-ctx.Done():
 				// TODO unregister all client
 				return
-			case client = <-ws.registerChan:
-				ws.registerClient(client)
-			case client = <-ws.unregisterChan:
-				ws.unregisterClient(client)
-			case onlineInfo := <-ws.kickHandlerChan:
-				ws.kickClient(onlineInfo)
+			case client = <-w.registerChan:
+				w.registerClient(client)
+			case client = <-w.unregisterChan:
+				w.unregisterClient(client)
+			case onlineInfo := <-w.kickHandlerChan:
+				w.kickClient(onlineInfo)
 			}
 		}
 	}()
@@ -169,16 +173,16 @@ func (*WsManager) wsHandler(w http.ResponseWriter, r *http.Request) {
 	panic("unimplemented")
 }
 
-func (ws *WsManager) registerClient(client *Client) {
-	old, userOK := ws.clients.Get(client.UserID)
+func (w *WsManager) registerClient(client *Client) {
+	old, userOK := w.clients.Get(client.UserID)
 	if !userOK { // 用戶完全沒連線
-		ws.clients.Set(client.UserID, client)
-		ws.onlineUserNum.Add(1)
-		ws.onlineUserGauge.Add(1)
+		w.clients.Set(client.UserID, client)
+		w.onlineUserNum.Add(1)
+		w.onlineUserGauge.Add(1)
 	} else { // 該用戶有同平台的連線
-		ws.multiTerminalLoginChecker(old, client)
+		w.multiTerminalLoginChecker(old, client)
 	}
-	ws.onlineUserConnNum.Add(1)
+	w.onlineUserConnNum.Add(1)
 
 	// 向倉儲註冊用戶資訊
 	wg := sync.WaitGroup{}
@@ -189,40 +193,40 @@ func (ws *WsManager) registerClient(client *Client) {
 	}()
 	go func() {
 		defer wg.Done()
-		ws.SetUserOnlineStatus(client.ctx, client, enums.Online)
+		w.SetUserOnlineStatus(client.ctx, client, enums.Online)
 	}()
 	wg.Wait()
 }
 
-func (ws *WsManager) unregisterClient(client *Client) {
+func (w *WsManager) unregisterClient(client *Client) {
 	// 放回池子減少記憶體增減
-	defer ws.clientPool.Put(client)
+	defer w.clientPool.Put(client)
 
-	isDelete := ws.clients.delete(client.UserID, client.ctx.RemoteIP())
+	isDelete := w.clients.delete(client.UserID, client.ctx.RemoteIP())
 	if isDelete { // 該用戶沒有其他在線連線
-		ws.onlineUserNum.Add(-1)
-		ws.onlineUserGauge.Add(-1)
+		w.onlineUserNum.Add(-1)
+		w.onlineUserGauge.Add(-1)
 	}
-	ws.onlineUserConnNum.Add(-1)
-	ws.SetUserOnlineStatus(client.ctx, client, enums.Offline)
+	w.onlineUserConnNum.Add(-1)
+	w.SetUserOnlineStatus(client.ctx, client, enums.Offline)
 	slog.InfoContext(client.ctx, "user offline",
 		", close reason: ", client.closedErr,
-		", online user Num: ", ws.onlineUserNum.Load(),
-		", online user conn Num: ", ws.onlineUserConnNum.Load(),
+		", online user Num: ", w.onlineUserNum.Load(),
+		", online user conn Num: ", w.onlineUserConnNum.Load(),
 	)
 }
 
 // multiTerminalLoginChecker 同用戶不同裝置登入是否剔除判斷
-func (ws *WsManager) multiTerminalLoginChecker(oldClients []*Client, newClient *Client) {
+func (w *WsManager) multiTerminalLoginChecker(oldClients []*Client, newClient *Client) {
 	// 目前不阻擋
 	return
 }
 
 // kickClient 踢出指定用戶所有連線
-func (ws *WsManager) kickClient(kick *kickHandler) {
-	isDelete := ws.clients.deleteClients(kick.newClient.UserID, kick.oldClients)
+func (w *WsManager) kickClient(kick *kickHandler) {
+	isDelete := w.clients.deleteClients(kick.newClient.UserID, kick.oldClients)
 	if isDelete {
-		ws.onlineUserNum.Add(-1)
+		w.onlineUserNum.Add(-1)
 	}
 	for _, c := range kick.oldClients {
 		err := c.KickOnlineMessage()
@@ -236,7 +240,7 @@ func (ws *WsManager) kickClient(kick *kickHandler) {
 }
 
 // SetUserOnlineStatus 更新user在線資訊
-func (ws *WsManager) SetUserOnlineStatus(ctx *gin.Context, client *Client, status enums.IsOnline) {
+func (w *WsManager) SetUserOnlineStatus(ctx *gin.Context, client *Client, status enums.IsOnline) {
 	// TODO 向倉儲更新user在線資訊
 }
 
@@ -244,4 +248,23 @@ type kickHandler struct {
 	clientOK   bool
 	oldClients []*Client
 	newClient  *Client
+}
+
+func (w *WsManager) SendMessage(context context.Context, data *po.Message) error {
+	if cs, ok := w.clients.Get(data.Recipient); ok {
+		for _, c := range cs {
+			switch data.MsgType {
+			case enums.SingleChatType:
+				if err := c.handleMessage(data.MsgContent); err != nil {
+					return err
+				}
+				return c.writeBinaryMsg(data.MsgContent)
+			case enums.GroupChatType:
+			case enums.NotificationChatType:
+			case enums.SuperGroupChatType:
+			}
+		}
+	}
+
+	return nil
 }

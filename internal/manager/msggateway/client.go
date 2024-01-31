@@ -43,7 +43,7 @@ const (
 
 type Client struct {
 	w    *sync.Mutex
-	conn LongConn
+	conn IClientConn
 	// PlatformID     int    `json:"platformID"`
 	IsCompress   bool      `json:"isCompress"` // 訊息是否要壓縮、目前寫死 false 在建立連線的時候
 	UserID       string    `json:"userID"`     // 用戶ID
@@ -58,7 +58,7 @@ type Client struct {
 	wsManager IWsManager
 }
 
-func newClient(ctx *gin.Context, conn LongConn, isCompress bool) *Client {
+func newClient(ctx *gin.Context, conn IClientConn, isCompress bool) *Client {
 	return &Client{
 		w:          new(sync.Mutex),
 		conn:       conn,
@@ -71,7 +71,7 @@ func newClient(ctx *gin.Context, conn LongConn, isCompress bool) *Client {
 
 func (c *Client) ResetClient(
 	ctx *gin.Context,
-	conn LongConn,
+	conn IClientConn,
 	isBackground, isCompress bool,
 	token string,
 ) {
@@ -162,8 +162,11 @@ func (c *Client) handleMessage(message []byte) error {
 			return fmt.Errorf("%w", err)
 		}
 	}
-
 	return nil
+}
+
+func (c *Client) handleStrMessage(message string) error {
+	return c.handleMessage([]byte(message))
 }
 
 func (c *Client) setAppBackgroundStatus(ctx context.Context) ([]byte, error) {
@@ -203,14 +206,11 @@ func (c *Client) writeBinaryMsg(b []byte) error {
 	if c.closed.Load() {
 		return nil
 	}
-
-	// TODO
-
+	
 	c.w.Lock()
 	defer c.w.Unlock()
 
-	// TODO
-	return nil
+	return c.conn.WriteMessage(MessageBinary, b)
 }
 
 func (c *Client) writeStringMsg(s string) error {

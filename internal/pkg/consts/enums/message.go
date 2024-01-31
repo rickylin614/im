@@ -8,3 +8,12 @@ const (
 	Deleted
 	Hidden
 )
+
+type MessageType int
+
+const (
+	SingleChatType MessageType = iota + 1
+	GroupChatType
+	SuperGroupChatType
+	NotificationChatType
+)

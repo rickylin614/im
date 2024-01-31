@@ -79,7 +79,7 @@ package po
 // 	ID         uint                 `gorm:"primaryKey"`
 // 	SenderID   uint                 `gorm:"not null"`
 // 	ReceiverID uint                 `gorm:"not null"`
-// 	Content    string               `gorm:"not null"`
+// 	MsgContent    string               `gorm:"not null"`
 // 	Timestamp  time.Time            `gorm:"not null"`
 // 	Status     consts.MessageStatus `gorm:"not null"` // 狀態: 正常, 收回, 刪除, 隱藏
 // }

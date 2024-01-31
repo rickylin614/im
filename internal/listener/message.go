@@ -41,15 +41,20 @@ func (m MessageListener) Start(workerNum int) {
 				select {
 				case <-m.in.Ctx.Done():
 					return
-				case message := <-msg:
-					processMsg(m.in, message)
+				case recMsg := <-msg:
+					processMsg(m.in, recMsg)
 				}
 			}
 		}()
 	}
 }
 
-func processMsg(in digIn, msg *message.Message) (err error) {
+// processMsg
+//
+// param: in 依賴
+// param: msg 訂閱的訊息
+func processMsg(in digIn, msg *message.Message) {
+	var err error
 	defer func() {
 		if err == nil {
 			msg.Ack()
@@ -62,8 +67,8 @@ func processMsg(in digIn, msg *message.Message) (err error) {
 	}
 
 	// 丟進ws處理器
+	ctx := context.Background()
+	err = in.WsManager.SendMessage(ctx, msgModel)
 
-	// 進入到DB裡面
-
-	return nil
+	return
 }

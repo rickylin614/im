@@ -4,6 +4,7 @@ import (
 	"github.com/ThreeDotsLabs/watermill/message"
 	"go.uber.org/dig"
 
+	"im/internal/manager/msggateway"
 	"im/internal/pkg/signalctx"
 	"im/internal/service"
 )
@@ -18,6 +19,7 @@ type digIn struct {
 	Ctx        *signalctx.Context
 	Publisher  message.Publisher
 	Subscriber message.Subscriber
+	WsManager  msggateway.IWsManager
 
 	Service service.Service
 }
