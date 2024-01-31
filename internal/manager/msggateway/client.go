@@ -133,7 +133,7 @@ func (c *Client) ReadMessage() {
 			parseDataErr := c.handleMessage(message)
 			c.writeStringMsg(fmt.Sprintf("第%d次溝通 收到訊息:%s", count, message))
 			count++
-			slog.Debug("ws recieve", string(message))
+			slog.Debug("ws recieve", "msg", string(message))
 			if parseDataErr != nil {
 				c.closedErr = parseDataErr
 				return
@@ -206,7 +206,7 @@ func (c *Client) writeBinaryMsg(b []byte) error {
 	if c.closed.Load() {
 		return nil
 	}
-	
+
 	c.w.Lock()
 	defer c.w.Unlock()
 

@@ -32,7 +32,7 @@ func NewMessageListener(in digIn) IMessageListener {
 func (m MessageListener) Start(workerNum int) {
 	msg, err := m.in.Subscriber.Subscribe(context.Background(), topic.MSG)
 	if err != nil {
-		slog.Error("MessageListener Start Error", err.Error())
+		slog.Error("MessageListener Start Error", "error", err.Error())
 	}
 
 	for i := 0; i < workerNum; i++ {
