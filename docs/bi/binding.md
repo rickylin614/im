@@ -8,7 +8,6 @@
 
 - https://github.com/go-playground/validator
 
-
 ## 常用
 常用: 
 
@@ -34,6 +33,38 @@ type MyData struct {
     Password string `json:"password" binding:"required,min=8"`
 }
 ```
+
+## 實現翻譯 / 有需求可再擴充成多語系提示訊息
+
+- https://github.com/rickylin614/im/blob/main/internal/util/ctxs/ctxs.go
+  > 根據以下實現binding錯誤訊息翻譯
+  ```go
+    func ParseBindingErrMsg(err error) ([]string, bool) {
+      var ValidationErrors validator.ValidationErrors
+      if !errors.As(err, &ValidationErrors) {
+          return nil, false
+      }
+  
+      var errorMessages []string
+      for _, fieldErr := range ValidationErrors {
+          switch fieldErr.Tag() {
+          case "required":
+              errorMessages = append(errorMessages, fmt.Sprintf("%s 是必填字段", fieldErr.Field()))
+          case "alphanum":
+              errorMessages = append(errorMessages, fmt.Sprintf("%s 只能包含字母和数字字符", fieldErr.Field()))
+          case "min":
+              errorMessages = append(errorMessages, fmt.Sprintf("%s 长度必须至少为 %s 个字符", fieldErr.Field(), fieldErr.Param()))
+          case "max":
+              errorMessages = append(errorMessages, fmt.Sprintf("%s 长度必须不可多余 %s 个字符", fieldErr.Field(), fieldErr.Param()))
+      // ...
+          default:
+              errorMessages = append(errorMessages, fmt.Sprintf("%s 无效参数", fieldErr))
+          }
+      }
+
+      return errorMessages, true
+    }
+  ```
 
 ### 其餘
 
