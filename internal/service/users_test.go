@@ -62,6 +62,7 @@ func (suite *UserServiceTestSuite) SetupSuite() {
 	ctx, _ := gin.CreateTestContext(w)
 	ctx.Request = request
 	suite.ctx = ctx
+	suite.Deps.LoginRecordRepo.On("Create", mock.Anything, mock.AnythingOfType("*po.LoginRecord")).Return(nil, nil)
 }
 
 // Before each test
@@ -163,7 +164,7 @@ func (suite *UserServiceTestSuite) TestLogin() {
 
 	suite.Deps.UsersRepo.On("Get", mock.Anything, mock.AnythingOfType("*request.UsersGet")).Return(expectedUser, nil).Once()
 	suite.Deps.UsersRepo.On("SetToken", suite.ctx, expectedUser.ID, mock.Anything, mock.AnythingOfType("string")).Return(nil).Once()
-	suite.Deps.LoginRecordRepo.On("Create", mock.Anything, mock.AnythingOfType("*po.LoginRecord")).Return(nil, nil).Once()
+
 	token, err := suite.UsersService.Login(suite.ctx, loginCond)
 
 	suite.NoError(err)
@@ -192,7 +193,6 @@ func (suite *UserServiceTestSuite) TestLoginPasswordVerificationFailed() {
 	expectedUser := &po.Users{Username: "existinguser", PasswordHash: crypto.Hash("correctpassword")}
 
 	suite.Deps.UsersRepo.On("Get", mock.Anything, mock.AnythingOfType("*request.UsersGet")).Return(expectedUser, nil).Once()
-	suite.Deps.LoginRecordRepo.On("Create", mock.Anything, mock.AnythingOfType("*po.LoginRecord")).Return(nil, nil).Once()
 	token, err := suite.UsersService.Login(suite.ctx, loginCond)
 
 	suite.Error(err)
@@ -208,7 +208,6 @@ func (suite *UserServiceTestSuite) TestLoginUserStatusBlocked() {
 	expectedUser := &po.Users{Username: "blockeduser", PasswordHash: crypto.Hash("password123"), Status: enums.UserStatusBlocked}
 
 	suite.Deps.UsersRepo.On("Get", mock.Anything, mock.AnythingOfType("*request.UsersGet")).Return(expectedUser, nil).Once()
-	suite.Deps.LoginRecordRepo.On("Create", mock.Anything, mock.AnythingOfType("*po.LoginRecord")).Return(nil, nil).Once()
 	token, err := suite.UsersService.Login(suite.ctx, loginCond)
 
 	suite.Error(err)
@@ -225,7 +224,6 @@ func (suite *UserServiceTestSuite) TestSetTokenFail() {
 
 	suite.Deps.UsersRepo.On("Get", mock.Anything, mock.AnythingOfType("*request.UsersGet")).Return(expectedUser, nil).Once()
 	suite.Deps.UsersRepo.On("SetToken", suite.ctx, expectedUser.ID, mock.Anything, mock.AnythingOfType("string")).Return(errs.CommonServiceUnavailable).Once()
-	suite.Deps.LoginRecordRepo.On("Create", mock.Anything, mock.AnythingOfType("*po.LoginRecord")).Return(nil, nil).Once()
 	suite.mock.On("Error", suite.ctx, fmt.Errorf("service set token err: %w", errs.CommonServiceUnavailable))
 	token, err := suite.UsersService.Login(suite.ctx, loginCond)
 
