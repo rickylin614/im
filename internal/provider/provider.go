@@ -12,6 +12,7 @@ import (
 	"im/internal/pkg/localcache"
 	"im/internal/pkg/logger"
 	"im/internal/pkg/mongo"
+	"im/internal/pkg/prom"
 	"im/internal/pkg/queue"
 	"im/internal/pkg/rcache"
 	"im/internal/pkg/redis"
@@ -43,6 +44,9 @@ func New() *dig.Container {
 			panic(err)
 		}
 		if err := container.Provide(localcache.NewLocalCache); err != nil {
+			panic(err)
+		}
+		if err := container.Provide(prom.NewPromManager); err != nil {
 			panic(err)
 		}
 		// localcache

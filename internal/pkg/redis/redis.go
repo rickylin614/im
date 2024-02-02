@@ -6,20 +6,33 @@ import (
 
 	"github.com/go-redsync/redsync/v4"
 	"github.com/go-redsync/redsync/v4/redis/goredis/v9"
+	"github.com/redis/go-redis/extra/redisprometheus/v9"
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/dig"
 
 	"im/internal/pkg/config"
+	"im/internal/pkg/prom"
 )
 
 type digIn struct {
 	dig.In
 
 	Config *config.Config
+	Prom   *prom.Manager
+}
+
+type digOut struct {
+	dig.Out
+
+	Rdb   redis.UniversalClient
+	Rsync *redsync.Redsync
 }
 
 // NewRedis
-func NewRedis(in digIn) redis.UniversalClient {
+func NewRedis(in digIn) digOut {
+	if !in.Config.RedisConfig.Enable {
+		return digOut{Rdb: nil, Rsync: nil}
+	}
 	var rdb redis.UniversalClient
 	addrs := strings.Split(in.Config.RedisConfig.Address, ",")
 	if len(addrs) == 1 {
@@ -45,11 +58,13 @@ func NewRedis(in digIn) redis.UniversalClient {
 			ConnMaxIdleTime: time.Duration(in.Config.RedisConfig.IdleTimeout) * time.Second,
 		})
 	}
+	if in.Config.PromConfig.EnableRedis {
+		collector := redisprometheus.NewCollector("namespace", "subsystem", rdb)
+		in.Prom.Registry.MustRegister(collector)
+	}
 
-	return rdb
-}
+	pool := goredis.NewPool(rdb)
+	rsync := redsync.New(pool)
 
-func NewRedisLock(in redis.UniversalClient) *redsync.Redsync {
-	pool := goredis.NewPool(in)
-	return redsync.New(pool)
+	return digOut{Rdb: rdb, Rsync: rsync}
 }

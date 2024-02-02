@@ -26,7 +26,8 @@ func (b baseHandler) Ping(ctx *gin.Context) {
 // @Success 200 {string} string
 // @Router /metrics [get]
 func (b baseHandler) Metrics() gin.HandlerFunc {
-	promHandler := promhttp.Handler()
+	registry := b.in.Prom.Gather
+	promHandler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
 	return func(c *gin.Context) {
 		promHandler.ServeHTTP(c.Writer, c.Request)
 	}

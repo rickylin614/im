@@ -40,7 +40,9 @@ func (r WebRouter) SetRouter(router *gin.Engine) {
 func (r WebRouter) setPublicRouter(router *gin.RouterGroup) {
 
 	router.GET("/ping", r.in.Handler.BaseHandler.Ping)
-	router.GET("/metrics", r.in.Handler.BaseHandler.Metrics())
+	if r.in.Config.PromConfig.Enable {
+		router.GET("/metrics", r.in.Handler.BaseHandler.Metrics())
+	}
 
 	// example
 	router.GET("/example/:id", r.in.Handler.ExampleHandler.Get)

@@ -6,6 +6,7 @@ import (
 	"im/internal/manager/msggateway"
 	"im/internal/pkg/config"
 	"im/internal/pkg/logger"
+	"im/internal/pkg/prom"
 	"im/internal/service"
 )
 
@@ -48,6 +49,7 @@ type webDigIn struct {
 	dig.In
 
 	Service *service.Service
+	Prom    *prom.Manager
 }
 
 // NewWebSocketHandler

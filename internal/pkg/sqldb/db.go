@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 	"gorm.io/plugin/dbresolver"
+	"gorm.io/plugin/prometheus"
 )
 
 type Client interface {
@@ -40,11 +41,12 @@ func (g *GormDB) GetMock() sqlmock.Sqlmock {
 }
 
 func newDB(in digIn) Client {
+	dbName := in.Config.MySQLConfig.Database
 	dbSetting := [4]string{
 		in.Config.MySQLConfig.Username,
 		in.Config.MySQLConfig.Password,
 		in.Config.MySQLConfig.Master,
-		in.Config.MySQLConfig.Database,
+		dbName,
 	}
 	masterDB := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=UTC", dbSetting[0], dbSetting[1], dbSetting[2], dbSetting[3])
 	slaveDB := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=UTC", dbSetting[0], dbSetting[1], dbSetting[2], dbSetting[3])
@@ -69,10 +71,32 @@ func newDB(in digIn) Client {
 		panic(fmt.Sprintf("conn: %s err: %v", masterDB, err))
 	}
 
-	db.Use(dbresolver.Register(dbresolver.Config{
+	err = db.Use(dbresolver.Register(dbresolver.Config{
 		Sources:  []gorm.Dialector{mysql.Open(masterDB)},
 		Replicas: []gorm.Dialector{mysql.Open(slaveDB)},
 	}))
+	if err != nil {
+		panic(err)
+	}
+
+	// 內部會註冊 prometheus 原套件, PushAddr & StartServer 皆不使用
+	if in.Config.PromConfig.EnableDB {
+		db.Use(prometheus.New(prometheus.Config{
+			DBName:          dbName, // 使用 `DBName` 作为指标 label
+			RefreshInterval: 15,     // 指标刷新频率（默认为 15 秒）
+			PushAddr:        "",     // 如果配置了 `PushAddr`，则推送指标
+			StartServer:     false,  // 启用一个 http 服务来暴露指标
+			HTTPServerPort:  8080,   // 配置 http 服务监听端口，默认端口为 8080
+			MetricsCollector: []prometheus.MetricsCollector{ // 用户自定义指标
+				&prometheus.MySQL{
+					VariableNames: []string{"Threads_running"},
+				},
+			},
+		}))
+		if err != nil {
+			panic(err)
+		}
+	}
 
 	// 註冊頁碼PreQuery
 	// AddPreQueryCallback(db)

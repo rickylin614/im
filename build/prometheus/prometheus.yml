@@ -1,0 +1,9 @@
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'localhost'
+    metrics_path: '/im/metrics'
+    static_configs:
+      - targets: ['10.126.6.43:9000']

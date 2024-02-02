@@ -11,6 +11,7 @@ import (
 	"im/internal/models/po"
 	"im/internal/pkg/config"
 	"im/internal/pkg/consts/enums"
+	"im/internal/pkg/prom"
 	"im/internal/pkg/signalctx"
 	"im/internal/util/errs"
 
@@ -44,6 +45,7 @@ type digIn struct {
 
 	Conf *config.Config
 	Ctx  *signalctx.Context
+	Prom *prom.Manager
 }
 
 type WsManager struct {
@@ -82,14 +84,11 @@ func NewWsManger(in digIn) IWsManager {
 		registerChan:    make(chan *Client, 1000),
 		unregisterChan:  make(chan *Client, 1000),
 		kickHandlerChan: make(chan *kickHandler, 1000),
-		onlineUserGauge: prometheus.NewGauge(prometheus.GaugeOpts{ // TODO 另外創建一個集中管理的結構體
-			Name: "online_user_num",
-			Help: "The number of online user num",
-		}),
-		validate:   validator.New(),
-		clients:    newUserMap(),
-		Compressor: NewGzipCompressor(),
-		Encoder:    NewGobEncoder(),
+		onlineUserGauge: in.Prom.OnlineUserGauge,
+		validate:        validator.New(),
+		clients:         newUserMap(),
+		Compressor:      NewGzipCompressor(),
+		Encoder:         NewGobEncoder(),
 	}
 	manager.clientPool.New = func() any {
 		return newClient(nil, nil, false)

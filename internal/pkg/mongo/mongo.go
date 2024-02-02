@@ -2,13 +2,12 @@ package mongo
 
 import (
 	"context"
-	"fmt"
 	"strings"
 	"time"
 
+	"github.com/rickylin614/common/cmongo"
 	"go.uber.org/dig"
 
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"im/internal/pkg/config"
@@ -19,12 +18,11 @@ type DigIn struct {
 	Config *config.Config
 }
 
-type Mongo struct {
-	client   *mongo.Client
-	database *mongo.Database
-}
-
-func NewMongoDB(in DigIn) *Mongo {
+func NewMongoDB(in DigIn) cmongo.Client {
+	if !in.Config.MongoConfig.Enable {
+		return nil
+	}
+	
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -40,19 +38,11 @@ func NewMongoDB(in DigIn) *Mongo {
 		SetHosts(hosts).
 		SetAuth(credential)
 
-	client, err := mongo.Connect(ctx, connectOptions)
+	client := cmongo.NewMongoDB()
+	client, err := client.Connect(ctx, mongoConfig.DB, connectOptions)
 	if err != nil {
-		panic(fmt.Sprintf("Init mongo error: %s", err))
+		panic(err)
 	}
 
-	database := client.Database(mongoConfig.DB)
-
-	return &Mongo{
-		client:   client,
-		database: database,
-	}
-}
-
-func (m *Mongo) GetDB() *mongo.Database {
-	return m.database
+	return client
 }

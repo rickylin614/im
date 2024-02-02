@@ -4,6 +4,7 @@ config:
     env: "local"
     level: "debug"
   mysql_config:
+    enable: true
     master: "localhost:3306"
     slave: "localhost:3306"
     username: "root"
@@ -17,6 +18,7 @@ config:
     port: ":9000"
     debug_mode: true
   redis_config:
+    enable: false
     address: "localhost:6379"
     Password: ""
     max_idle: 10
@@ -26,6 +28,7 @@ config:
     read_timeout: 10
     write_timeout: 3
   mongo_config:
+    enable: false
     host: "localhost:27017"
     user: "root"
     passwd: "123456"
@@ -52,6 +55,12 @@ config:
     topic: "topic"
   queue_config:
     mode: "redis"
+  prom_config:
+    enable: true
+    enable_db: false
+    enable_redis: false
+    
+
 
 
 

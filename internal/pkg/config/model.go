@@ -13,6 +13,7 @@ type Config struct {
 	} `mapstructure:"gin_config"`
 
 	MySQLConfig struct {
+		Enable         bool   `mapstructure:"enable"`
 		Master         string `mapstructure:"master" env:"MYSQL_MASTER_HOST"`
 		Slave          string `mapstructure:"slave" env:"MYSQL_SLAVE_HOST"`
 		Username       string `mapstructure:"username"`
@@ -25,6 +26,7 @@ type Config struct {
 	} `mapstructure:"mysql_config"`
 
 	RedisConfig struct {
+		Enable         bool   `mapstructure:"enable"`
 		Address        string `mapstructure:"address" env:"REDIS_HOST"`
 		Password       string `mapstructure:"password"`
 		MaxIdle        int    `mapstructure:"max_idle"`
@@ -36,6 +38,7 @@ type Config struct {
 	} `mapstructure:"redis_config"`
 
 	MongoConfig struct {
+		Enable      bool   `mapstructure:"enable"`
 		Host        string `mapstructure:"host"`
 		Password    string `mapstructure:"passwd"`
 		User        string `mapstructure:"user"`
@@ -72,4 +75,10 @@ type Config struct {
 	QueueConfig struct {
 		Mode string `mapstructure:"mode"` // 使用哪種模式 Ex: go channel / redis / kafka
 	} `mapstructure:"queue_config"`
+
+	PromConfig struct {
+		Enable      bool `mapstructure:"enable"`
+		EnableDB    bool `mapstructure:"enable_db"`
+		EnableRedis bool `mapstructure:"enable_redis"`
+	} `mapstructure:"prom_config"`
 }
