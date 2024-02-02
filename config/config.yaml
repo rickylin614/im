@@ -59,6 +59,8 @@ config:
     enable: true
     enable_db: false
     enable_redis: false
+  listener_config:
+    enable: true
     
 
 

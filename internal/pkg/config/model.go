@@ -76,9 +76,13 @@ type Config struct {
 		Mode string `mapstructure:"mode"` // 使用哪種模式 Ex: go channel / redis / kafka
 	} `mapstructure:"queue_config"`
 
-	PromConfig struct {
+	PromConfig struct { // 監控服務設定
 		Enable      bool `mapstructure:"enable"`
 		EnableDB    bool `mapstructure:"enable_db"`
 		EnableRedis bool `mapstructure:"enable_redis"`
 	} `mapstructure:"prom_config"`
+
+	ListenerConfig struct { // 監聽器
+		Enable bool `mapstructure:"enable"`
+	} `mapstructure:"listener_config"`
 }
