@@ -11,7 +11,8 @@ import (
 
 func NewListener(in digIn) digOut {
 	return digOut{
-		MessageListener: NewMessageListener(in),
+		MessageListener:     NewMessageListener(in),
+		MessageSaveListener: NewMessageSaveListener(in),
 	}
 }
 
@@ -27,5 +28,6 @@ type digIn struct {
 type digOut struct {
 	dig.Out
 
-	MessageListener IMessageListener
+	MessageListener     IListener `name:"messageListener"`
+	MessageSaveListener IListener `name:"messageSaveListener"`
 }

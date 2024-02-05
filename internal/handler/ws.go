@@ -45,7 +45,7 @@ func (h wsHandler) Connect(ctx *gin.Context) {
 	// 會員資料 member info
 	client := h.in.WsManager.NewClient(ctx, gSocket, true, false, "")
 
-	// 註冊 (create message listener here)
+	// 註冊 (create message listener.go here)
 	err = h.in.WsManager.Register(client)
 	if err != nil {
 		ctxs.SetError(ctx, err)

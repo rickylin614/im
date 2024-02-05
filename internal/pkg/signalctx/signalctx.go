@@ -2,10 +2,10 @@ package signalctx
 
 import (
 	"context"
+	"log/slog"
 	"os"
 	"os/signal"
 	"sync"
-	"sync/atomic"
 )
 
 // Context 實現關機
@@ -34,11 +34,16 @@ func (c *Context) Value(key interface{}) interface{} {
 }
 
 func (c *Context) Increment() {
-	atomic.AddInt64(&c.counter, 1)
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.counter += 1
 }
 
 func (c *Context) Decrement() {
-	if atomic.AddInt64(&c.counter, -1) == 0 {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.counter -= 1
+	if c.counter == 0 {
 		close(c.done)
 	}
 }
@@ -55,6 +60,22 @@ func (c *Context) Shutdown() <-chan os.Signal {
 	shutdownSignal := make(chan os.Signal, 1)
 	signal.Notify(shutdownSignal, os.Interrupt, os.Kill)
 	return shutdownSignal
+}
+
+func (c *Context) RunFunc(fn func()) {
+	c.Increment()
+	defer c.Decrement()
+
+	for {
+		select {
+		case <-c.Done():
+			slog.Info("Context done. Exiting...")
+			return
+		default:
+		}
+
+		fn()
+	}
 }
 
 func NewContext() *Context {

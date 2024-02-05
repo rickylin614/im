@@ -121,25 +121,25 @@ func (*WsManager) KickUserConn(client *Client) error {
 
 // Run implements LongConnServer.
 func (w *WsManager) Run(ctx *signalctx.Context) error {
-	ctx.Increment()
-	defer ctx.Decrement()
 
 	var client *Client
 
 	go func() {
-		for {
-			select {
-			case <-ctx.Done():
-				// TODO unregister all client
-				return
-			case client = <-w.registerChan:
-				w.registerClient(client)
-			case client = <-w.unregisterChan:
-				w.unregisterClient(client)
-			case onlineInfo := <-w.kickHandlerChan:
-				w.kickClient(onlineInfo)
+		ctx.RunFunc(func() {
+			for {
+				select {
+				case <-ctx.Done():
+					// TODO unregister all client
+					return
+				case client = <-w.registerChan:
+					w.registerClient(client)
+				case client = <-w.unregisterChan:
+					w.unregisterClient(client)
+				case onlineInfo := <-w.kickHandlerChan:
+					w.kickClient(onlineInfo)
+				}
 			}
-		}
+		})
 	}()
 
 	return nil

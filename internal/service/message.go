@@ -1,18 +1,17 @@
 package service
 
 import (
-	"im/internal/models/po"
-	"im/internal/models/request"
-	"im/internal/util/uuid"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
+
+	"im/internal/models/po"
+	"im/internal/models/request"
 )
 
 type IMessageService interface {
 	Get(ctx *gin.Context, cond *request.MessageGet) (*po.Message, error)
 	GetList(ctx *gin.Context, cond *request.MessageGetList) (*po.PageResult[*po.Message], error)
-	Create(ctx *gin.Context, cond *request.MessageCreate) (id any, err error)
+	Create(ctx *gin.Context, cond *po.Message) (id any, err error)
 	Update(ctx *gin.Context, cond *request.MessageUpdate) (err error)
 	Delete(ctx *gin.Context, cond *request.MessageDelete) (err error)
 }
@@ -35,12 +34,8 @@ func (s messageService) GetList(ctx *gin.Context, cond *request.MessageGetList) 
 	return s.In.Repository.MessageRepo.GetList(db, cond)
 }
 
-func (s messageService) Create(ctx *gin.Context, cond *request.MessageCreate) (id any, err error) {
+func (s messageService) Create(ctx *gin.Context, insertData *po.Message) (id any, err error) {
 	db := s.In.DB.Session(ctx)
-	insertData := &po.Message{ID: uuid.New()}
-	if err := copier.Copy(insertData, cond); err != nil {
-		return nil, err
-	}
 	return s.In.Repository.MessageRepo.Create(db, insertData)
 }
 
