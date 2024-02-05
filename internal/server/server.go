@@ -45,24 +45,24 @@ func (s *SrvCtrl) Register(server IServer) {
 
 // Run Listen 監聽服務, 若確認所有服務正常關閉則os.Exit
 func (s *SrvCtrl) Run() {
-	signalctx := s.in.Ctx
+	ctx := s.in.Ctx
 	// Run
 	for _, server := range s.servers {
 		s.mx.Lock()
 		go func(server IServer) {
-			if err := server.Run(signalctx); err != nil {
-				s.in.Logger.Error(signalctx, fmt.Errorf("run error: %v \n", err))
+			if err := server.Run(ctx); err != nil {
+				s.in.Logger.Error(ctx, fmt.Errorf("run error: %v \n", err))
 			}
 		}(server)
 		s.mx.Unlock()
 	}
 
 	// 監聽關機
-	c := <-signalctx.Shutdown()
+	c := <-ctx.Shutdown()
 	slog.Info(fmt.Sprintf("Server Shutdown, osSignal: %v\n", c))
 
 	// 所有使用signalctx的排程陸續關閉
-	signalctx.Cancel()
+	ctx.Cancel()
 
 	s.mx.Lock()
 	defer s.mx.Unlock()
@@ -70,23 +70,24 @@ func (s *SrvCtrl) Run() {
 	var isException bool
 	// 執行所有執行序shutdown
 	for _, server := range s.servers {
-		signalctx.Increment()
+		ctx.Increment()
 		go func(server IServer) {
-			defer signalctx.Decrement()
-			if err := server.Shutdown(signalctx); err != nil {
+			defer ctx.Decrement()
+			if err := server.Shutdown(ctx); err != nil {
 				isException = true
+				slog.Error("server.Shutdown err", "error", err.Error())
 			}
-			fmt.Println("debug shutdown")
+			slog.Debug("debug shutdown")
 		}(server)
 	}
 
 	// 確認所有關閉或是timeout
 	select {
-	case <-signalctx.AllDone():
-		fmt.Println("debug AllDone")
+	case <-ctx.AllDone():
+		slog.Debug("debug AllDone")
 		break
 	case <-time.Tick(time.Second * 30):
-		slog.ErrorContext(signalctx, "Shutdown Timeout!")
+		slog.ErrorContext(ctx, "Shutdown Timeout!")
 	}
 
 	slog.Info("Server exit!")
