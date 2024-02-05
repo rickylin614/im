@@ -21,7 +21,9 @@ type MessageListener struct {
 // param: in 依賴
 // return: IMessageListener 訊息監聽器接口
 func NewMessageListener(in digIn) IListener {
-	return &MessageListener{Base: NewBase(in, topic.MSG)}
+	m := &MessageListener{Base: NewBase(in, topic.MSG)}
+	m.msgHandler = m
+	return m
 }
 
 // processMsg

@@ -14,10 +14,14 @@ type IListener interface {
 	processMsg(in digIn, msg *message.Message)
 }
 
+type msgHandler interface {
+	processMsg(in digIn, msg *message.Message)
+}
+
 type Base struct {
-	in         digIn
-	topic      string
-	processMsg func(in digIn, msg *message.Message)
+	in    digIn
+	topic string
+	msgHandler
 }
 
 // NewBase 監聽器基底

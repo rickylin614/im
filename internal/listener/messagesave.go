@@ -20,7 +20,9 @@ type MessageSaveListener struct {
 // param: in
 // return: IListener
 func NewMessageSaveListener(in digIn) IListener {
-	return &MessageSaveListener{Base: NewBase(in, topic.MSG_SAVE)}
+	m := &MessageSaveListener{Base: NewBase(in, topic.MSG_SAVE)}
+	m.msgHandler = m
+	return m
 }
 
 // processMsg
