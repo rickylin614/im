@@ -19,6 +19,12 @@ graph LR
     WebSocket -->|Ws Signaling| Flutter
 ```
 
+## 套件相關
+
+- [套件使用範例](./docs/md/note.md)
+- [Validation使用](./docs/bi/binding.md)
+- [prometheus監控](./docs/bi/prom.md)
+
 ## 專案結構
 
 ```
@@ -177,11 +183,6 @@ go install github.com/swaggo/swag/cmd/swag@v1.16.1
 # 執行taskfile
 go install github.com/go-task/task/v3/cmd/task@v3.32.0
 ```
-
-### 套件教學
-
-- [套件使用範例](./docs/md/note.md)
-- [Validation使用](./docs/bi/binding.md)
 
 ## 執行標籤
 

@@ -1,6 +1,10 @@
 
 # Prometheus
 
+## 專案對應檔案
+
+> /internal/pkg/prom/prom.go
+
 ## 自定義監控
 
 | Metric Name     | Description                                            |
