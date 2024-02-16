@@ -18,7 +18,7 @@ config:
     port: ":9000"
     debug_mode: true
   redis_config:
-    enable: false
+    enable: true
     address: "localhost:6379"
     Password: ""
     max_idle: 10
@@ -61,7 +61,8 @@ config:
     enable_redis: false
   listener_config:
     enable: true
-    
+    msg: 5
+    msg_save: 5
 
 
 

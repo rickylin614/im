@@ -70,26 +70,6 @@ func (h messageHandler) GetList(ctx *gin.Context) {
 	ctxs.SetResp(ctx, result)
 }
 
-// Create
-// @Summary Create
-// @Tags message
-// @Param request body request.MessageCreate true "param"
-// @Success 200 {object} response.APIResponse[string]
-// @Router /message [post]
-func (h messageHandler) Create(ctx *gin.Context) {
-	req := &request.MessageCreate{}
-	if err := ctx.ShouldBindJSON(req); err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	id, err := h.in.Service.MessageSrv.Create(ctx, req)
-	if err != nil {
-		ctxs.SetError(ctx, err)
-		return
-	}
-	ctxs.SetResp(ctx, id)
-}
-
 // Update
 // @Summary Update
 // @Tags message

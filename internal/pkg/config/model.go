@@ -83,6 +83,8 @@ type Config struct {
 	} `mapstructure:"prom_config"`
 
 	ListenerConfig struct { // 監聽器
-		Enable bool `mapstructure:"enable"`
+		Enable  bool `mapstructure:"enable"`
+		Msg     int  `mapstructure:"msg"`
+		MsgSave int  `mapstructure:"msg_save"`
 	} `mapstructure:"listener_config"`
 }

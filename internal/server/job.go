@@ -8,6 +8,7 @@ import (
 	"github.com/go-co-op/gocron"
 	"go.uber.org/dig"
 
+	"im/internal/listener"
 	"im/internal/pkg/config"
 	"im/internal/pkg/logger"
 )
@@ -17,6 +18,12 @@ type JobDigIn struct {
 
 	Config *config.Config
 	Logger logger.Logger
+
+	// Job
+
+	// IListener
+	MessageListener     listener.IListener `name:"messageListener"`
+	MessageSaveListener listener.IListener `name:"messageSaveListener"`
 }
 
 type JobServer struct {
@@ -37,15 +44,8 @@ func (s *JobServer) Run(ctx context.Context) error {
 		msg := "job panic! name:" + jobName
 		s.In.Logger.Error(context.Background(), fmt.Errorf("%s %v", msg, recoverData))
 	})
-
-	i := 0
-	s.job.Every("3600s").Do(func(i *int) {
-		*i++
-		data := *i
-		fmt.Println("Job exec start", data)
-		time.Sleep(time.Second * 10)
-		fmt.Println("Job exec end", data)
-	}, &i)
+	s.test()
+	s.StartListener()
 
 	s.job.StartBlocking()
 	return nil
@@ -54,6 +54,34 @@ func (s *JobServer) Run(ctx context.Context) error {
 func (s *JobServer) Shutdown(ctx context.Context) error {
 	s.job.Stop()
 	return nil
+}
+
+func (s *JobServer) StartJob(in JobDigIn) {
+	// Job config
+}
+
+func (s *JobServer) StartListener() {
+	c := s.In.Config.ListenerConfig
+	if !c.Enable {
+		return
+	}
+	if c.Msg > 0 {
+		s.In.MessageListener.Start(c.Msg)
+	}
+	if c.MsgSave > 0 {
+		s.In.MessageSaveListener.Start(c.MsgSave)
+	}
+}
+
+func (s *JobServer) test() {
+	i := 0
+	s.job.Every("3600s").Do(func(i *int) {
+		*i++
+		data := *i
+		fmt.Println("Job exec start", data)
+		time.Sleep(time.Second * 10)
+		fmt.Println("Job exec end", data)
+	}, &i)
 }
 
 //func (s *JobServer) Run(ctx context.Context) error {

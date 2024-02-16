@@ -9,23 +9,25 @@ import (
 	"im/internal/service"
 )
 
-func NewListener(in digIn) digOut {
-	return digOut{
+func NewListener(in digIn) DigOut {
+	return DigOut{
 		MessageListener:     NewMessageListener(in),
 		MessageSaveListener: NewMessageSaveListener(in),
 	}
 }
 
 type digIn struct {
+	dig.In
+
 	Ctx        *signalctx.Context
 	Publisher  message.Publisher
 	Subscriber message.Subscriber
 	WsManager  msggateway.IWsManager
 
-	Service service.Service
+	Service *service.Service
 }
 
-type digOut struct {
+type DigOut struct {
 	dig.Out
 
 	MessageListener     IListener `name:"messageListener"`
