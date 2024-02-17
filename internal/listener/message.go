@@ -5,11 +5,11 @@ import (
 	"log/slog"
 
 	"github.com/ThreeDotsLabs/watermill/message"
-	"github.com/google/uuid"
-	"github.com/vmihailenco/msgpack"
+	"github.com/vmihailenco/msgpack/v5"
 
 	"im/internal/models/po"
 	"im/internal/pkg/consts/topic"
+	"im/internal/util/uuid"
 )
 
 type MessageListener struct {
@@ -46,15 +46,14 @@ func (m *MessageListener) processMsg(in digIn, msg *message.Message) {
 
 	// 丟進ws處理器
 	ctx := context.Background()
-	err = in.WsManager.SendMessage(ctx, msgModel)
+	err = in.WsManager.SendMessage2Client(ctx, msgModel)
 	if err != nil {
 		slog.Error("processMsg send message", "error", err)
 		return
 	}
 
 	// 送到queue保存資料進repo
-	id, _ := uuid.NewV7()
-	err = in.Publisher.Publish(topic.MSG_SAVE, message.NewMessage(id.String(), msg.Payload))
+	err = in.Publisher.Publish(topic.MSG_SAVE, message.NewMessage(uuid.New(), msg.Payload))
 	if err != nil {
 		slog.Error("processMsg Publisher.Publish", "error", err)
 		return

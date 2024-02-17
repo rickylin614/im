@@ -8,12 +8,18 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/ThreeDotsLabs/watermill/message"
+	"github.com/goccy/go-json"
+	"github.com/vmihailenco/msgpack/v5"
+
 	"im/internal/models/po"
 	"im/internal/pkg/config"
 	"im/internal/pkg/consts/enums"
+	"im/internal/pkg/consts/topic"
 	"im/internal/pkg/prom"
 	"im/internal/pkg/signalctx"
 	"im/internal/util/errs"
+	"im/internal/util/uuid"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -34,7 +40,8 @@ type IWsManager interface {
 	Register(c *Client) error
 	UnRegister(c *Client)
 
-	SendMessage(context context.Context, data *po.Message) error
+	SendMessage2Client(context context.Context, data *po.Message) error
+	SendMessage2Queue(context context.Context, msg *po.Message) error
 	// SetKickHandlerInfo(i *kickHandler)
 	Compressor
 	Encoder
@@ -43,9 +50,10 @@ type IWsManager interface {
 type digIn struct {
 	dig.In
 
-	Conf *config.Config
-	Ctx  *signalctx.Context
-	Prom *prom.Manager
+	Conf      *config.Config
+	Ctx       *signalctx.Context
+	Prom      *prom.Manager
+	Publisher message.Publisher
 }
 
 type WsManager struct {
@@ -63,6 +71,7 @@ type WsManager struct {
 	writeBufferSize   int
 	validate          *validator.Validate
 	clientPool        sync.Pool
+	Publisher         message.Publisher
 	// cache             cache.MsgModel
 	// userClient        *rpcclient.UserRpcClient
 	// disCov discoveryregistry.SvcDiscoveryRegistry
@@ -89,9 +98,7 @@ func NewWsManger(in digIn) IWsManager {
 		clients:         newUserMap(),
 		Compressor:      NewGzipCompressor(),
 		Encoder:         NewGobEncoder(),
-	}
-	manager.clientPool.New = func() any {
-		return newClient(nil, nil, false)
+		Publisher:       in.Publisher,
 	}
 	manager.Run(in.Ctx)
 	return manager
@@ -249,15 +256,16 @@ type kickHandler struct {
 	newClient  *Client
 }
 
-func (w *WsManager) SendMessage(context context.Context, data *po.Message) error {
+func (w *WsManager) SendMessage2Client(context context.Context, data *po.Message) error {
 	if cs, ok := w.clients.Get(data.Recipient); ok {
 		for _, c := range cs {
 			switch data.MsgType {
 			case enums.SingleChatType:
-				if err := c.handleMessage(data.MsgContent); err != nil {
+				msg, err := json.Marshal(data)
+				if err != nil {
 					return err
 				}
-				return c.writeBinaryMsg(data.MsgContent)
+				return c.writeBinaryMsg(msg)
 			case enums.GroupChatType:
 			case enums.NotificationChatType:
 			case enums.SuperGroupChatType:
@@ -266,4 +274,16 @@ func (w *WsManager) SendMessage(context context.Context, data *po.Message) error
 	}
 
 	return nil
+}
+
+func (w *WsManager) SendMessage2Queue(context context.Context, msg *po.Message) error {
+	var err error
+	queueMsg := &message.Message{}
+	queueMsg.UUID = uuid.New()
+	queueMsg.Payload, err = msgpack.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	return w.Publisher.Publish(topic.MSG, queueMsg)
 }

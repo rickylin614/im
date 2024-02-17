@@ -9,10 +9,12 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"github.com/gin-gonic/gin"
+	"github.com/goccy/go-json"
+
 	"im/internal/models/po"
 	"im/internal/util/ctxs"
-
-	"github.com/gin-gonic/gin"
+	"im/internal/util/uuid"
 )
 
 var (
@@ -102,7 +104,7 @@ func (c *Client) ReadMessage() {
 	}()
 
 	c.conn.SetReadLimit(maxMessageSize)
-	//_ = c.conn.SetReadDeadline(pongWait)  close when debug mode
+	//_ = c.conn.SetReadDeadline(pongWait)  // close when debug mode
 	c.conn.SetPingHandler(c.pingHandler)
 
 	count := 1
@@ -131,14 +133,33 @@ func (c *Client) ReadMessage() {
 			}
 		case MessageText:
 			parseDataErr := c.handleMessage(message)
-			c.writeStringMsg(fmt.Sprintf("第%d次溝通 收到訊息:%s", count, message))
+			testMsg1 := &po.Message{ID: uuid.New()}
+			testMsg := message
+			if err := json.Unmarshal(message, testMsg1); err == nil {
+				testMsg = []byte(testMsg1.MsgContent)
+			}
+			testMsg2 := &po.Message{Sender: c.User.Username, MsgContent: fmt.Sprintf("第%d次溝通 收到訊息:%s", count, testMsg)}
+			jsonByte, err := json.Marshal(testMsg2)
+			c.writeBinaryMsg(jsonByte)
+			//c.writeStringMsg()
 			count++
 			slog.Debug("ws recieve", "msg", string(message))
 			if parseDataErr != nil {
 				c.closedErr = parseDataErr
 				return
 			}
-			//c.closedErr = ErrNotSupportMessageProtocol
+
+			poMsg := &po.Message{ID: uuid.New()}
+			err = json.Unmarshal(message, poMsg)
+			if err != nil {
+				slog.Error("ws recieve json.Unmarshal fail", "err", err.Error(), "user", c.User.Username, "data", string(message))
+				continue
+			}
+			err = c.wsManager.SendMessage2Queue(context.Background(), poMsg)
+			if err != nil {
+				slog.Error("ws recieve SendMessage2Queue fail", "err", err.Error(), "user", c.User.Username)
+				continue
+			}
 
 		case PingMessage:
 			err := c.writePongMsg()

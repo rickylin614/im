@@ -3,7 +3,7 @@ package uuid
 import (
 	"sync"
 
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 )
 
 var mu = &sync.Mutex{}

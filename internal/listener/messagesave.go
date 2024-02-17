@@ -4,7 +4,7 @@ import (
 	"log/slog"
 
 	"github.com/ThreeDotsLabs/watermill/message"
-	"github.com/vmihailenco/msgpack"
+	"github.com/vmihailenco/msgpack/v5"
 
 	"im/internal/models/po"
 	"im/internal/pkg/consts/topic"
