@@ -139,7 +139,11 @@ func (c *Client) ReadMessage() {
 			if err := json.Unmarshal(message, testMsg1); err == nil {
 				testMsg = []byte(testMsg1.MsgContent)
 			}
-			testMsg2 := &po.Message{Sender: c.User.Username, MsgContent: fmt.Sprintf("第%d次溝通 收到訊息:%s", count, testMsg)}
+			testMsg2 := &po.Message{
+				Sender:     c.User.Username,
+				MsgContent: fmt.Sprintf("第%d次溝通 收到訊息:%s", count, testMsg),
+				CreatedAt:  time.Now(),
+			}
 			jsonByte, err := json.Marshal(testMsg2)
 			c.writeBinaryMsg(jsonByte)
 
