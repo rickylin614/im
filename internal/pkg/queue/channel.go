@@ -12,5 +12,6 @@ func newChannelPubSub(in digIn) (pub *gochannel.GoChannel, sub *gochannel.GoChan
 			BlockPublishUntilSubscriberAck: false,
 		},
 		newWatermillZap(in))
+
 	return pubSub, pubSub
 }

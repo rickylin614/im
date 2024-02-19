@@ -5,6 +5,7 @@ import (
 	"go.uber.org/dig"
 
 	"im/internal/manager/msggateway"
+	"im/internal/pkg/config"
 	"im/internal/pkg/signalctx"
 	"im/internal/service"
 )
@@ -19,7 +20,9 @@ func NewListener(in digIn) DigOut {
 type digIn struct {
 	dig.In
 
-	Ctx        *signalctx.Context
+	Ctx    *signalctx.Context
+	Config *config.Config
+
 	Publisher  message.Publisher
 	Subscriber message.Subscriber
 	WsManager  msggateway.IWsManager
