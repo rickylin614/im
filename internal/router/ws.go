@@ -27,5 +27,6 @@ func (r WsRouter) SetRouter(router *gin.Engine) {
 	)
 
 	router.GET("/connect", r.in.Handler.WsHandler.Connect)
+	router.GET("/online", r.in.Handler.WsHandler.CheckOnlineMembers)
 	router.GET("/connect2", r.in.Handler.WsHandler.WsTest)
 }

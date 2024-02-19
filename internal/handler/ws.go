@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
@@ -11,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"im/internal/manager/msggateway"
+	"im/internal/models/response"
 	"im/internal/util/ctxs"
 )
 
@@ -42,9 +42,6 @@ func (h wsHandler) Connect(ctx *gin.Context) {
 		ctxs.SetError(ctx, err)
 		return
 	}
-
-	user := ctxs.GetUserInfo(ctx)
-	fmt.Println(user)
 
 	// 會員資料 member info
 	client := h.in.WsManager.NewClient(ctx, gSocket, true, false, "")
@@ -85,4 +82,11 @@ func (h wsHandler) WsTest(c *gin.Context) {
 		}
 	}
 
+}
+
+func (h wsHandler) CheckOnlineMembers(ctx *gin.Context) {
+	users := h.in.WsManager.GetUserAll()
+	ctxs.SetResp(ctx, response.UsersList{
+		Username: users,
+	})
 }

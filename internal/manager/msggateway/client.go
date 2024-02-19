@@ -8,6 +8,7 @@ import (
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/goccy/go-json"
@@ -141,7 +142,7 @@ func (c *Client) ReadMessage() {
 			testMsg2 := &po.Message{Sender: c.User.Username, MsgContent: fmt.Sprintf("第%d次溝通 收到訊息:%s", count, testMsg)}
 			jsonByte, err := json.Marshal(testMsg2)
 			c.writeBinaryMsg(jsonByte)
-			//c.writeStringMsg()
+
 			count++
 			slog.Debug("ws recieve", "msg", string(message))
 			if parseDataErr != nil {
@@ -149,15 +150,21 @@ func (c *Client) ReadMessage() {
 				return
 			}
 
-			poMsg := &po.Message{ID: uuid.New()}
+			poMsg := &po.Message{}
 			err = json.Unmarshal(message, poMsg)
 			if err != nil {
 				slog.Error("ws recieve json.Unmarshal fail", "err", err.Error(), "user", c.User.Username, "data", string(message))
 				continue
 			}
+			// 確保來源資訊沒被竄改
+			poMsg.ID = uuid.New()
+			poMsg.Sender = c.User.Username
+			poMsg.SenderId = c.UserID
+			poMsg.CreatedAt, poMsg.UpdatedAt = time.Now(), time.Now()
+
 			err = c.wsManager.SendMessage2Queue(context.Background(), poMsg)
 			if err != nil {
-				slog.Error("ws recieve SendMessage2Queue fail", "err", err.Error(), "user", c.User.Username)
+				slog.Error("ws recieve SendMessage2Queue fail", "err", err.Error(), "user", c.User.Username, "msg", poMsg)
 				continue
 			}
 

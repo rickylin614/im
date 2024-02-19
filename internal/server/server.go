@@ -50,6 +50,7 @@ func (s *SrvCtrl) Run() {
 	for _, server := range s.servers {
 		s.mx.Lock()
 		go func(server IServer) {
+			ctx.Increment()
 			if err := server.Run(ctx); err != nil {
 				s.in.Logger.Error(ctx, fmt.Errorf("run error: %v \n", err))
 			}
@@ -70,7 +71,6 @@ func (s *SrvCtrl) Run() {
 	var isException bool
 	// 執行所有執行序shutdown
 	for _, server := range s.servers {
-		ctx.Increment()
 		go func(server IServer) {
 			defer ctx.Decrement()
 			if err := server.Shutdown(ctx); err != nil {

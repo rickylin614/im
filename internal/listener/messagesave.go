@@ -29,14 +29,7 @@ func NewMessageSaveListener(in digIn) IListener {
 //
 // param: in 依賴
 // param: msg 訂閱的訊息
-func (m MessageSaveListener) processMsg(in digIn, msg *message.Message) {
-	var err error
-	defer func() {
-		if err == nil {
-			msg.Ack()
-		}
-	}()
-
+func (m MessageSaveListener) processMsg(in digIn, msg *message.Message) (err error) {
 	msgModel := &po.Message{}
 	if err = msgpack.Unmarshal(msg.Payload, msgModel); err != nil {
 		slog.Error("messageSave processMsg Unmarshal", "error", err)

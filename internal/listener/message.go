@@ -30,14 +30,7 @@ func NewMessageListener(in digIn) IListener {
 //
 // param: in 依賴
 // param: msg 訂閱的訊息
-func (m *MessageListener) processMsg(in digIn, msg *message.Message) {
-	var err error
-	defer func() {
-		if err == nil {
-			msg.Ack()
-		}
-	}()
-
+func (m *MessageListener) processMsg(in digIn, msg *message.Message) (err error) {
 	msgModel := &po.Message{}
 	if err = msgpack.Unmarshal(msg.Payload, msgModel); err != nil {
 		slog.Error("processMsg Unmarshal", "error", err)

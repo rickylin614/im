@@ -2,7 +2,7 @@ config:
   log_config:
     name: "im"
     env: "local"
-    level: "debug"
+    level: "info"
   mysql_config:
     enable: true
     master: "localhost:3306"

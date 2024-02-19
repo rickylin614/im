@@ -2,9 +2,11 @@ package msggateway
 
 import (
 	"context"
-	"im/internal/util/utils"
+	"fmt"
 	"log/slog"
 	"sync"
+
+	"im/internal/util/utils"
 )
 
 type UserMap struct {
@@ -15,12 +17,16 @@ func newUserMap() *UserMap {
 	return &UserMap{}
 }
 
-func (u *UserMap) GetAll(key string) ([]*Client, bool) {
-	allClients, ok := u.m.Load(key)
-	if ok {
-		return allClients.([]*Client), ok
-	}
-	return nil, ok
+func (u *UserMap) GetAll() []*Client {
+	resp := make([]*Client, 0)
+	u.m.Range(func(key, value any) bool {
+		if v, ok := value.([]*Client); ok && len(v) > 0 {
+			fmt.Println(key)
+			resp = append(resp, v[0])
+		}
+		return true
+	})
+	return resp
 }
 
 func (u *UserMap) Get(key string) ([]*Client, bool) {

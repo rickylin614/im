@@ -25,7 +25,7 @@ type IUsersService interface {
 	Create(ctx *gin.Context, cond *request.UsersCreate) (id any, err error)
 	Update(ctx *gin.Context, cond *request.UsersUpdate) (err error)
 	Delete(ctx *gin.Context, cond *request.UsersDelete) (err error)
-	Login(ctx *gin.Context, cond *request.UsersLogin) (token string, err error)
+	Login(ctx *gin.Context, cond *request.UsersLogin) (token string, user *po.Users, err error)
 	Logout(ctx *gin.Context, token string) (err error)
 	GetByToken(ctx *gin.Context, token string) (user *po.Users, err error)
 }
@@ -71,28 +71,28 @@ func (s UsersService) Delete(ctx *gin.Context, cond *request.UsersDelete) (err e
 	return s.In.Repository.UsersRepo.Delete(db, cond.ID)
 }
 
-func (s UsersService) Login(ctx *gin.Context, cond *request.UsersLogin) (token string, err error) {
+func (s UsersService) Login(ctx *gin.Context, cond *request.UsersLogin) (token string, users *po.Users, err error) {
 	db := s.In.DB.Session(ctx)
 
 	// 取得使用者資訊
 	getCond := &request.UsersGet{Username: cond.Username}
 	user, err := s.In.Repository.UsersRepo.Get(db, getCond)
 	if err != nil || user == nil {
-		return "", errs.LoginCommonError
+		return "", nil, errs.LoginCommonError
 	}
 
 	// 驗證密碼
 	if user.PasswordHash != crypto.Hash(cond.Password) {
 		loginRecord := composeLoginRecord(ctx, user, enums.LoginStateFailed)
 		go s.loginRecord(loginRecord)
-		return "", errs.LoginCommonError
+		return "", nil, errs.LoginCommonError
 	}
 
 	// 驗證用戶狀態
 	if user.Status != enums.UserStatusActive {
 		loginRecord := composeLoginRecord(ctx, user, enums.LoginStateBlocked)
 		go s.loginRecord(loginRecord)
-		return "", errs.LoginLockedError
+		return "", nil, errs.LoginLockedError
 	}
 
 	// 登入成功
@@ -114,14 +114,14 @@ func (s UsersService) Login(ctx *gin.Context, cond *request.UsersLogin) (token s
 	token, err = jwfclaims.SignedString(crypto.GetRsaPrivateKey())
 	if err != nil {
 		s.In.Logger.Error(ctx, fmt.Errorf("sjwfclaims.SignedString err: %w", err))
-		return "", errs.CommonServiceUnavailable
+		return "", nil, errs.CommonServiceUnavailable
 	}
 
 	if err = s.In.Repository.UsersRepo.SetToken(ctx, user.ID, ctxs.GetDeviceID(ctx), token); err != nil {
 		s.In.Logger.Error(ctx, fmt.Errorf("service set token err: %w", err))
-		return "", errs.CommonServiceUnavailable
+		return "", nil, errs.CommonServiceUnavailable
 	}
-	return token, nil
+	return token, user, nil
 }
 
 func (s UsersService) loginRecord(loginRecord *po.LoginRecord) {

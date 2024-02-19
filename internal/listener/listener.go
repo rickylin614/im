@@ -2,6 +2,7 @@ package listener
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"time"
 
@@ -11,11 +12,11 @@ import (
 type IListener interface {
 	Start(workerNum int)
 	getTopic() string
-	processMsg(in digIn, msg *message.Message)
+	processMsg(in digIn, msg *message.Message) (err error)
 }
 
 type msgHandler interface {
-	processMsg(in digIn, msg *message.Message)
+	processMsg(in digIn, msg *message.Message) (err error)
 }
 
 type Base struct {
@@ -34,29 +35,35 @@ func NewBase(in digIn, topic string) Base {
 }
 
 func (l *Base) Start(workerNum int) {
-	var msg <-chan *message.Message
-	var err error
-	for {
-		msg, err = l.in.Subscriber.Subscribe(context.Background(), l.getTopic())
-		if err != nil {
-			slog.Error("ListenerBase Start Error", "error", err.Error(), "topic", l.getTopic())
-			time.Sleep(time.Second * 30)
-			continue
-		}
-		break
-	}
-
 	for i := 0; i < workerNum; i++ {
-		go func() {
+		go func(work int) {
+			msg, err := l.in.Subscriber.Subscribe(context.Background(), l.getTopic())
+			if err != nil {
+				slog.Error("create worker fail", "topic", l.topic, "workerNumber", work)
+				return
+			}
+
+			defer func() {
+				fmt.Println("listen end")
+			}()
+
 			l.in.Ctx.RunFunc(func() {
 				select {
 				case <-l.in.Ctx.Done():
 					return
 				case recMsg := <-msg:
-					l.processMsg(l.in, recMsg)
+					if err := l.processMsg(l.in, recMsg); err == nil {
+						recMsg.Ack()
+					} else {
+						// 避免服務阻塞 延遲丟出失敗的請求
+						go func() {
+							time.Sleep(time.Second * 10)
+							recMsg.Nack()
+						}()
+					}
 				}
 			})
-		}()
+		}(i)
 	}
 }
 

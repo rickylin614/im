@@ -33,6 +33,7 @@ type IWsManager interface {
 	NewClient(ctx *gin.Context, conn IClientConn, isBackground, isCompress bool, token string) *Client
 	GetUserAllConnects(userID string) ([]*Client, bool)
 	GetUserPlatformCons(userID string, platform int) ([]*Client, bool, bool)
+	GetUserAll() []string
 	Validate(s any) error
 	// SetCacheHandler(cache cache.MsgModel)
 	// SetDiscoveryRegistry(client discoveryregistry.SvcDiscoveryRegistry)
@@ -114,6 +115,16 @@ func (w *WsManager) NewClient(ctx *gin.Context, conn IClientConn, isBackground, 
 // GetUserAllConnects implements LongConnServer.
 func (*WsManager) GetUserAllConnects(userID string) ([]*Client, bool) {
 	panic("unimplemented")
+}
+
+// GetUserAll get all online username
+func (w *WsManager) GetUserAll() []string {
+	resp := w.clients.GetAll()
+	names := make([]string, 0)
+	for _, v := range resp {
+		names = append(names, v.User.Username+":"+v.UserID)
+	}
+	return names
 }
 
 // GetUserPlatformCons implements LongConnServer.
@@ -257,7 +268,7 @@ type kickHandler struct {
 }
 
 func (w *WsManager) SendMessage2Client(context context.Context, data *po.Message) error {
-	if cs, ok := w.clients.Get(data.Recipient); ok {
+	if cs, ok := w.clients.Get(data.RecipientId); ok {
 		for _, c := range cs {
 			switch data.MsgType {
 			case enums.SingleChatType:

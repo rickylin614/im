@@ -24,9 +24,15 @@ func newRedisPublic(in digIn) message.Publisher {
 func newRedisSubscriber(in digIn) message.Subscriber {
 	client := in.Rdb
 
+	// 設定 Consumer Group 的名稱和 Consumer ID
+	consumerGroupName := "example_group"
+	consumerID := "example_consumer"
+
 	public, err := redisstream.NewSubscriber(
 		redisstream.SubscriberConfig{
-			Client: client,
+			Client:        client,
+			Consumer:      consumerGroupName,
+			ConsumerGroup: consumerID,
 		},
 		newWatermillZap(in),
 	)

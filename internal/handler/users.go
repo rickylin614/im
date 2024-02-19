@@ -26,14 +26,15 @@ func (h usersHandler) Login(ctx *gin.Context) {
 		ctxs.SetError(ctx, err)
 		return
 	}
-	token, err := h.in.Service.UsersSrv.Login(ctx, req)
+	token, user, err := h.in.Service.UsersSrv.Login(ctx, req)
 	if err != nil {
 		ctxs.SetError(ctx, err)
 		return
 	}
 	ctxs.SetResp(ctx, response.UsersLogin{
 		Token:    token,
-		Username: req.Username,
+		Username: user.Username,
+		Userid:   user.ID,
 	})
 }
 
